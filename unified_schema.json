@@ -1,0 +1,140 @@
+{
+  "Users": {
+    "user_id": "string",
+    "name": "string",
+    "email": "string",
+    "role": "string",
+    "preferences": "object",
+    "connections": "array",
+    "balance": "float",
+    "linked_accounts": "array",
+    "created_at": "timestamp"
+  },
+  "Content": {
+    "content_id": "string",
+    "uploader_id": "string",
+    "type": "string",
+    "title": "string",
+    "description": "string",
+    "url": "string",
+    "created_at": "timestamp"
+  },
+  "Transactions": {
+    "transaction_id": "string",
+    "sender_id": "string",
+    "receiver_id": "string",
+    "amount": "float",
+    "status": "string",
+    "created_at": "timestamp"
+  },
+  "Listings": {
+    "listing_id": "string",
+    "host_id": "string",
+    "title": "string",
+    "description": "string",
+    "price": "float",
+    "availability": "array",
+    "location": "object",
+    "created_at": "timestamp"
+  },
+  "Rides": {
+    "ride_id": "string",
+    "rider_id": "string",
+    "driver_id": "string",
+    "pickup_location": "object",
+    "dropoff_location": "object",
+    "price": "float",
+    "status": "string",
+    "created_at": "timestamp"
+  },
+  "Media": {
+    "media_id": "string",
+    "title": "string",
+    "type": "string",
+    "url": "string",
+    "created_at": "timestamp"
+  },
+  "Messages": {
+    "message_id": "string",
+    "sender_id": "string",
+    "receiver_id": "string",
+    "content": "string",
+    "timestamp": "timestamp"
+  },
+  "Bookings": {
+    "booking_id": "string",
+    "user_id": "string",
+    "listing_id": "string",
+    "start_date": "date",
+    "end_date": "date",
+    "status": "string",
+    "created_at": "timestamp"
+  },
+  "Orders": {
+    "order_id": "string",
+    "user_id": "string",
+    "product_id": "string",
+    "quantity": "integer",
+    "status": "string",
+    "created_at": "timestamp"
+  },
+  "Playlists": {
+    "playlist_id": "string",
+    "user_id": "string",
+    "name": "string",
+    "media_ids": "array",
+    "created_at": "timestamp"
+  },
+  "Issues": {
+    "issue_id": "string",
+    "reporter_id": "string",
+    "related_id": "string",
+    "issue_type": "string",
+    "description": "string",
+    "status": "string",
+    "priority": "string",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+  },
+  "Endorsements": {
+    "endorsement_id": "string",
+    "user_id": "string",
+    "endorsed_id": "string",
+    "endorsement_type": "string",
+    "comment": "string",
+    "created_at": "timestamp"
+  },
+  "Reviews": {
+    "review_id": "string",
+    "user_id": "string",
+    "target_id": "string",
+    "rating": "integer",
+    "review_text": "string",
+    "review_type": "string",
+    "created_at": "timestamp"
+  },
+  "Communities": {
+    "community_id": "string",
+    "name": "string",
+    "description": "string",
+    "owner_id": "string",
+    "members": "array",
+    "created_at": "timestamp"
+  },
+  "CommunityPosts": {
+    "post_id": "string",
+    "community_id": "string",
+    "user_id": "string",
+    "content": "string",
+    "media_url": "string",
+    "created_at": "timestamp"
+  },
+  "CommunityVotes": {
+    "vote_id": "string",
+    "user_id": "string",
+    "community_id": "string",
+    "target_id": "string",
+    "vote_type": "string",
+    "created_at": "timestamp"
+  }
+}
