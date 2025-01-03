@@ -12,6 +12,9 @@
     "Transactions": {
       "$ref": "#/definitions/Transaction"
     },
+    "Intentions": {
+      "$ref": "#/definitions/Intention"
+    },
     "Listings": {
       "$ref": "#/definitions/Listing"
     },
@@ -52,10 +55,11 @@
       "$ref": "#/definitions/CommunityVote"
     }
   },
-  "required": [
+  "recommended": [
     "Users",
     "Content",
     "Transactions",
+    "Intentions",
     "Listings",
     "Rides",
     "Media",
@@ -94,7 +98,7 @@
         "phone_number": { "type": "string", "pattern": "^\\+?[1-9]\\d{1,14}$" },
         "address": { "$ref": "#/definitions/Address" }
       },
-      "required": ["user_id", "name", "email", "password", "role", "created_at"]
+      "recommended": ["user_id", "name", "email", "password", "role", "created_at"]
     },
     "Connection": {
       "type": "object",
@@ -104,7 +108,7 @@
         "status": { "type": "string", "enum": ["pending", "accepted", "blocked"] },
         "connected_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["connection_id", "connected_user_id", "status", "connected_at"]
+      "recommended": ["connection_id", "connected_user_id", "status", "connected_at"]
     },
     "LinkedAccount": {
       "type": "object",
@@ -113,7 +117,7 @@
         "account_id": { "type": "string" },
         "linked_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["platform", "account_id", "linked_at"]
+      "recommended": ["platform", "account_id", "linked_at"]
     },
     "Profile": {
       "type": "object",
@@ -132,7 +136,7 @@
         "postal_code": { "type": "string" },
         "country": { "type": "string" }
       },
-      "required": ["street", "city", "state", "postal_code", "country"]
+      "recommended": ["street", "city", "state", "postal_code", "country"]
     },
     "Content": {
       "type": "object",
@@ -146,7 +150,7 @@
         "created_at": { "type": "string", "format": "date-time" },
         "metadata": { "type": "object" }
       },
-      "required": ["content_id", "uploader_id", "type", "created_at"]
+      "recommended": ["content_id", "uploader_id", "type", "created_at"]
     },
     "Transaction": {
       "type": "object",
@@ -161,7 +165,27 @@
         "transaction_type": { "type": "string", "enum": ["payment", "refund", "transfer"] },
         "metadata": { "type": "object" }
       },
-      "required": ["transaction_id", "sender_id", "receiver_id", "amount", "status", "created_at", "transaction_type"]
+      "recommended": ["transaction_id", "sender_id", "receiver_id", "amount", "status", "created_at", "transaction_type"]
+    },
+    "Intention": {
+      "type": "object",
+      "properties": {
+        "_id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "default": "USD" },
+        "availability": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Intention" }
+        },
+        "category": { "type": "string" },
+        "images": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" }
+        }
+      },
+      "recommended": ["intention_id", "title", "description", "location", "categpry"]
     },
     "Listing": {
       "type": "object",
@@ -184,7 +208,7 @@
           "items": { "type": "string", "format": "uri" }
         }
       },
-      "required": ["listing_id", "host_id", "title", "price", "availability", "location", "created_at"]
+      "recommended": ["listing_id", "host_id", "title", "price", "availability", "location", "created_at"]
     },
     "Availability": {
       "type": "object",
@@ -192,7 +216,7 @@
         "date": { "type": "string", "format": "date" },
         "is_available": { "type": "boolean" }
       },
-      "required": ["date", "is_available"]
+      "recommended": ["date", "is_available"]
     },
     "Location": {
       "type": "object",
@@ -201,7 +225,7 @@
         "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
         "longitude": { "type": "number", "minimum": -180, "maximum": 180 }
       },
-      "required": ["address", "latitude", "longitude"]
+      "recommended": ["address", "latitude", "longitude"]
     },
     "Ride": {
       "type": "object",
@@ -218,7 +242,7 @@
         "estimated_time": { "type": "integer", "minimum": 0 },
         "distance": { "type": "number", "minimum": 0 }
       },
-      "required": ["ride_id", "rider_id", "driver_id", "pickup_location", "dropoff_location", "price", "status", "created_at"]
+      "recommended": ["ride_id", "rider_id", "driver_id", "pickup_location", "dropoff_location", "price", "status", "created_at"]
     },
     "Media": {
       "type": "object",
@@ -231,7 +255,7 @@
         "duration": { "type": "number", "minimum": 0 },
         "metadata": { "type": "object" }
       },
-      "required": ["media_id", "title", "type", "url", "created_at"]
+      "recommended": ["media_id", "title", "type", "url", "created_at"]
     },
     "Message": {
       "type": "object",
@@ -247,7 +271,7 @@
         "timestamp": { "type": "string", "format": "date-time" },
         "status": { "type": "string", "enum": ["sent", "delivered", "read"] }
       },
-      "required": ["message_id", "sender_id", "receiver_id", "content", "timestamp"]
+      "recommended": ["message_id", "sender_id", "receiver_id", "content", "timestamp"]
     },
     "Booking": {
       "type": "object",
@@ -263,7 +287,7 @@
         "currency": { "type": "string", "default": "USD" },
         "payment_method": { "type": "string" }
       },
-      "required": ["booking_id", "user_id", "listing_id", "start_date", "end_date", "status", "created_at", "total_price"]
+      "recommended": ["booking_id", "user_id", "listing_id", "start_date", "end_date", "status", "created_at", "total_price"]
     },
     "Order": {
       "type": "object",
@@ -280,7 +304,7 @@
         "shipping_address": { "$ref": "#/definitions/Address" },
         "payment_method": { "type": "string" }
       },
-      "required": ["order_id", "user_id", "product_id", "quantity", "total_price", "status", "created_at"]
+      "recommended": ["order_id", "user_id", "product_id", "quantity", "total_price", "status", "created_at"]
     },
     "Playlist": {
       "type": "object",
@@ -296,7 +320,7 @@
         "description": { "type": "string" },
         "cover_image_url": { "type": "string", "format": "uri" }
       },
-      "required": ["playlist_id", "user_id", "name", "media_ids", "created_at"]
+      "recommended": ["playlist_id", "user_id", "name", "media_ids", "created_at"]
     },
     "Issue": {
       "type": "object",
@@ -315,7 +339,7 @@
           "items": { "$ref": "#/definitions/IssueComment" }
         }
       },
-      "required": ["issue_id", "reporter_id", "issue_type", "description", "status", "priority", "created_at"]
+      "recommended": ["issue_id", "reporter_id", "issue_type", "description", "status", "priority", "created_at"]
     },
     "IssueComment": {
       "type": "object",
@@ -326,7 +350,7 @@
         "comment": { "type": "string" },
         "created_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["comment_id", "issue_id", "commenter_id", "comment", "created_at"]
+      "recommended": ["comment_id", "issue_id", "commenter_id", "comment", "created_at"]
     },
     "Endorsement": {
       "type": "object",
@@ -338,7 +362,7 @@
         "comment": { "type": "string" },
         "created_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["endorsement_id", "user_id", "endorsed_id", "endorsement_type", "created_at"]
+      "recommended": ["endorsement_id", "user_id", "endorsed_id", "endorsement_type", "created_at"]
     },
     "Review": {
       "type": "object",
@@ -352,7 +376,7 @@
         "created_at": { "type": "string", "format": "date-time" },
         "updated_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["review_id", "user_id", "target_id", "rating", "review_type", "created_at"]
+      "recommended": ["review_id", "user_id", "target_id", "rating", "review_type", "created_at"]
     },
     "Community": {
       "type": "object",
@@ -369,7 +393,7 @@
         "rules": { "type": "string" },
         "category": { "type": "string" }
       },
-      "required": ["community_id", "name", "owner_id", "members", "created_at"]
+      "recommended": ["community_id", "name", "owner_id", "members", "created_at"]
     },
     "CommunityPost": {
       "type": "object",
@@ -388,7 +412,7 @@
           "items": { "type": "string" }
         }
       },
-      "required": ["post_id", "community_id", "user_id", "content", "created_at"]
+      "recommended": ["post_id", "community_id", "user_id", "content", "created_at"]
     },
     "CommunityVote": {
       "type": "object",
@@ -400,7 +424,7 @@
         "vote_type": { "type": "string", "enum": ["upvote", "downvote"] },
         "created_at": { "type": "string", "format": "date-time" }
       },
-      "required": ["vote_id", "user_id", "community_id", "target_id", "vote_type", "created_at"]
+      "recommended": ["vote_id", "user_id", "community_id", "target_id", "vote_type", "created_at"]
     }
   },
   "additionalProperties": false
