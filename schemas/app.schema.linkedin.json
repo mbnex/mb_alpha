@@ -1,0 +1,598 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LinkedIn",
+  "description": "JSON Schema for a simplified LinkedIn data model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of LinkedIn users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "companies": {
+      "type": "array",
+      "description": "List of companies on LinkedIn",
+      "items": {
+        "$ref": "#/definitions/company"
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "description": "List of job postings",
+      "items": {
+        "$ref": "#/definitions/job"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of user and company posts",
+      "items": {
+        "$ref": "#/definitions/post"
+      }
+    },
+    "groups":{
+      "type": "array",
+      "description": "List of groups on LinkedIn",
+      "items": {
+        "$ref": "#/definitions/group"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "A LinkedIn user profile",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address"
+        },
+        "headline": {
+          "type": "string",
+          "description": "User's professional headline"
+        },
+        "summary": {
+          "type": "string",
+          "description": "A brief summary about the user"
+        },
+        "location": {
+          "type": "string",
+          "description": "User's location (e.g., city, country)"
+        },
+        "industry": {
+          "type": "string",
+          "description": "User's industry"
+        },
+        "profilePictureUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the user's profile picture"
+        },
+        "connections": {
+          "type": "array",
+          "description": "List of user IDs that are connections",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "experience": {
+          "type": "array",
+          "description": "User's work experience",
+          "items": {
+            "$ref": "#/definitions/experience"
+          }
+        },
+        "education": {
+          "type": "array",
+          "description": "User's education history",
+          "items": {
+            "$ref": "#/definitions/education"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "description": "List of user's skills",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recommendations": {
+          "type": "array",
+          "description": "Recommendations given to the user",
+          "items": {
+            "$ref": "#/definitions/recommendation"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "description": "List of groups a user is member of.",
+          "items": {
+            "type": "string",
+            "description": "Id of the group",
+            "format": "uuid"
+          }
+        }
+
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email"
+      ]
+    },
+    "company": {
+      "type": "object",
+      "description": "A company on LinkedIn",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the company"
+        },
+        "name": {
+          "type": "string",
+          "description": "Company name"
+        },
+        "industry": {
+          "type": "string",
+          "description": "Company's industry"
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the company"
+        },
+        "website": {
+          "type": "string",
+          "format": "URL",
+          "description": "Company's website URL"
+        },
+        "logoUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the company's logo"
+        },
+        "headquarters": {
+          "type": "string",
+          "description": "Location of the company's headquarters"
+        },
+        "companySize": {
+          "type": "string",
+          "description": "Company size (e.g., 1-10 employees, 51-200 employees)"
+        },
+        "specialties": {
+          "type": "array",
+          "description": "List of company's specialties",
+          "items": {
+            "type": "string"
+          }
+        },
+        "followers": {
+          "type": "array",
+          "description": "List of user IDs that follow this company",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "job": {
+      "type": "object",
+      "description": "A job posting on LinkedIn",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the job posting"
+        },
+        "title": {
+          "type": "string",
+          "description": "Job title"
+        },
+        "companyId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the company posting the job"
+        },
+        "location": {
+          "type": "string",
+          "description": "Job location"
+        },
+        "description": {
+          "type": "string",
+          "description": "Job description"
+        },
+        "employmentType": {
+          "type": "string",
+          "enum": [
+            "Full-time",
+            "Part-time",
+            "Contract",
+            "Temporary",
+            "Volunteer",
+            "Internship",
+            "Other"
+          ],
+          "description": "Type of employment"
+        },
+        "seniorityLevel": {
+          "type": "string",
+          "enum": [
+            "Internship",
+            "Entry level",
+            "Associate",
+            "Mid-Senior level",
+            "Director",
+            "Executive"
+          ],
+          "description": "Seniority level of the job"
+        },
+        "functions": {
+          "type": "array",
+          "description": "Job functions",
+          "items": {
+            "type": "string"
+          }
+        },
+        "industries": {
+          "type": "array",
+          "description": "Industries related to the job",
+          "items": {
+            "type": "string"
+          }
+        },
+        "postedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the job was posted"
+        },
+        "applicants": {
+          "type": "array",
+          "description": "List of user IDs that have applied for this job",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "companyId",
+        "description"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "description": "A post on LinkedIn",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the post"
+        },
+        "authorType": {
+          "type": "string",
+          "enum": [
+            "user",
+            "company"
+          ],
+          "description": "Type of author (user or company)"
+        },
+        "authorId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user or company who created the post"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the post"
+        },
+        "mediaUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of any media (image, video) associated with the post"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "anyone",
+            "connections"
+          ],
+          "description": "Visibility scope of the post"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the post was created"
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the post",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the post",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "authorType",
+        "authorId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "experience": {
+      "type": "object",
+      "description": "Work experience entry",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the experience entry"
+        },
+        "title": {
+          "type": "string",
+          "description": "Job title"
+        },
+        "companyId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the company"
+        },
+        "companyName": {
+          "type": "string",
+          "description": "Name of the company (can be used if company is not on LinkedIn)"
+        },
+        "location": {
+          "type": "string",
+          "description": "Location of the job"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the job"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the job (null if currently working there)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the role"
+        },
+        "currentlyWorkingHere": {
+          "type": "boolean",
+          "description": "Whether the user is currently working in this role"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "startDate",
+        "currentlyWorkingHere"
+      ]
+    },
+    "education": {
+      "type": "object",
+      "description": "Education history entry",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the education entry"
+        },
+        "school": {
+          "type": "string",
+          "description": "Name of the school"
+        },
+        "degree": {
+          "type": "string",
+          "description": "Degree earned"
+        },
+        "fieldOfStudy": {
+          "type": "string",
+          "description": "Field of study"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the education"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the education (null if currently studying there)"
+        },
+        "grade": {
+          "type": "string",
+          "description": "Grade achieved"
+        },
+        "activities": {
+          "type": "string",
+          "description": "Activities and societies"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the education"
+        },
+        "currentlyStudyingHere": {
+          "type": "boolean",
+          "description": "Whether the user is currently studying here"
+        }
+      },
+      "required": [
+        "id",
+        "school",
+        "startDate",
+        "currentlyStudyingHere"
+      ]
+    },
+    "recommendation": {
+      "type": "object",
+      "description": "A recommendation given to a user",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the recommendation"
+        },
+        "recommenderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user giving the recommendation"
+        },
+        "text": {
+          "type": "string",
+          "description": "Content of the recommendation"
+        },
+        "relationship": {
+          "type": "string",
+          "description": "Relationship between the recommender and the user being recommended"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date when the recommendation was given"
+        }
+      },
+      "required": [
+        "id",
+        "recommenderId",
+        "text"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "description": "A comment on a post",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the comment"
+        },
+        "authorId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who wrote the comment"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the comment"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the comment was created"
+        }
+      },
+      "required": [
+        "id",
+        "authorId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "description": "A group on LinkedIn",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier of the group"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the group"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the group"
+        },
+        "members": {
+          "type": "array",
+          "description": "List of user IDs that are members of the group",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "ownerId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User ID of the group owner"
+        },
+        "rules": {
+          "type": "string",
+          "description": "Group rules"
+        },
+        "groupType": {
+          "type": "string",
+          "enum": [
+            "open",
+            "members-only"
+          ],
+          "description": "Type of the group"
+        },
+        "industry": {
+          "type": "string",
+          "description": "Industry associated with the group"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the group was created"
+        },
+        "logoUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the group's logo"
+        },
+        "posts": {
+          "type": "array",
+          "description": "Posts within the group. This is a simplified representation and in a real implementation, it might be fetched separately.",
+          "items": {
+            "$ref": "#/definitions/post"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "members"
+      ]
+    }
+  }
+}

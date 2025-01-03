@@ -1,0 +1,654 @@
+{
+  "type": "object",
+  "title": "WeChat",
+  "description": "JSON Schema representation of WeChat's core features and data structures.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of WeChat users.",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "List of WeChat groups.",
+      "items": {
+        "$ref": "#/definitions/Group"
+      }
+    },
+    "moments": {
+      "type": "array",
+      "description": "List of WeChat Moments posts.",
+      "items": {
+        "$ref": "#/definitions/Moment"
+      }
+    },
+    "officialAccounts": {
+      "type": "array",
+      "description": "List of Official Accounts.",
+      "items": {
+        "$ref": "#/definitions/OfficialAccount"
+      }
+    },
+    "miniPrograms": {
+      "type": "array",
+      "description": "List of Mini Programs.",
+      "items": {
+        "$ref": "#/definitions/MiniProgram"
+      }
+    },
+    "payments": {
+      "type": "array",
+      "description": "List of WeChat Pay transactions.",
+      "items": {
+        "$ref": "#/definitions/PaymentTransaction"
+      }
+    },
+    "messages": {
+      "type": "array",
+      "description": "General container for all messages across conversations.",
+      "items": {
+        "$ref": "#/definitions/Message"
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "description": "A WeChat user.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique identifier for the user.",
+          "format": "uuid"
+        },
+        "weChatId": {
+          "type": "string",
+          "description": "User's WeChat ID (can be changed once)."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "User's phone number (used for registration).",
+          "format": "phone"
+        },
+        "nickname": {
+          "type": "string",
+          "description": "User's display name."
+        },
+        "avatarUrl": {
+          "type": "string",
+          "description": "URL to the user's profile picture.",
+          "format": "URL"
+        },
+        "gender": {
+          "type": "string",
+          "enum": [
+            "male",
+            "female",
+            "unknown"
+          ]
+        },
+        "country": {
+          "type": "string",
+          "description": "User's country code."
+        },
+        "province": {
+          "type": "string",
+          "description": "User's province."
+        },
+        "city": {
+          "type": "string",
+          "description": "User's city."
+        },
+        "language": {
+          "type": "string",
+          "description": "User's preferred language."
+        },
+        "friends": {
+          "type": "array",
+          "description": "List of user IDs of the user's friends.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "blockedUsers": {
+          "type": "array",
+          "description": "List of user IDs that this user has blocked.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "subscribedOfficialAccounts": {
+          "type": "array",
+          "description": "List of Official Account IDs subscribed to by the user",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "userId",
+        "phoneNumber",
+        "nickname"
+      ]
+    },
+    "Group": {
+      "type": "object",
+      "description": "A WeChat group chat.",
+      "properties": {
+        "groupId": {
+          "type": "string",
+          "description": "Unique identifier for the group.",
+          "format": "uuid"
+        },
+        "groupName": {
+          "type": "string",
+          "description": "Name of the group."
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "User ID of the group owner.",
+          "format": "uuid"
+        },
+        "members": {
+          "type": "array",
+          "description": "List of user IDs of group members.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of when the group was created.",
+          "format": "date-time"
+        },
+        "announcement": {
+          "type": "string",
+          "description": "Current group announcement."
+        }
+      },
+      "required": [
+        "groupId",
+        "groupName",
+        "ownerId",
+        "members"
+      ]
+    },
+    "Moment": {
+      "type": "object",
+      "description": "A post on WeChat Moments.",
+      "properties": {
+        "momentId": {
+          "type": "string",
+          "description": "Unique identifier for the moment.",
+          "format": "uuid"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User ID of the moment's author.",
+          "format": "uuid"
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the moment."
+        },
+        "media": {
+          "type": "array",
+          "description": "List of media attached to the moment.",
+          "items": {
+            "$ref": "#/definitions/Media"
+          }
+        },
+        "location": {
+          "type": "object",
+          "description": "Location information of the moment.",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "format": "float"
+            },
+            "longitude": {
+              "type": "number",
+              "format": "float"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of location"
+            }
+          }
+        },
+        "visibility": {
+          "type": "string",
+          "description": "Visibility setting of the moment",
+          "enum": [
+            "public",
+            "private",
+            "specificContacts",
+            "excludeContacts"
+          ]
+        },
+        "specificContacts": {
+          "type": "array",
+          "description": "If visibility is set to specificContacts, this lists the allowed userIds",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "excludeContacts": {
+          "type": "array",
+          "description": "If visibility is set to excludeContacts, this lists the disallowed userIds",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the moment.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the moment.",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the moment was posted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "momentId",
+        "userId",
+        "timestamp"
+      ]
+    },
+    "Comment": {
+      "type": "object",
+      "description": "A comment on a Moment.",
+      "properties": {
+        "commentId": {
+          "type": "string",
+          "description": "Unique identifier for the comment.",
+          "format": "uuid"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User ID of the commenter.",
+          "format": "uuid"
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the comment."
+        },
+        "replyToCommentId": {
+          "type": "string",
+          "description": "If replying to another comment, the ID of that comment, otherwise null.",
+          "format": "uuid"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the comment was posted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "commentId",
+        "userId",
+        "content",
+        "timestamp"
+      ]
+    },
+    "Media": {
+      "type": "object",
+      "description": "Media attached to a moment or message.",
+      "properties": {
+        "mediaId": {
+          "type": "string",
+          "description": "Unique identifier of the media file on the server.",
+          "format": "uuid"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "image",
+            "video",
+            "audio"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "description": "URL to the media file.",
+          "format": "URL"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "description": "URL to a thumbnail for image and video types",
+          "format": "URL"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of audio or video in seconds"
+        }
+      },
+      "required": [
+        "mediaId",
+        "type",
+        "url"
+      ]
+    },
+    "OfficialAccount": {
+      "type": "object",
+      "description": "An official account on WeChat.",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "description": "Unique identifier for the official account.",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the official account."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the official account."
+        },
+        "avatarUrl": {
+          "type": "string",
+          "description": "URL to the official account's profile picture.",
+          "format": "URL"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "UserId of the owner or admin of the Official Account",
+          "format": "uuid"
+        },
+        "followersCount": {
+          "type": "integer",
+          "description": "Number of followers."
+        },
+        "articles": {
+          "type": "array",
+          "description": "List of articles published by the official account.",
+          "items": {
+            "$ref": "#/definitions/Article"
+          }
+        },
+        "menu": {
+          "type": "array",
+          "description": "Custom menu configuration for the Official Account",
+          "items": {
+            "$ref": "#/definitions/OfficialAccountMenuEntry"
+          }
+        }
+      },
+      "required": [
+        "accountId",
+        "name"
+      ]
+    },
+    "OfficialAccountMenuEntry": {
+      "type": "object",
+      "description": "Entry in an Official Account menu",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "click",
+            "view",
+            "miniprogram"
+          ],
+          "description": "Type of action this menu entry performs"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name displayed on the menu button"
+        },
+        "key": {
+          "type": "string",
+          "description": "Key to identify this action, for 'click' type"
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to open, for 'view' type"
+        },
+        "appid": {
+          "type": "string",
+          "description": "AppId of mini program to open, for 'miniprogram' type"
+        },
+        "pagepath": {
+          "type": "string",
+          "description": "Path within the mini program to open"
+        }
+      },
+      "required": [
+        "type",
+        "name"
+      ]
+    },
+    "Article": {
+      "type": "object",
+      "description": "An article published by an official account.",
+      "properties": {
+        "articleId": {
+          "type": "string",
+          "description": "Unique identifier for the article."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the article."
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the article (can be HTML)."
+        },
+        "author": {
+          "type": "string",
+          "description": "Author of the article."
+        },
+        "publishDate": {
+          "type": "string",
+          "description": "Date the article was published.",
+          "format": "date-time"
+        },
+        "coverImageUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the cover image of the article"
+        },
+        "readCount": {
+          "type": "integer",
+          "description": "Number of times the article has been read."
+        },
+        "likeCount": {
+          "type": "integer",
+          "description": "Number of likes the article has received."
+        }
+      },
+      "required": [
+        "articleId",
+        "title",
+        "content",
+        "publishDate"
+      ]
+    },
+    "MiniProgram": {
+      "type": "object",
+      "description": "A WeChat Mini Program.",
+      "properties": {
+        "appId": {
+          "type": "string",
+          "description": "Unique identifier (AppID) of the Mini Program."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the Mini Program."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the Mini Program."
+        },
+        "iconUrl": {
+          "type": "string",
+          "description": "URL to the Mini Program's icon.",
+          "format": "URL"
+        },
+        "developerId": {
+          "type": "string",
+          "description": "User ID of the Mini Program developer."
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the Mini Program."
+        },
+        "categories": {
+          "type": "array",
+          "description": "Categories that the Mini Program belongs to.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pages": {
+          "type": "array",
+          "description": "List of paths to pages within the Mini Program",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "appId",
+        "name"
+      ]
+    },
+    "PaymentTransaction": {
+      "type": "object",
+      "description": "A WeChat Pay transaction.",
+      "properties": {
+        "transactionId": {
+          "type": "string",
+          "description": "Unique identifier for the transaction.",
+          "format": "uuid"
+        },
+        "payerUserId": {
+          "type": "string",
+          "description": "User ID of the payer.",
+          "format": "uuid"
+        },
+        "payeeUserId": {
+          "type": "string",
+          "description": "User ID of the payee (can be a user or merchant).",
+          "format": "uuid"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Transaction amount (in the smallest currency unit, e.g., cents for CNY).",
+          "format": "float"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., CNY).",
+          "default": "CNY"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the transaction."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "successful",
+            "failed",
+            "refunded"
+          ]
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of the transaction.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "transactionId",
+        "payerUserId",
+        "payeeUserId",
+        "amount",
+        "timestamp"
+      ]
+    },
+    "Message": {
+      "type": "object",
+      "description": "A message sent in a private or group chat.",
+      "properties": {
+        "messageId": {
+          "type": "string",
+          "description": "Unique identifier for the message.",
+          "format": "uuid"
+        },
+        "senderId": {
+          "type": "string",
+          "description": "User ID of the sender.",
+          "format": "uuid"
+        },
+        "receiverId": {
+          "type": "string",
+          "description": "User ID of the receiver (for private chat) or Group ID (for group chat).",
+          "format": "uuid"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "image",
+            "voice",
+            "video",
+            "file",
+            "location",
+            "sticker",
+            "system",
+            "red_packet"
+          ]
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the message (if applicable)."
+        },
+        "media": {
+          "$ref": "#/definitions/Media",
+          "description": "Media content of the message (if applicable)."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the message was sent.",
+          "format": "date-time"
+        },
+        "isRead": {
+          "type": "boolean",
+          "description": "Indicates if the message has been read by the receiver. For group messages, this can be more complex to track individually"
+        }
+      },
+      "required": [
+        "messageId",
+        "senderId",
+        "receiverId",
+        "type",
+        "timestamp"
+      ]
+    }
+  }
+}

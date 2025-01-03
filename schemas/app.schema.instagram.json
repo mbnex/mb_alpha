@@ -1,0 +1,339 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Instagram",
+  "description": "JSON Schema for a simplified Instagram application",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users in the application",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of posts in the application",
+      "items": {
+        "$ref": "#/definitions/Post"
+      }
+    },
+    "stories": {
+      "type": "array",
+      "description": "List of stories currently active",
+      "items": {
+        "$ref": "#/definitions/Story"
+      }
+    },
+    "comments": {
+      "type": "array",
+      "description": "List of comments on posts",
+      "items": {
+        "$ref": "#/definitions/Comment"
+      }
+    },
+    "directMessages": {
+      "type": "array",
+      "description": "List of direct message conversations",
+      "items": {
+        "$ref": "#/definitions/DirectMessage"
+      }
+    }
+  },
+  "required": [
+    "users",
+    "posts"
+  ],
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "readOnly": true
+        },
+        "username": {
+          "type": "string",
+          "description": "User's unique username",
+          "pattern": "^[a-zA-Z0-9._]{1,30}$"
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (should be hashed in a real implementation)",
+          "writeOnly": true,
+          "minLength": 8
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address",
+          "format": "email"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "User's full name"
+        },
+        "profilePicture": {
+          "type": "string",
+          "description": "URL to the user's profile picture",
+          "format": "URL"
+        },
+        "bio": {
+          "type": "string",
+          "description": "User's bio"
+        },
+        "followers": {
+          "type": "array",
+          "description": "List of user IDs who follow this user",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "following": {
+          "type": "array",
+          "description": "List of user IDs this user follows",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "isPrivate": {
+          "type": "boolean",
+          "description": "Whether the user's account is private"
+        },
+        "website": {
+          "type": "string",
+          "description": "URL to user website",
+          "format": "URL"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "User's phone number"
+        }
+      },
+      "required": [
+        "userId",
+        "username",
+        "password",
+        "email"
+      ]
+    },
+    "Post": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "integer",
+          "description": "Unique identifier for the post",
+          "readOnly": true
+        },
+        "userId": {
+          "type": "integer",
+          "description": "ID of the user who created the post"
+        },
+        "mediaUrls": {
+          "type": "array",
+          "description": "URLs of the media (images or videos) in the post",
+          "items": {
+            "type": "string",
+            "format": "URL"
+          }
+        },
+        "caption": {
+          "type": "string",
+          "description": "Text caption for the post"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Date and time when the post was created",
+          "format": "date-time"
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the post",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "location": {
+          "type": "object",
+          "description": "Location information associated with the post",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "latitude": {
+              "type": "number"
+            },
+            "longitude": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "taggedUsers": {
+          "type": "array",
+          "description": "Users tagged in this post",
+          "items": {
+            "type": "integer",
+            "description": "userId of tagged user"
+          }
+        }
+      },
+      "required": [
+        "postId",
+        "userId",
+        "mediaUrls",
+        "timestamp"
+      ]
+    },
+    "Story": {
+      "type": "object",
+      "properties": {
+        "storyId": {
+          "type": "integer",
+          "description": "Unique identifier for the story",
+          "readOnly": true
+        },
+        "userId": {
+          "type": "integer",
+          "description": "ID of the user who created the story"
+        },
+        "mediaUrl": {
+          "type": "string",
+          "description": "URL of the media (image or video) in the story",
+          "format": "URL"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Date and time when the story was created",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "description": "Date and time when the story expires (typically 24 hours after creation)",
+          "format": "date-time"
+        },
+        "viewers": {
+          "type": "array",
+          "description": "List of user IDs who viewed this story",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "storyId",
+        "userId",
+        "mediaUrl",
+        "timestamp",
+        "expiresAt"
+      ]
+    },
+    "Comment": {
+      "type": "object",
+      "properties": {
+        "commentId": {
+          "type": "integer",
+          "description": "Unique identifier for the comment",
+          "readOnly": true
+        },
+        "postId": {
+          "type": "integer",
+          "description": "ID of the post the comment belongs to"
+        },
+        "userId": {
+          "type": "integer",
+          "description": "ID of the user who wrote the comment"
+        },
+        "text": {
+          "type": "string",
+          "description": "Content of the comment"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Date and time when the comment was created",
+          "format": "date-time"
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the comment",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "commentId",
+        "postId",
+        "userId",
+        "text",
+        "timestamp"
+      ]
+    },
+    "DirectMessage": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "integer",
+          "description": "Unique identifier for the conversation",
+          "readOnly": true
+        },
+        "participants": {
+          "type": "array",
+          "description": "List of user IDs participating in the conversation",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2
+        },
+        "messages": {
+          "type": "array",
+          "description": "List of messages in the conversation",
+          "items": {
+            "type": "object",
+            "properties": {
+              "messageId": {
+                "type": "integer",
+                "description": "Unique identifier for the message",
+                "readOnly": true
+              },
+              "senderId": {
+                "type": "integer",
+                "description": "ID of the user who sent the message"
+              },
+              "content": {
+                "type": "string",
+                "description": "Content of the message"
+              },
+              "timestamp": {
+                "type": "string",
+                "description": "Date and time when the message was sent",
+                "format": "date-time"
+              },
+              "seenBy": {
+                "type": "array",
+                "description": "List of user IDs who have seen the message",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            },
+            "required": [
+              "messageId",
+              "senderId",
+              "content",
+              "timestamp"
+            ]
+          }
+        }
+      },
+      "required": [
+        "conversationId",
+        "participants",
+        "messages"
+      ]
+    }
+  }
+}

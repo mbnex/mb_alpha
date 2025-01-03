@@ -1,0 +1,496 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Robinhood API Schema",
+  "description": "A JSON Schema representing a simplified model of key Robinhood API entities and their relationships.",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "object",
+      "description": "Represents a Robinhood user account.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "User's login username."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "account_number": {
+          "type": "string",
+          "description": "User's Robinhood account number."
+        },
+        "buying_power": {
+          "type": "number",
+          "format": "float",
+          "description": "Amount of money available for trading."
+        },
+        "cash": {
+          "type": "number",
+          "format": "float",
+          "description": "Amount of cash in the account"
+        },
+        "portfolio_cash":{
+          "type": "number",
+          "format": "float",
+          "description": "The user's total portfolio cash"
+        },
+        "portfolio_value": {
+          "type": "number",
+          "format": "float",
+          "description": "The total value of the user's portfolio"
+        },
+        "portfolio": {
+          "type": "object",
+          "description": "User's portfolio details.",
+          "$ref": "#/properties/portfolio"
+        },
+        "orders": {
+          "type": "array",
+          "description": "List of orders placed by the user.",
+          "items": {
+            "$ref": "#/properties/order"
+          }
+        },
+        "positions": {
+          "type": "array",
+          "description": "List of positions held by the user.",
+          "items": {
+            "$ref": "#/properties/position"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email",
+        "account_number"
+      ]
+    },
+    "portfolio":{
+      "type": "object",
+      "description": "Represents the state of a user's portfolio",
+      "properties": {
+        "equity": {
+          "type": "number",
+          "format": "float",
+          "description": "Equity"
+        },
+        "extended_hours_equity": {
+          "type": "number",
+          "format": "float",
+          "description": "Extended hours equity"
+        },
+        "market_value": {
+          "type": "number",
+          "format": "float",
+          "description": "Market value"
+        },
+        "extended_hours_market_value": {
+          "type": "number",
+          "format": "float",
+          "description": "Extended hours market value"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date that this portfolio's history begins"
+        },
+        "adjusted_equity_previous_close": {
+          "type": "number",
+          "format": "float",
+          "description": "Adjusted equity previous close"
+        },
+        "previous_close": {
+          "type": "number",
+          "format": "float",
+          "description": "Previous close"
+        }
+      }
+    },
+    "instrument": {
+      "type": "object",
+      "description": "Represents a financial instrument (e.g., stock, option).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the instrument."
+        },
+        "url": {
+          "type": "string",
+          "format": "url",
+          "description": "URL of the instrument on Robinhood."
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Ticker symbol of the instrument (e.g., AAPL)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the instrument (e.g., Apple Inc.)."
+        },
+        "simple_name": {
+          "type": "string",
+          "description": "Simple name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "stock",
+            "option",
+            "etf",
+            "crypto",
+            "adr"
+          ],
+          "description": "Type of the instrument."
+        },
+        "tradeable": {
+          "type": "boolean",
+          "description": "Whether the instrument is currently tradeable."
+        },
+        "fundamentals": {
+          "type": "object",
+          "description": "Fundamental data about the instrument",
+          "$ref": "#/properties/fundamentals"
+        },
+        "quote": {
+          "type": "object",
+          "description": "Current quote data for the instrument.",
+          "$ref": "#/properties/quote"
+        }
+      },
+      "required": [
+        "id",
+        "symbol",
+        "name",
+        "type"
+      ]
+    },
+    "fundamentals": {
+      "type": "object",
+      "description": "Holds fundamental data associated with a stock",
+      "properties": {
+        "open": {
+          "type": "number",
+          "format": "float",
+          "description": "The opening price of the stock for the current day"
+        },
+        "high": {
+          "type": "number",
+          "format": "float",
+          "description": "The highest price of the stock for the current day"
+        },
+        "low": {
+          "type": "number",
+          "format": "float",
+          "description": "The lowest price of the stock for the current day"
+        },
+        "volume": {
+          "type": "number",
+          "format": "float",
+          "description": "The volume of the stock"
+        },
+        "average_volume": {
+          "type": "number",
+          "format": "float",
+          "description": "Average volume of the stock"
+        },
+        "high_52_weeks": {
+          "type": "number",
+          "format": "float",
+          "description": "Highest price of the stock in the last 52 weeks"
+        },
+        "low_52_weeks": {
+          "type": "number",
+          "format": "float",
+          "description": "Lowest price of the stock in the last 52 weeks"
+        },
+        "market_cap": {
+          "type": "number",
+          "format": "float",
+          "description": "Market capitalization of the stock"
+        },
+        "dividend_yield": {
+          "type": "number",
+          "format": "float",
+          "description": "The dividend yield of the stock"
+        },
+        "pe_ratio": {
+          "type": "number",
+          "format": "float",
+          "description": "The price to earnings ratio of the stock"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the stock and the issuing company"
+        },
+        "instrument": {
+          "type": "string",
+          "description": "A url pointing to the instrument associated with these fundamentals"
+        }
+      }
+    },
+    "quote": {
+      "type": "object",
+      "description": "Represents current market data for an instrument.",
+      "properties": {
+        "ask_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Current ask price."
+        },
+        "ask_size": {
+          "type": "integer",
+          "description": "Number of shares at the ask price."
+        },
+        "bid_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Current bid price."
+        },
+        "bid_size": {
+          "type": "integer",
+          "description": "Number of shares at the bid price."
+        },
+        "last_trade_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price of the last trade."
+        },
+        "last_extended_hours_trade_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price of the last trade during extended hours."
+        },
+        "previous_close": {
+          "type": "number",
+          "format": "float",
+          "description": "Previous closing price."
+        },
+        "adjusted_previous_close": {
+          "type": "number",
+          "format": "float",
+          "description": "Adjusted previous closing price."
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Ticker symbol of the instrument."
+        },
+        "trading_halted": {
+          "type": "boolean",
+          "description": "Whether trading is currently halted for this instrument."
+        },
+        "instrument": {
+          "type": "string",
+          "format": "url",
+          "description": "URL of the related instrument."
+        }
+      },
+      "required": [
+        "symbol",
+        "instrument"
+      ]
+    },
+    "order": {
+      "type": "object",
+      "description": "Represents an order to buy or sell an instrument.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the order."
+        },
+        "instrument": {
+          "type": "object",
+          "description": "The financial instrument associated with this order",
+          "$ref": "#/properties/instrument"
+        },
+        "account": {
+          "type": "string",
+          "format": "url",
+          "description": "The account that placed this order"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "market",
+            "limit"
+          ],
+          "description": "Type of order (market or limit)."
+        },
+        "side": {
+          "type": "string",
+          "enum": [
+            "buy",
+            "sell"
+          ],
+          "description": "Side of the order (buy or sell)."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Number of shares or contracts."
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "unconfirmed",
+            "confirmed",
+            "partially_filled",
+            "filled",
+            "rejected",
+            "canceled",
+            "failed"
+          ],
+          "description": "Current state of the order."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Order price (for limit orders)."
+        },
+        "average_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Average price at which the order was filled."
+        },
+        "time_in_force": {
+          "type": "string",
+          "enum": [
+            "gfd",
+            "gtc",
+            "ioc",
+            "opg"
+          ],
+          "description": "Specifies how long the order will remain in effect"
+        },
+        "trigger": {
+          "type": "string",
+          "enum": [
+            "immediate",
+            "stop"
+          ],
+          "description": "Specifies whether the order should be triggered immediately or based on a certain condition"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the order was created."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the order was last updated."
+        }
+      },
+      "required": [
+        "id",
+        "instrument",
+        "type",
+        "side",
+        "quantity",
+        "state"
+      ]
+    },
+    "position": {
+      "type": "object",
+      "description": "Represents a user's position in a specific instrument.",
+      "properties": {
+        "instrument": {
+          "type": "string",
+          "format": "url",
+          "description": "URL of the instrument."
+        },
+        "account": {
+          "type": "string",
+          "format": "url",
+          "description": "URL of the account holding the position"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Number of shares or contracts held."
+        },
+        "average_buy_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Average price at which the position was acquired."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time at which the position was created"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time at which the position was last updated"
+        }
+      },
+      "required": [
+        "instrument",
+        "quantity",
+        "average_buy_price"
+      ]
+    },
+    "market": {
+      "type": "object",
+      "description": "Represents data about a specific market",
+      "properties": {
+        "todays_hours": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the market's hours for today"
+        },
+        "url": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the market"
+        },
+        "website": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the market's website"
+        },
+        "country": {
+          "type": "string",
+          "description": "The country that this market is in"
+        },
+        "city": {
+          "type": "string",
+          "description": "The city that this market is in"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the market"
+        },
+        "mic": {
+          "type": "string",
+          "description": "The market identification code"
+        },
+        "acronym": {
+          "type": "string",
+          "description": "The market's acronym"
+        }
+      },
+      "required": [
+        "url", "country", "name", "mic"
+      ]
+    }
+  },
+  "definitions": {}
+}

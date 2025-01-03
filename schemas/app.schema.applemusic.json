@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Apple Music",
+  "description": "JSON Schema for Apple Music data structures.",
+  "definitions": {
+    "resourceAttributes": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The localized name of the resource."
+        },
+        "artwork": {
+          "$ref": "#/definitions/artwork",
+          "description": "The artwork for the resource."
+        },
+        "artistName": {
+          "type": "string",
+          "description": "The name of the artist associated with the resource (if applicable)."
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL for sharing the resource on Apple Music."
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "artwork": {
+      "type": "object",
+      "description": "Artwork for a resource, such as an album or song.",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "description": "The width of the artwork image."
+        },
+        "height": {
+          "type": "integer",
+          "description": "The height of the artwork image."
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL template for the artwork image, where {w} and {h} are replaced with width and height values, and {f} with a format like 'jpg'."
+        },
+        "bgColor": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The average background color of the artwork, as a hexadecimal color."
+        },
+        "textColor1": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The primary text color that may be used if the background color is displayed, as a hexadecimal color."
+        },
+        "textColor2": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The secondary text color, as a hexadecimal color."
+        },
+        "textColor3": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The third text color, as a hexadecimal color."
+        },
+        "textColor4": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The fourth text color, as a hexadecimal color."
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    "editorialNotes": {
+      "type": "object",
+      "description": "Editorial notes for a resource, such as an album or playlist.",
+      "properties": {
+        "standard": {
+          "type": "string",
+          "description": "The notes describing the resource."
+        },
+        "short": {
+          "type": "string",
+          "description": "A shortened version of the notes describing the resource."
+        },
+        "name": {
+          "type": "string",
+          "description": "The title for the editorial notes."
+        },
+        "tagline": {
+          "type": "string",
+          "description": "A tagline for the editorial notes."
+        }
+      },
+      "additionalProperties": false
+    },
+    "playParameters": {
+      "type": "object",
+      "description": "Information for identifying an object for playback.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the object."
+        },
+        "kind": {
+          "type": "string",
+          "description": "The kind of the object to use for playback. Possible values are song, musicVideo, playlist, album, library-song, library-music-video, library-playlist, library-album."
+        },
+        "isLibrary": {
+          "type": "boolean",
+          "description": "Indicates whether the object is in the user's library. Default is false."
+        },
+        "globalId": {
+          "type": "string",
+          "description": "The global id of the object. This is only used for objects that are not from the Apple Music Catalog (eg. User uploaded songs)."
+        },
+        "reporting": {
+          "type": "boolean",
+          "description": "Whether or not playback of this item should be reported to Apple Music as a play."
+        },
+        "catalogId": {
+          "type": "string",
+          "description": "The Apple Music catalog id of the item. This is only used for objects that are from the Apple Music Catalog (eg. Songs on Apple Music)."
+        }
+      },
+      "required": [
+        "id",
+        "kind"
+      ]
+    },
+    "preview": {
+      "type": "object",
+      "description": "A preview of a song or music video.",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL for the preview."
+        },
+        "artwork": {
+          "$ref": "#/definitions/artwork"
+        },
+        "hlsUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL for the preview in HLS format. Only present in Music Videos"
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    "relationship": {
+      "type": "object",
+      "description": "A relationship to a resource.",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "description": "The data for the relationship."
+        },
+        "href": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL for the relationship."
+        },
+        "meta": {
+          "type": "object,

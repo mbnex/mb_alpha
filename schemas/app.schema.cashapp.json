@@ -1,0 +1,234 @@
+{
+  "type": "object",
+  "title": "CashApp",
+  "description": "JSON Schema for a simplified CashApp implementation",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of CashApp users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the user"
+          },
+          "cashtag": {
+            "type": "string",
+            "description": "User's unique CashApp identifier",
+            "pattern": "^\\$[a-zA-Z0-9._]{1,20}$",
+            "example": "$johnDoe123"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's full name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "User's phone number",
+            "pattern": "^\\+?[1-9]\\d{1,14}$"
+          },
+          "balance": {
+            "type": "number",
+            "format": "float",
+            "description": "Current balance of the user",
+            "minimum": 0
+          },
+          "linkedAccounts": {
+            "type": "array",
+            "description": "List of linked bank accounts or debit cards",
+            "items": {
+              "type": "object",
+              "properties": {
+                "accountType": {
+                  "type": "string",
+                  "enum": ["bank", "debitCard"],
+                  "description": "Type of linked account"
+                },
+                "accountNumber": {
+                  "type": "string",
+                  "description": "Bank account or card number (masked for security)",
+                  "example": "**** **** **** 1234"
+                },
+                "institutionName": {
+                  "type": "string",
+                  "description": "Name of the bank or card issuer"
+                }
+              },
+              "required": [
+                "accountType",
+                "accountNumber"
+              ]
+            }
+          },
+          "transactionHistory": {
+            "type": "array",
+            "description": "History of user's transactions",
+            "items": {
+              "type": "object",
+              "properties": {
+                "transactionId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the transaction"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["payment", "request", "deposit", "withdrawal"],
+                  "description": "Type of transaction"
+                },
+                "amount": {
+                  "type": "number",
+                  "format": "float",
+                  "description": "Amount of the transaction"
+                },
+                "counterparty": {
+                  "type": "string",
+                  "description": "Cashtag of the other party involved (if applicable)"
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time of the transaction"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["pending", "completed", "failed", "canceled"],
+                  "description": "Status of the transaction"
+                },
+                "note": {
+                  "type": "string",
+                  "description": "Optional note associated with the transaction"
+                }
+              },
+              "required": [
+                "transactionId",
+                "type",
+                "amount",
+                "timestamp",
+                "status"
+              ]
+            }
+          }
+        },
+        "required": [
+          "userId",
+          "cashtag",
+          "name",
+          "balance"
+        ]
+      }
+    },
+    "payments": {
+      "type": "array",
+      "description": "List of all payment transactions within the system",
+      "items": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique ID for the payment"
+          },
+          "senderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UserID of the sender"
+          },
+          "recipientId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UserID of the recipient"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "The payment amount"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Payment timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed", "canceled"],
+            "description": "Payment status"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note for the payment"
+          }
+        },
+        "required": [
+          "paymentId",
+          "senderId",
+          "recipientId",
+          "amount",
+          "timestamp",
+          "status"
+        ]
+      }
+    },
+    "requests": {
+      "type": "array",
+      "description": "List of all money requests within the system",
+      "items": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique ID for the request"
+          },
+          "requesterId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UserID of the requester"
+          },
+          "requestedFromId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UserID of the user the money is requested from"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "The requested amount"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Request timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "fulfilled", "declined", "canceled"],
+            "description": "Request status"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note for the request"
+          }
+        },
+        "required": [
+          "requestId",
+          "requesterId",
+          "requestedFromId",
+          "amount",
+          "timestamp",
+          "status"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users"
+  ]
+}

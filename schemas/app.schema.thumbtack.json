@@ -1,0 +1,684 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Thumbtack App Schema",
+  "description": "JSON Schema for the Thumbtack application data model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Thumbtack users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "Unique identifier for the user",
+            "readOnly": true
+          },
+          "first_name": {
+            "type": "string",
+            "description": "User's first name",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "last_name": {
+            "type": "string",
+            "description": "User's last name",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email address",
+            "format": "email"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "User's phone number",
+            "pattern": "^\\+?[1-9]\\d{1,14}$"
+          },
+          "password": {
+            "type": "string",
+            "description": "Hashed user password",
+            "minLength": 8,
+            "writeOnly": true
+          },
+          "profile_picture_url": {
+            "type": "string",
+            "description": "URL to the user's profile picture",
+            "format": "URL"
+          },
+          "address": {
+            "type": "object",
+            "description": "User's address",
+            "properties": {
+              "street": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string",
+                "enum": ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+              },
+              "zip_code": {
+                "type": "string",
+                "pattern": "^\\d{5}(-\\d{4})?$"
+              }
+            },
+            "required": ["street", "city", "state", "zip_code"]
+          },
+          "is_pro": {
+            "type": "boolean",
+            "description": "Indicates if the user is a professional"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Timestamp of user account creation",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "Timestamp of last user account update",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name",
+          "email",
+          "password",
+          "address",
+          "is_pro"
+        ],
+        "if": {
+          "properties": {
+            "is_pro": {
+              "const": true
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "business_name": {
+              "type": "string",
+              "description": "Name of the professional's business",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "business_description": {
+              "type": "string",
+              "description": "Description of the professional's business"
+            },
+            "years_in_business": {
+              "type": "integer",
+              "description": "Number of years the professional has been in business"
+            },
+            "website_url": {
+              "type": "string",
+              "description": "URL to the professional's business website",
+              "format": "URL"
+            },
+            "licenses": {
+              "type": "array",
+              "description": "List of professional's licenses",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "license_type": {
+                    "type": "string",
+                    "description": "Type of license (e.g., contractor, electrician)"
+                  },
+                  "license_number": {
+                    "type": "string",
+                    "description": "License number"
+                  },
+                  "issuing_state": {
+                    "type": "string",
+                    "description": "State that issued the license",
+                    "enum": ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+                  },
+                  "expiration_date": {
+                    "type": "string",
+                    "description": "Expiration date of the license",
+                    "format": "date"
+                  }
+                },
+                "required": [
+                  "license_type",
+                  "license_number",
+                  "issuing_state",
+                  "expiration_date"
+                ]
+              }
+            },
+            "insurance": {
+              "type": "object",
+              "description": "Professional's insurance information",
+              "properties": {
+                "insurance_provider": {
+                  "type": "string",
+                  "description": "Name of the insurance provider"
+                },
+                "policy_number": {
+                  "type": "string",
+                  "description": "Policy number"
+                },
+                "coverage_amount": {
+                  "type": "number",
+                  "description": "Coverage amount"
+                },
+                "expiration_date": {
+                  "type": "string",
+                  "description": "Expiration date of the insurance",
+                  "format": "date"
+                }
+              },
+              "required": [
+                "insurance_provider",
+                "policy_number",
+                "coverage_amount",
+                "expiration_date"
+              ]
+            },
+            "service_area": {
+              "type": "object",
+              "description": "Area where the professional provides services",
+              "properties": {
+                "radius": {
+                  "type": "integer",
+                  "description": "Service radius in miles",
+                  "minimum": 1
+                },
+                "zip_codes": {
+                  "type": "array",
+                  "description": "List of zip codes within the service area",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^\\d{5}(-\\d{4})?$"
+                  }
+                }
+              },
+              "required": ["radius"]
+            }
+          },
+          "required": [
+            "business_name",
+            "business_description"
+          ]
+        }
+      }
+    },
+    "services": {
+      "type": "array",
+      "description": "List of services offered on Thumbtack",
+      "items": {
+        "type": "object",
+        "properties": {
+          "service_id": {
+            "type": "integer",
+            "description": "Unique identifier for the service",
+            "readOnly": true
+          },
+          "service_name": {
+            "type": "string",
+            "description": "Name of the service (e.g., House Cleaning, Handyman, Personal Training)",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the service (e.g., Home Improvement, Wellness, Events)",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the service"
+          },
+          "average_price_range": {
+            "type": "object",
+            "description": "Average price range for the service",
+            "properties": {
+              "min": {
+                "type": "number",
+                "description": "Minimum price"
+              },
+              "max": {
+                "type": "number",
+                "description": "Maximum price"
+              }
+            }
+          },
+          "related_services": {
+            "type": "array",
+            "description": "List of related service IDs",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "required": [
+          "service_name",
+          "category"
+        ]
+      }
+    },
+    "pro_services": {
+      "type": "array",
+      "description": "List of services offered by professionals",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pro_id": {
+            "type": "integer",
+            "description": "ID of the professional offering the service"
+          },
+          "service_id": {
+            "type": "integer",
+            "description": "ID of the service being offered"
+          },
+          "custom_price": {
+            "type": "number",
+            "description": "Price set by the professional for the service",
+            "minimum": 0
+          },
+          "experience_level": {
+            "type": "string",
+            "description": "Experience level of the professional in this service",
+            "enum": ["Beginner", "Intermediate", "Expert"]
+          },
+          "description": {
+            "type": "string",
+            "description": "Description provided by the professional for the service"
+          },
+          "qualifications": {
+            "type": "array",
+            "description": "List of qualifications related to the service",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "pro_id",
+          "service_id"
+        ]
+      }
+    },
+    "projects": {
+      "type": "array",
+      "description": "List of customer projects",
+      "items": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "integer",
+            "description": "Unique identifier for the project",
+            "readOnly": true
+          },
+          "customer_id": {
+            "type": "integer",
+            "description": "ID of the customer who created the project"
+          },
+          "service_id": {
+            "type": "integer",
+            "description": "ID of the service required for the project"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the project",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the project"
+          },
+          "location": {
+            "type": "object",
+            "description": "Location where the project needs to be completed",
+            "properties": {
+              "address": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string",
+                "enum": ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+              },
+              "zip_code": {
+                "type": "string",
+                "pattern": "^\\d{5}(-\\d{4})?$"
+              }
+            },
+            "required": ["address", "city", "state", "zip_code"]
+          },
+          "budget": {
+            "type": "number",
+            "description": "Customer's budget for the project",
+            "minimum": 0
+          },
+          "project_status": {
+            "type": "string",
+            "description": "Current status of the project",
+            "enum": ["Open", "In Progress", "Completed", "Canceled"]
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Desired start date for the project",
+            "format": "date"
+          },
+          "timeline": {
+            "type": "string",
+            "description": "Customer's desired timeline for project completion",
+            "enum": ["ASAP", "Within a week", "Within a month", "No rush"]
+          },
+          "photos": {
+            "type": "array",
+            "description": "URLs to photos related to the project",
+            "items": {
+              "type": "string",
+              "format": "URL"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Timestamp of project creation",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "Timestamp of last project update",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "customer_id",
+          "service_id",
+          "title",
+          "description",
+          "location",
+          "project_status"
+        ]
+      }
+    },
+    "quotes": {
+      "type": "array",
+      "description": "List of quotes submitted by professionals for projects",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quote_id": {
+            "type": "integer",
+            "description": "Unique identifier for the quote",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project the quote is for"
+          },
+          "pro_id": {
+            "type": "integer",
+            "description": "ID of the professional who submitted the quote"
+          },
+          "price": {
+            "type": "number",
+            "description": "Price quoted by the professional",
+            "minimum": 0
+          },
+          "message": {
+            "type": "string",
+            "description": "Message from the professional to the customer"
+          },
+          "quote_status": {
+            "type": "string",
+            "description": "Current status of the quote",
+            "enum": ["Pending", "Accepted", "Declined", "Expired"]
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Timestamp of quote submission",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "Timestamp of last quote update",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "project_id",
+          "pro_id",
+          "price",
+          "message",
+          "quote_status"
+        ]
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "description": "List of reviews for professionals",
+      "items": {
+        "type": "object",
+        "properties": {
+          "review_id": {
+            "type": "integer",
+            "description": "Unique identifier for the review",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project associated with the review"
+          },
+          "pro_id": {
+            "type": "integer",
+            "description": "ID of the professional being reviewed"
+          },
+          "customer_id": {
+            "type": "integer",
+            "description": "ID of the customer who wrote the review"
+          },
+          "rating": {
+            "type": "integer",
+            "description": "Rating given to the professional (1-5)",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "comment": {
+            "type": "string",
+            "description": "Review text written by the customer"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Timestamp of review creation",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "project_id",
+          "pro_id",
+          "customer_id",
+          "rating"
+        ]
+      }
+    },
+    "messages": {
+      "type": "array",
+      "description": "List of messages between customers and professionals",
+      "items": {
+        "type": "object",
+        "properties": {
+          "message_id": {
+            "type": "integer",
+            "description": "Unique identifier for the message",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project the message is related to"
+          },
+          "sender_id": {
+            "type": "integer",
+            "description": "ID of the user who sent the message"
+          },
+          "recipient_id": {
+            "type": "integer",
+            "description": "ID of the user who received the message"
+          },
+          "message_content": {
+            "type": "string",
+            "description": "Content of the message"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Timestamp of message creation",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "project_id",
+          "sender_id",
+          "recipient_id",
+          "message_content"
+        ]
+      }
+    },
+    "bookings": {
+      "type": "array",
+      "description": "List of project bookings between customers and professionals",
+      "items": {
+        "type": "object",
+        "properties": {
+          "booking_id": {
+            "type": "integer",
+            "description": "Unique identifier for the booking",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project associated with the booking"
+          },
+          "quote_id": {
+            "type": "integer",
+            "description": "ID of the quote that was accepted for the booking"
+          },
+          "pro_id": {
+            "type": "integer",
+            "description": "ID of the professional booked for the project"
+          },
+          "customer_id": {
+            "type": "integer",
+            "description": "ID of the customer who made the booking"
+          },
+          "start_date_time": {
+            "type": "string",
+            "description": "Scheduled start date and time for the project",
+            "format": "date-time"
+          },
+          "end_date_time": {
+            "type": "string",
+            "description": "Scheduled end date and time for the project",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the booking",
+            "enum": ["Scheduled", "In Progress", "Completed", "Canceled"]
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Timestamp of booking creation",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "project_id",
+          "quote_id",
+          "pro_id",
+          "customer_id",
+          "start_date_time",
+          "status"
+        ]
+      }
+    },
+    "payments": {
+      "type": "array",
+      "description": "List of payments made for bookings",
+      "items": {
+        "type": "object",
+        "properties": {
+          "payment_id": {
+            "type": "integer",
+            "description": "Unique identifier for the payment",
+            "readOnly": true
+          },
+          "booking_id": {
+            "type": "integer",
+            "description": "ID of the booking the payment is for"
+          },
+          "customer_id": {
+            "type": "integer",
+            "description": "ID of the customer who made the payment"
+          },
+          "pro_id": {
+            "type": "integer",
+            "description": "ID of the professional who received the payment"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount of the payment",
+            "minimum": 0
+          },
+          "payment_method": {
+            "type": "string",
+            "description": "Payment method used (e.g., credit card, debit card)",
+            "enum": ["Credit Card", "Debit Card", "Other"]
+          },
+          "payment_status": {
+            "type": "string",
+            "description": "Current status of the payment",
+            "enum": ["Pending", "Completed", "Failed", "Refunded"]
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Timestamp of payment creation",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "booking_id",
+          "customer_id",
+          "pro_id",
+          "amount",
+          "payment_method",
+          "payment_status"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "services",
+    "pro_services",
+    "projects",
+    "quotes",
+    "reviews",
+    "messages",
+    "bookings",
+    "payments"
+  ]
+}

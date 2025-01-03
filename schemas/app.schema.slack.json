@@ -1,0 +1,689 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Slack App",
+  "description": "Schema for a Slack App configuration",
+  "type": "object",
+  "properties": {
+    "app_id": {
+      "type": "string",
+      "description": "Unique identifier for the Slack app",
+      "pattern": "^A[A-Z0-9]{8,}$"
+    },
+    "app_name": {
+      "type": "string",
+      "description": "Name of the Slack app",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "app_description": {
+      "type": "string",
+      "description": "A short description of what the app does",
+      "maxLength": 190
+    },
+    "long_description": {
+      "type": "string",
+      "description": "A longer, more detailed description of the app's capabilities and features",
+      "maxLength": 5000
+    },
+    "is_distributed": {
+      "type": "boolean",
+      "description": "Indicates if the app is distributed on the Slack App Directory"
+    },
+    "is_workflow_app": {
+      "type": "boolean",
+      "description": "Indicates if the app is a workflow app"
+    },
+    "is_hosted": {
+      "type": "boolean",
+      "description": "Indicates if the app is hosted on Slack's infrastructure"
+    },
+    "verification_token": {
+      "type": "string",
+      "description": "Token used to verify requests from Slack (deprecated in favor of Signing Secret)"
+    },
+    "signing_secret": {
+      "type": "string",
+      "description": "Secret used to verify requests from Slack"
+    },
+    "bot_user": {
+      "type": "object",
+      "description": "Configuration for the app's bot user",
+      "properties": {
+        "always_online": {
+          "type": "boolean",
+          "description": "Whether the bot user should always appear online"
+        },
+        "display_name": {
+          "type": "string",
+          "description": "Display name for the bot user (e.g., @mybot)",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "display_name"
+      ]
+    },
+    "oauth_config": {
+      "type": "object",
+      "description": "OAuth 2.0 configuration for the app",
+      "properties": {
+        "client_id": {
+          "type": "string",
+          "description": "OAuth Client ID",
+          "pattern": "^\\d{12,}\\.\\d{12,}$"
+        },
+        "client_secret": {
+          "type": "string",
+          "description": "OAuth Client Secret"
+        },
+        "redirect_urls": {
+          "type": "array",
+          "description": "List of allowed redirect URLs for OAuth",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "minItems": 1
+        },
+        "scopes": {
+          "type": "array",
+          "description": "List of OAuth scopes the app requires",
+          "items": {
+            "type": "string",
+            "description": "A valid Slack OAuth scope",
+            "enum": [
+              "admin",
+              "admin.apps:read",
+              "admin.apps:write",
+              "admin.conversations:read",
+              "admin.conversations:write",
+              "admin.invites:read",
+              "admin.invites:write",
+              "admin.teams:read",
+              "admin.teams:write",
+              "admin.users:read",
+              "admin.users:write",
+              "admin.usergroups:read",
+              "admin.usergroups:write",
+              "admin.workspaces:read",
+              "admin.workspaces:write",
+              "app_mentions:read",
+              "auditlogs:read",
+              "authorizations:read",
+              "bookmarks:read",
+              "bookmarks:write",
+              "calls:read",
+              "calls:write",
+              "channels:history",
+              "channels:join",
+              "channels:manage",
+              "channels:read",
+              "channels:write",
+              "chat:write",
+              "chat:write:bot",
+              "chat:write:user",
+              "conversations:history",
+              "conversations:write",
+              "dnd:read",
+              "dnd:write",
+              "emoji:read",
+              "files:read",
+              "files:write",
+              "files:write:user",
+              "groups:history",
+              "groups:read",
+              "groups:write",
+              "identity.basic",
+              "identity.email",
+              "identity.team",
+              "identity.avatar",
+              "im:history",
+              "im:read",
+              "im:write",
+              "links:read",
+              "links:write",
+              "metadata.message:read",
+              "mpim:history",
+              "mpim:read",
+              "mpim:write",
+              "openid",
+              "pins:read",
+              "pins:write",
+              "profile",
+              "reactions:read",
+              "reactions:write",
+              "reminders:read",
+              "reminders:write",
+              "remote_files:read",
+              "remote_files:share",
+              "remote_files:write",
+              "search:read",
+              "stars:read",
+              "stars:write",
+              "team:read",
+              "tokens.basic",
+              "usergroups:read",
+              "usergroups:write",
+              "users.profile:read",
+              "users.profile:write",
+              "users:read",
+              "users:read.email",
+              "users:write",
+              "workflow.steps:execute",
+              "none"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "user_scopes": {
+          "type": "array",
+          "description": "List of user token OAuth scopes the app requires (if applicable)",
+          "items": {
+            "type": "string",
+            "description": "A valid Slack user token OAuth scope (see 'scopes' for possible values)",
+            "enum": [
+              "admin",
+              "admin.apps:read",
+              "admin.apps:write",
+              "admin.conversations:read",
+              "admin.conversations:write",
+              "admin.invites:read",
+              "admin.invites:write",
+              "admin.teams:read",
+              "admin.teams:write",
+              "admin.users:read",
+              "admin.users:write",
+              "admin.usergroups:read",
+              "admin.usergroups:write",
+              "admin.workspaces:read",
+              "admin.workspaces:write",
+              "app_mentions:read",
+              "auditlogs:read",
+              "authorizations:read",
+              "bookmarks:read",
+              "bookmarks:write",
+              "calls:read",
+              "calls:write",
+              "channels:history",
+              "channels:join",
+              "channels:manage",
+              "channels:read",
+              "channels:write",
+              "chat:write",
+              "chat:write:bot",
+              "chat:write:user",
+              "conversations:history",
+              "conversations:write",
+              "dnd:read",
+              "dnd:write",
+              "emoji:read",
+              "files:read",
+              "files:write",
+              "files:write:user",
+              "groups:history",
+              "groups:read",
+              "groups:write",
+              "identity.basic",
+              "identity.email",
+              "identity.team",
+              "identity.avatar",
+              "im:history",
+              "im:read",
+              "im:write",
+              "links:read",
+              "links:write",
+              "metadata.message:read",
+              "mpim:history",
+              "mpim:read",
+              "mpim:write",
+              "openid",
+              "pins:read",
+              "pins:write",
+              "profile",
+              "reactions:read",
+              "reactions:write",
+              "reminders:read",
+              "reminders:write",
+              "remote_files:read",
+              "remote_files:share",
+              "remote_files:write",
+              "search:read",
+              "stars:read",
+              "stars:write",
+              "team:read",
+              "tokens.basic",
+              "usergroups:read",
+              "usergroups:write",
+              "users.profile:read",
+              "users.profile:write",
+              "users:read",
+              "users:read.email",
+              "users:write",
+              "workflow.steps:execute",
+              "none"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "client_id",
+        "client_secret",
+        "scopes"
+      ]
+    },
+    "event_subscriptions": {
+      "type": "object",
+      "description": "Configuration for Event Subscriptions",
+      "properties": {
+        "request_url": {
+          "type": "string",
+          "description": "URL where Slack will send events",
+          "format": "uri"
+        },
+        "bot_events": {
+          "type": "array",
+          "description": "List of bot events the app subscribes to",
+          "items": {
+            "type": "string",
+            "description": "A valid Slack bot event type",
+            "enum": [
+              "app_mention",
+              "app_rate_limited",
+              "app_uninstalled",
+              "call_rejected",
+              "channel_archive",
+              "channel_created",
+              "channel_deleted",
+              "channel_history_changed",
+              "channel_id_changed",
+              "channel_left",
+              "channel_rename",
+              "channel_unarchive",
+              "dnd_updated",
+              "email_domain_changed",
+              "emoji_changed",
+              "file_change",
+              "file_comment_added",
+              "file_comment_deleted",
+              "file_comment_edited",
+              "file_created",
+              "file_deleted",
+              "file_public",
+              "file_shared",
+              "file_unshared",
+              "grid_migration_finished",
+              "grid_migration_started",
+              "group_archive",
+              "group_close",
+              "group_deleted",
+              "group_history_changed",
+              "group_left",
+              "group_open",
+              "group_rename",
+              "group_unarchive",
+              "im_close",
+              "im_created",
+              "im_history_changed",
+              "im_open",
+              "link_shared",
+              "member_joined_channel",
+              "member_left_channel",
+              "message",
+              "message.channels",
+              "message.groups",
+              "message.im",
+              "message.mpim",
+              "pin_added",
+              "pin_removed",
+              "reaction_added",
+              "reaction_removed",
+              "resources_added",
+              "resources_removed",
+              "scope_denied",
+              "scope_granted",
+              "shared_channel_invite_accepted",
+              "shared_channel_invite_approved",
+              "shared_channel_invite_declined",
+              "shared_channel_invite_received",
+              "star_added",
+              "star_removed",
+              "subteam_created",
+              "subteam_members_changed",
+              "subteam_self_added",
+              "subteam_self_removed",
+              "subteam_updated",
+              "team_domain_change",
+              "team_join",
+              "team_rename",
+              "tokens_revoked",
+              "url_verification",
+              "user_change",
+              "user_huddle_changed",
+              "user_profile_changed",
+              "user_resource_denied",
+              "user_resource_granted",
+              "user_resource_removed",
+              "user_status_changed",
+              "workflow_deleted",
+              "workflow_published",
+              "workflow_step_deleted",
+              "workflow_step_execute",
+              "workflow_unpublished"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "user_events": {
+          "type": "array",
+          "description": "List of user events the app subscribes to (requires user token scopes)",
+          "items": {
+            "type": "string",
+            "description": "A valid Slack user event type (see 'bot_events' for possible values)",
+            "enum": [
+              "app_mention",
+              "app_rate_limited",
+              "app_uninstalled",
+              "call_rejected",
+              "channel_archive",
+              "channel_created",
+              "channel_deleted",
+              "channel_history_changed",
+              "channel_id_changed",
+              "channel_left",
+              "channel_rename",
+              "channel_unarchive",
+              "dnd_updated",
+              "email_domain_changed",
+              "emoji_changed",
+              "file_change",
+              "file_comment_added",
+              "file_comment_deleted",
+              "file_comment_edited",
+              "file_created",
+              "file_deleted",
+              "file_public",
+              "file_shared",
+              "file_unshared",
+              "grid_migration_finished",
+              "grid_migration_started",
+              "group_archive",
+              "group_close",
+              "group_deleted",
+              "group_history_changed",
+              "group_left",
+              "group_open",
+              "group_rename",
+              "group_unarchive",
+              "im_close",
+              "im_created",
+              "im_history_changed",
+              "im_open",
+              "link_shared",
+              "member_joined_channel",
+              "member_left_channel",
+              "message",
+              "message.channels",
+              "message.groups",
+              "message.im",
+              "message.mpim",
+              "pin_added",
+              "pin_removed",
+              "reaction_added",
+              "reaction_removed",
+              "resources_added",
+              "resources_removed",
+              "scope_denied",
+              "scope_granted",
+              "shared_channel_invite_accepted",
+              "shared_channel_invite_approved",
+              "shared_channel_invite_declined",
+              "shared_channel_invite_received",
+              "star_added",
+              "star_removed",
+              "subteam_created",
+              "subteam_members_changed",
+              "subteam_self_added",
+              "subteam_self_removed",
+              "subteam_updated",
+              "team_domain_change",
+              "team_join",
+              "team_rename",
+              "tokens_revoked",
+              "url_verification",
+              "user_change",
+              "user_huddle_changed",
+              "user_profile_changed",
+              "user_resource_denied",
+              "user_resource_granted",
+              "user_resource_removed",
+              "user_status_changed",
+              "workflow_deleted",
+              "workflow_published",
+              "workflow_step_deleted",
+              "workflow_step_execute",
+              "workflow_unpublished"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "request_url"
+      ]
+    },
+    "interactivity": {
+      "type": "object",
+      "description": "Configuration for interactive components",
+      "properties": {
+        "is_enabled": {
+          "type": "boolean",
+          "description": "Whether interactivity is enabled for the app"
+        },
+        "request_url": {
+          "type": "string",
+          "description": "URL where Slack will send interactive component payloads",
+          "format": "uri"
+        },
+        "message_menu_options_url": {
+          "type": "string",
+          "description": "URL where Slack will fetch options for message menus",
+          "format": "uri"
+        }
+      }
+    },
+    "slash_commands": {
+      "type": "array",
+      "description": "List of slash commands the app provides",
+      "items": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The slash command (e.g., /mycommand)",
+            "pattern": "^\\/[a-z0-9_-]{1,22}$"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL where Slack will send the command payload",
+            "format": "uri"
+          },
+          "description": {
+            "type": "string",
+            "description": "A short description of the command",
+            "maxLength": 75
+          },
+          "usage_hint": {
+            "type": "string",
+            "description": "A hint on how to use the command",
+            "maxLength": 75
+          },
+          "should_escape": {
+            "type": "boolean",
+            "description": "Whether to escape channels, users, and links in the command"
+          }
+        },
+        "required": [
+          "command",
+          "url",
+          "description"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "unfurl_domains": {
+      "type": "array",
+      "description": "List of domains for link unfurling",
+      "items": {
+        "type": "string",
+        "format": "hostname"
+      },
+      "uniqueItems": true
+    },
+    "install_options": {
+      "type": "object",
+      "description": "Defines how the app may be added to a workspace",
+      "properties": {
+        "direct_install_url": {
+          "type": "string",
+          "description": "A URL to install your app directly. Can be shared without the Slack App Directory",
+          "format": "uri"
+        },
+        "redirect_uri": {
+          "type": "string",
+          "description": "An alternative redirect URI for a custom distribution flow",
+          "format": "uri"
+        }
+      }
+    },
+    "ip_allow_list": {
+      "type": "object",
+      "description": "Configuration for the app's IP Allow List",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the IP Allow List is enabled"
+        },
+        "ipv4_addresses": {
+          "type": "array",
+          "description": "List of allowed IPv4 addresses",
+          "items": {
+            "type": "string",
+            "format": "ipv4"
+          },
+          "uniqueItems": true
+        },
+        "ipv6_addresses": {
+          "type": "array",
+          "description": "List of allowed IPv6 addresses",
+          "items": {
+            "type": "string",
+            "format": "ipv6"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "description": "Additional features and capabilities of the app",
+      "properties": {
+        "shortcuts": {
+          "type": "array",
+          "description": "List of app shortcuts",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the shortcut",
+                "maxLength": 32
+              },
+              "callback_id": {
+                "type": "string",
+                "description": "Unique identifier for the shortcut",
+                "maxLength": 255
+              },
+              "description": {
+                "type": "string",
+                "description": "A short description of the shortcut",
+                "maxLength": 75
+              },
+              "type": {
+                "type": "string",
+                "description": "The type of shortcut (global, message)",
+                "enum": ["global", "message"]
+              }
+            },
+            "required": [
+              "name",
+              "callback_id",
+              "description",
+              "type"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "workflow_steps": {
+          "type": "array",
+          "description": "List of Workflow Builder steps your app provides",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the workflow step",
+                "maxLength": 75
+              },
+              "callback_id": {
+                "type": "string",
+                "description": "Unique identifier for the workflow step",
+                "maxLength": 255
+              },
+              "description": {
+                "type": "string",
+                "description": "A description of what the workflow step does",
+                "maxLength": 255
+              }
+            },
+            "required": [
+              "name",
+              "callback_id",
+              "description"
+            ]
+          }
+        },
+        "bot_user": {
+          "type": "object",
+          "description": "Additional bot user features",
+          "properties": {
+            "slice_config": {
+              "type": "object",
+              "description": "Configuration for Slices. Enables your bot user to use multiple surfaces.",
+              "properties": {
+                "home_tab_enabled": {
+                  "type": "boolean",
+                  "description": "Whether your bot user can use Home tab"
+                },
+                "messages_tab_enabled": {
+                  "type": "boolean",
+                  "description": "Whether your bot user can use Messages tab"
+                },
+                "messages_tab_read_only_enabled": {
+                  "type": "boolean",
+                  "description": "Whether your bot user has read-only access to Messages tab"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "app_name",
+    "app_description",
+    "oauth_config"
+  ]
+}

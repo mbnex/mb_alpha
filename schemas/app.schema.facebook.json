@@ -1,0 +1,790 @@
+{
+  "type": "object",
+  "title": "Facebook",
+  "description": "A simplified JSON Schema representation of Facebook's core features.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Facebook users.",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of Facebook posts.",
+      "items": {
+        "$ref": "#/definitions/post"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "List of Facebook groups.",
+      "items": {
+        "$ref": "#/definitions/group"
+      }
+    },
+    "pages": {
+      "type": "array",
+      "description": "List of Facebook pages.",
+      "items": {
+        "$ref": "#/definitions/page"
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "List of Facebook events.",
+      "items": {
+        "$ref": "#/definitions/event"
+      }
+    },
+    "messages": {
+      "type": "array",
+      "description": "List of private messages.",
+      "items": {
+        "$ref": "#/definitions/message"
+      }
+    },
+    "ads": {
+      "type": "array",
+      "description": "List of Facebook ads.",
+      "items": {
+        "$ref": "#/definitions/ad"
+      }
+    },
+    "marketplace_listings": {
+      "type": "array",
+      "description": "List of Facebook Marketplace listings.",
+      "items": {
+        "$ref": "#/definitions/marketplaceListing"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "A Facebook user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (hashed and salted in a real system)."
+        },
+        "profile_picture": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "friends": {
+          "type": "array",
+          "description": "List of user IDs who are friends with this user.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "description": "List of group IDs the user is a member of.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "pages_liked": {
+          "type": "array",
+          "description": "List of page IDs the user has liked.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "date_of_birth": {
+          "type": "string",
+          "format": "date",
+          "description": "User's date of birth."
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "bio": {
+          "type": "string",
+          "description": "Short biography of the user."
+        },
+        "joined_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the user joined Facebook."
+        }
+      },
+      "required": [
+        "id",
+        "first_name",
+        "last_name",
+        "email",
+        "password"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "description": "A post on Facebook.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the post."
+        },
+        "author_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who created the post."
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the post."
+        },
+        "media": {
+          "type": "array",
+          "description": "List of media attachments (photos, videos, etc.).",
+          "items": {
+            "$ref": "#/definitions/media"
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the post was created."
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the post.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the post.",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        },
+        "shares": {
+          "type": "array",
+          "description": "List of user IDs who shared the post. In reality, this would likely be a more complex structure to handle different types of shares",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "privacy": {
+          "type": "string",
+          "enum": [
+            "public",
+            "friends",
+            "friends_except",
+            "only_me",
+            "custom"
+          ],
+          "description": "Privacy setting of the post."
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        }
+      },
+      "required": [
+        "id",
+        "author_id",
+        "content",
+        "timestamp"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "description": "A comment on a post.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the comment."
+        },
+        "author_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who wrote the comment."
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the comment."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the comment was created."
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the comment.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "author_id",
+        "content",
+        "timestamp"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "description": "A Facebook group.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the group."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the group."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the group."
+        },
+        "admin_ids": {
+          "type": "array",
+          "description": "List of user IDs who are administrators of the group.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "members": {
+          "type": "array",
+          "description": "List of user IDs who are members of the group.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "posts": {
+          "type": "array",
+          "description": "List of post IDs that belong to this group.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "privacy": {
+          "type": "string",
+          "enum": [
+            "public",
+            "closed",
+            "secret"
+          ],
+          "description": "Privacy setting of the group."
+        },
+        "cover_photo": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the group's cover photo."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the group was created"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "admin_ids",
+        "members"
+      ]
+    },
+    "page": {
+      "type": "object",
+      "description": "A Facebook page.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the page."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the page."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the page."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the page (e.g., Business, Brand, Public Figure)."
+        },
+        "admin_ids": {
+          "type": "array",
+          "description": "List of user IDs who are administrators of the page.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "likes": {
+          "type": "integer",
+          "description": "Number of likes the page has received."
+        },
+        "followers": {
+          "type": "integer",
+          "description": "Number of followers the page has"
+        },
+        "posts": {
+          "type": "array",
+          "description": "List of post IDs that belong to this page.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "cover_photo": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the page's cover photo."
+        },
+        "profile_picture": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the page's profile picture."
+        },
+        "website": {
+          "type": "string",
+          "format": "URL",
+          "description": "Website URL associated with the page."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number associated with the page."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email associated with the page."
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the page was created"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "admin_ids"
+      ]
+    },
+    "event": {
+      "type": "object",
+      "description": "A Facebook event.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the event."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the event."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event."
+        },
+        "organizer_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user or page organizing the event."
+        },
+        "start_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the event."
+        },
+        "end_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End time of the event."
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "privacy": {
+          "type": "string",
+          "enum": [
+            "public",
+            "private",
+            "group"
+          ],
+          "description": "Privacy setting of the event."
+        },
+        "attendees": {
+          "type": "array",
+          "description": "List of user IDs who are attending the event.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "interested": {
+          "type": "array",
+          "description": "List of user IDs who are interested in the event.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "cover_photo": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the event's cover photo."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "organizer_id",
+        "start_time"
+      ]
+    },
+    "message": {
+      "type": "object",
+      "description": "A private message between users.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the message."
+        },
+        "sender_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sent the message."
+        },
+        "recipient_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who received the message."
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the message."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the message was sent."
+        },
+        "is_read": {
+          "type": "boolean",
+          "description": "Whether the message has been read by the recipient."
+        }
+      },
+      "required": [
+        "id",
+        "sender_id",
+        "recipient_id",
+        "content",
+        "timestamp"
+      ]
+    },
+    "media": {
+      "type": "object",
+      "description": "Represents a media item (photo, video).",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "photo",
+            "video"
+          ],
+          "description": "Type of media."
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the media file."
+        },
+        "caption": {
+          "type": "string",
+          "description": "Optional caption for the media."
+        }
+      },
+      "required": [
+        "type",
+        "url"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "description": "Represents a geographic location.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the location (e.g., city, place)."
+        },
+        "latitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Latitude coordinate."
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Longitude coordinate."
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "latitude",
+        "longitude"
+      ]
+    },
+    "ad": {
+      "type": "object",
+      "description": "Represents a Facebook ad.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the ad."
+        },
+        "page_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the page associated with the ad."
+        },
+        "headline": {
+          "type": "string",
+          "description": "Headline of the ad."
+        },
+        "body": {
+          "type": "string",
+          "description": "Body text of the ad."
+        },
+        "image_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the ad image."
+        },
+        "call_to_action": {
+          "type": "string",
+          "description": "Call to action text (e.g., 'Learn More', 'Shop Now')."
+        },
+        "target_audience": {
+          "$ref": "#/definitions/targetAudience"
+        },
+        "budget": {
+          "type": "number",
+          "format": "float",
+          "description": "Budget allocated for the ad."
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the ad campaign."
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the ad campaign."
+        },
+        "clicks": {
+          "type": "integer",
+          "description": "Number of clicks on the ad."
+        },
+        "impressions": {
+          "type": "integer",
+          "description": "Number of times the ad was displayed."
+        }
+      },
+      "required": [
+        "id",
+        "page_id",
+        "headline",
+        "body",
+        "target_audience"
+      ]
+    },
+    "targetAudience": {
+      "type": "object",
+      "description": "Represents the target audience for an ad.",
+      "properties": {
+        "locations": {
+          "type": "array",
+          "description": "List of target locations.",
+          "items": {
+            "$ref": "#/definitions/location"
+          }
+        },
+        "age_min": {
+          "type": "integer",
+          "description": "Minimum age of the target audience."
+        },
+        "age_max": {
+          "type": "integer",
+          "description": "Maximum age of the target audience."
+        },
+        "genders": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ]
+          },
+          "description": "Target genders."
+        },
+        "interests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of interests for targeting."
+        },
+        "behaviors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of behaviors for targeting."
+        },
+        "connections": {
+          "type": "string",
+          "enum": [
+            "all",
+            "people_who_like_your_page",
+            "friends_of_people_who_like_your_page"
+          ]
+        }
+      },
+      "required": []
+    },
+    "marketplaceListing": {
+      "type": "object",
+      "description": "A listing on Facebook Marketplace.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the listing."
+        },
+        "seller_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user selling the item."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the listing."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the item."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price of the item."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., USD, EUR)."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the item."
+        },
+        "condition": {
+          "type": "string",
+          "enum": [
+            "new",
+            "used_like_new",
+            "used_good",
+            "used_fair"
+          ],
+          "description": "Condition of the item."
+        },
+        "photos": {
+          "type": "array",
+          "description": "List of URLs to photos of the item.",
+          "items": {
+            "type": "string",
+            "format": "URL"
+          }
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "availability": {
+          "type": "string",
+          "enum": [
+            "in_stock",
+            "out_of_stock",
+            "pending",
+            "sold"
+          ],
+          "description": "Availability of the item."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the listing was created."
+        }
+      },
+      "required": [
+        "id",
+        "seller_id",
+        "title",
+        "description",
+        "price",
+        "currency",
+        "category",
+        "condition",
+        "photos",
+        "location",
+        "availability"
+      ]
+    }
+  }
+}

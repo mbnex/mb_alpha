@@ -1,0 +1,410 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Nostr Event",
+  "description": "JSON Schema for a Nostr event, covering NIP-01, NIP-09, NIP-13, NIP-26, NIP-40, NIP-42, and NIP-57.",
+  "type": "object",
+  "required": [
+    "id",
+    "pubkey",
+    "created_at",
+    "kind",
+    "tags",
+    "content",
+    "sig"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "32-bytes lowercase hex-encoded sha256 of the serialized event data",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "pubkey": {
+      "type": "string",
+      "description": "32-bytes lowercase hex-encoded public key of the event creator",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "created_at": {
+      "type": "integer",
+      "description": "Unix timestamp (seconds)"
+    },
+    "kind": {
+      "type": "integer",
+      "description": "Event kind",
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        16,
+        40,
+        41,
+        42,
+        9734,
+        9735,
+        10002,
+        30023
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Event tags",
+      "items": {
+        "type": "array",
+        "description": "A tag",
+        "minItems": 1,
+        "items": {
+          "type": "string"
+        },
+        "oneOf": [
+          {
+            "description": "Event tag (NIP-01)",
+            "minItems": 2,
+            "maxItems": 4,
+            "prefixItems": [
+              {
+                "const": "e"
+              },
+              {
+                "description": "Event ID",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "description": "Recommended relay URL",
+                "pattern": "^wss?://"
+              },
+              {
+                "description": "Marker (NIP-33: root, reply, mention)",
+                "enum": [
+                  "root",
+                  "reply",
+                  "mention"
+                ]
+              }
+            ]
+          },
+          {
+            "description": "Pubkey tag (NIP-01)",
+            "minItems": 2,
+            "maxItems": 3,
+            "prefixItems": [
+              {
+                "const": "p"
+              },
+              {
+                "description": "Pubkey",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "description": "Recommended relay URL",
+                "pattern": "^wss?://"
+              }
+            ]
+          },
+          {
+            "description": "Nonce tag (NIP-13)",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "const": "nonce"
+              },
+              {
+                "description": "Nonce string"
+              },
+              {
+                "description": "Difficulty (number of leading zero bits)"
+              }
+            ]
+          },
+          {
+            "description": "Subject tag (NIP-14)",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "const": "subject"
+              },
+              {
+                "description": "Subject for kind 1 notes"
+              }
+            ]
+          },
+          {
+            "description": "Delegation tag (NIP-26)",
+            "minItems": 4,
+            "maxItems": 4,
+            "prefixItems": [
+              {
+                "const": "delegation"
+              },
+              {
+                "description": "Delegator pubkey",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "description": "Conditions (e.g., kind=1&created_at>1672531200&created_at<1704067200)"
+              },
+              {
+                "description": "Delegation signature"
+              }
+            ]
+          },
+          {
+            "description": "Expiration tag (NIP-40)",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "const": "expiration"
+              },
+              {
+                "description": "Unix timestamp (seconds)"
+              }
+            ]
+          },
+          {
+            "description": "d tag (NIP-33)",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "const": "d"
+              },
+              {
+                "description": "Unique identifier for parameterized replaceable events"
+              }
+            ]
+          },
+          {
+            "description": "Lightning Zaps (NIP-57)",
+            "minItems": 3,
+            "maxItems": 3,
+            "prefixItems": [
+              {
+                "enum": ["relays", "bolt11", "description"]
+              },
+              {
+                "description": "array of relay URLs or a bolt11 invoice or description for the lightning zap request"
+              },
+              {
+                "description": "The actual zap request event in JSON string format"
+              }
+            ]
+          },
+          {
+            "description": "Generic tag",
+            "minItems": 1
+          }
+        ]
+      }
+    },
+    "content": {
+      "type": "string",
+      "description": "Event content. Interpretation depends on 'kind'"
+    },
+    "sig": {
+      "type": "string",
+      "description": "64-bytes lowercase hex of the signature of the sha256 hash of the serialized event data, which is the same as the 'id' field",
+      "pattern": "^[a-f0-9]{128}$"
+    }
+  },
+  "definitions": {
+    "kind0": {
+      "description": "Metadata (NIP-01)",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "User's profile name"
+        },
+        "about": {
+          "type": "string",
+          "description": "User's profile about text"
+        },
+        "picture": {
+          "type": "string",
+          "description": "User's profile picture URL",
+          "format": "URL"
+        },
+        "nip05": {
+          "type": "string",
+          "description": "NIP-05 identifier"
+        },
+        "lud16": {
+          "type": "string",
+          "description": "Lightning Address"
+        }
+      },
+      "additionalProperties": true
+    },
+    "kind3": {
+      "description": "Contact List (NIP-02)",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 3,
+        "prefixItems": [
+          {
+            "const": "p"
+          },
+          {
+            "description": "Pubkey",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          {
+            "description": "Petname",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "kind10002": {
+      "description": "Relay List Metadata (NIP-65)",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 3,
+        "prefixItems": [
+          {
+            "const": "r"
+          },
+          {
+            "description": "Relay URL",
+            "pattern": "^wss?://"
+          },
+          {
+            "description": "read/write",
+            "enum": [
+              "read",
+              "write",
+              ""
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "$ref": "#/definitions/kind0"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 3
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tags": {
+            "$ref": "#/definitions/kind3"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 10002
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tags": {
+            "$ref": "#/definitions/kind10002"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              0,
+              3,
+              10002
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content must be valid JSON for kinds 0, 3, and 10002."
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 1
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content can be any string for kind 1."
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 9
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tags": {
+            "contains": {
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "const": "e"
+                },
+                {
+                  "description": "Event ID to be deleted",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

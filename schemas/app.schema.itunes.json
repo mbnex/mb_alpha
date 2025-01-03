@@ -1,0 +1,484 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "iTunes Library",
+  "description": "A JSON Schema representing the structure of an iTunes library.",
+  "type": "object",
+  "properties": {
+    "Major Version": {
+      "type": "integer",
+      "description": "The major version of the iTunes library format."
+    },
+    "Minor Version": {
+      "type": "integer",
+      "description": "The minor version of the iTunes library format."
+    },
+    "Application Version": {
+      "type": "string",
+      "description": "The version of iTunes that created the library."
+    },
+    "Date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the library was last modified."
+    },
+    "Features": {
+      "type": "integer",
+      "description": "A bit field representing enabled features in the library (e.g., music sharing, Genius)."
+    },
+    "Show Content Ratings": {
+      "type": "boolean",
+      "description": "Whether content ratings are displayed."
+    },
+    "Music Folder": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "The location of the music folder."
+    },
+    "Library Persistent ID": {
+      "type": "string",
+      "description": "A unique identifier for the library."
+    },
+    "Tracks": {
+      "type": "object",
+      "description": "A dictionary of tracks, keyed by Track ID.",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "type": "object",
+          "description": "An individual track in the iTunes library.",
+          "properties": {
+            "Track ID": {
+              "type": "integer",
+              "description": "A unique identifier for the track."
+            },
+            "Name": {
+              "type": "string",
+              "description": "The name of the track."
+            },
+            "Artist": {
+              "type": "string",
+              "description": "The artist of the track."
+            },
+            "Album Artist": {
+              "type": "string",
+              "description": "The album artist of the track."
+            },
+            "Composer": {
+              "type": "string",
+              "description": "The composer of the track."
+            },
+            "Album": {
+              "type": "string",
+              "description": "The album the track belongs to."
+            },
+            "Genre": {
+              "type": "string",
+              "description": "The genre of the track."
+            },
+            "Kind": {
+              "type": "string",
+              "description": "The file type and codec of the track (e.g., 'AAC audio file')."
+            },
+            "Size": {
+              "type": "integer",
+              "description": "The file size of the track in bytes."
+            },
+            "Total Time": {
+              "type": "integer",
+              "description": "The duration of the track in milliseconds."
+            },
+            "Disc Number": {
+              "type": "integer",
+              "description": "The disc number if part of a multi-disc set."
+            },
+            "Disc Count": {
+              "type": "integer",
+              "description": "The total number of discs in the set."
+            },
+            "Track Number": {
+              "type": "integer",
+              "description": "The track number on the album."
+            },
+            "Track Count": {
+              "type": "integer",
+              "description": "The total number of tracks on the album."
+            },
+            "Year": {
+              "type": "integer",
+              "description": "The year the track was released."
+            },
+            "BPM": {
+              "type": "integer",
+              "description": "The beats per minute of the track."
+            },
+            "Date Modified": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date and time the track was last modified."
+            },
+            "Date Added": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date and time the track was added to the library."
+            },
+            "Bit Rate": {
+              "type": "integer",
+              "description": "The bit rate of the track in kbps."
+            },
+            "Sample Rate": {
+              "type": "integer",
+              "description": "The sample rate of the track in Hz."
+            },
+            "Comments": {
+              "type": "string",
+              "description": "User-defined comments about the track."
+            },
+            "Play Count": {
+              "type": "integer",
+              "description": "The number of times the track has been played."
+            },
+            "Play Date": {
+              "type": "integer",
+              "description": "The last time the track was played (deprecated - use Play Date UTC)."
+            },
+            "Play Date UTC": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The last time the track was played, in UTC."
+            },
+            "Skip Count": {
+              "type": "integer",
+              "description": "The number of times the track has been skipped"
+            },
+            "Skip Date": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date and time the track was last skipped."
+            },
+            "Rating": {
+              "type": "integer",
+              "description": "The user rating of the track (0-100, where 20=1 star, 40=2 stars, etc.)."
+            },
+            "Rating Computed": {
+              "type": "boolean",
+              "description": "Whether the rating is computed automatically."
+            },
+            "Album Rating": {
+              "type": "integer",
+              "description": "The user rating of the album."
+            },
+            "Album Rating Computed": {
+              "type": "boolean",
+              "description": "Whether the album rating is computed automatically."
+            },
+            "Loved": {
+              "type": "boolean",
+              "description": "Whether the track is marked as 'Loved'."
+            },
+            "Disliked": {
+              "type": "boolean",
+              "description": "Whether the track is marked as 'Disliked'."
+            },
+            "Artwork Count": {
+              "type": "integer",
+              "description": "The number of embedded artwork images in the track."
+            },
+            "Persistent ID": {
+              "type": "string",
+              "description": "A unique identifier for the track that persists across libraries."
+            },
+            "Track Type": {
+              "type": "string",
+              "enum": [
+                "File",
+                "Remote",
+                "URL"
+              ],
+              "description": "The type of the track (e.g., 'File', 'Remote', 'URL')."
+            },
+            "File Folder Count": {
+              "type": "integer",
+              "description": "Used for internal organization (related to the file system)."
+            },
+            "Library Folder Count": {
+              "type": "integer",
+              "description": "Used for internal organization (related to the file system)."
+            },
+            "Location": {
+              "type": "string",
+              "format": "uri-reference",
+              "description": "The location of the track file."
+            },
+            "File Type": {
+              "type": "integer",
+              "description": "Numerical file type identifier (deprecated)."
+            },
+            "Normalization": {
+              "type": "integer",
+              "description": "Volume normalization adjustment (deprecated)."
+            },
+            "Compilation": {
+              "type": "boolean",
+              "description": "Whether the track is part of a compilation album."
+            },
+            "Grouping": {
+              "type": "string",
+              "description": "Custom grouping for tracks."
+            },
+            "Series": {
+              "type": "string",
+              "description": "For TV shows, the name of the series."
+            },
+            "Season": {
+              "type": "integer",
+              "description": "For TV shows, the season number."
+            },
+            "Episode": {
+              "type": "string",
+              "description": "For TV shows, the episode ID."
+            },
+            "Episode Order": {
+              "type": "integer",
+              "description": "For TV shows, the episode order."
+            },
+            "Sort Name": {
+              "type": "string",
+              "description": "The name used for sorting the track."
+            },
+            "Sort Album": {
+              "type": "string",
+              "description": "The album name used for sorting."
+            },
+            "Sort Artist": {
+              "type": "string",
+              "description": "The artist name used for sorting."
+            },
+            "Sort Album Artist": {
+              "type": "string",
+              "description": "The album artist name used for sorting."
+            },
+            "Sort Composer": {
+              "type": "string",
+              "description": "The composer name used for sorting."
+            },
+            "Sort Series": {
+              "type": "string",
+              "description": "The series name used for sorting."
+            },
+            "Protected": {
+              "type": "boolean",
+              "description": "Whether the file is protected by DRM."
+            },
+            "Purchased": {
+              "type": "boolean",
+              "description": "Whether the track was purchased from the iTunes Store."
+            },
+            "Has Video": {
+              "type": "boolean",
+              "description": "Whether the track is associated with a video."
+            },
+            "HD": {
+              "type": "boolean",
+              "description": "Whether the associated video is in HD."
+            },
+            "Video Width": {
+              "type": "integer",
+              "description": "The width of the associated video in pixels."
+            },
+            "Video Height": {
+              "type": "integer",
+              "description": "The height of the associated video in pixels."
+            },
+            "Movie": {
+              "type": "boolean",
+              "description": "Whether the track is a movie."
+            },
+            "TV Show": {
+              "type": "boolean",
+              "description": "Whether the track is a TV show episode."
+            },
+            "Podcast": {
+              "type": "boolean",
+              "description": "Whether the track is a podcast."
+            },
+            "Unplayed": {
+              "type": "boolean",
+              "description": "Whether the podcast has not been played."
+            },
+            "Part Of Gapless Album": {
+              "type": "boolean",
+              "description": "Whether the track is part of a gapless album."
+            },
+            "Content Rating": {
+              "type": "string",
+              "description": "The content rating of the track (e.g., 'Clean', 'Explicit')."
+            },
+            "Release Date": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The release date of the content."
+            },
+            "Work": {
+              "type": "string",
+              "description": "For classical music, the name of the work."
+            },
+            "Movement Number": {
+              "type": "integer",
+              "description": "For classical music, the movement number."
+            },
+            "Movement Count": {
+              "type": "integer",
+              "description": "For classical music, the total number of movements."
+            },
+            "Movement Name": {
+              "type": "string",
+              "description": "For classical music, the name of the movement."
+            },
+            "iTunesU": {
+              "type": "boolean",
+              "description": "Whether the track is an iTunes U course item."
+            },
+            "Music Video": {
+              "type": "boolean",
+              "description": "Whether the track is a music video."
+            },
+            "Description": {
+              "type": "string",
+              "description": "Description for podcast or iTunes U."
+            },
+            "Long Description": {
+              "type": "string",
+              "description": "Long Description (Used for TV Shows)."
+            },
+            "Lyrics": {
+              "type": "string",
+              "description": "Lyrics of the song"
+            },
+            "Volume Adjustment": {
+              "type": "integer",
+              "description": "Volume Adjustment for this track in db"
+            },
+            "Podcast URL": {
+              "type": "string",
+              "format": "uri-reference",
+              "description": "Feed url of the podcast"
+            },
+            "Disabled": {
+              "type": "boolean",
+              "description": "Whether track is disabled in iTunes"
+            },
+            "Matched": {
+              "type": "boolean",
+              "description": "Whether track was matched by iTunes Match"
+            },
+            "Purchased": {
+              "type": "boolean",
+              "description": "Whether track was purchased from iTunes Store"
+            },
+            "Master": {
+              "type": "boolean",
+              "description": "Indicates this is a master track when using home sharing"
+            },
+            "Explicit": {
+              "type": "boolean",
+              "description": "Explicit content"
+            }
+
+          },
+          "required": [
+            "Track ID",
+            "Name"
+          ]
+        }
+      }
+    },
+    "Playlists": {
+      "type": "array",
+      "description": "An array of playlists.",
+      "items": {
+        "type": "object",
+        "description": "An individual playlist.",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "description": "The name of the playlist."
+          },
+          "Playlist ID": {
+            "type": "integer",
+            "description": "A unique identifier for the playlist."
+          },
+          "Playlist Persistent ID": {
+            "type": "string",
+            "description": "A unique identifier for the playlist that persists across libraries."
+          },
+          "Distinguished Kind": {
+            "type": "integer",
+            "description": "A numeric value indicating a special kind of playlist (e.g., 'Music', 'Movies')."
+          },
+          "Master": {
+            "type": "boolean",
+            "description": "Whether this is the master Music playlist."
+          },
+          "Parent Persistent ID": {
+            "type": "string",
+            "description": "The persistent ID of the parent playlist (for folders)."
+          },
+          "Folder": {
+            "type": "boolean",
+            "description": "Whether this playlist is a folder."
+          },
+          "Visible": {
+            "type": "boolean",
+            "description": "Whether this playlist is visible in the UI."
+          },
+          "All Items": {
+            "type": "boolean",
+            "description": "Whether this playlist contains all items in its scope (e.g., all music)."
+          },
+          "Smart Info": {
+            "type": "string",
+            "format": "base64",
+            "description": "The criteria for a smart playlist (encoded data)."
+          },
+          "Smart Criteria": {
+            "type": "string",
+            "format": "base64",
+            "description": "The criteria for a smart playlist (encoded data)."
+          },
+          "Playlist Items": {
+            "type": "array",
+            "description": "An array of track IDs contained in the playlist.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Track ID": {
+                  "type": "integer",
+                  "description": "The ID of a track in the playlist."
+                }
+              },
+              "required": [
+                "Track ID"
+              ]
+            }
+          }
+        },
+        "required": [
+          "Name",
+          "Playlist ID",
+          "Playlist Persistent ID",
+          "All Items"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Major Version",
+    "Minor Version",
+    "Application Version",
+    "Date",
+    "Features",
+    "Show Content Ratings",
+    "Library Persistent ID",
+    "Tracks",
+    "Playlists"
+  ]
+}

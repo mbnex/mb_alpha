@@ -1,0 +1,648 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AliExpress",
+  "description": "JSON Schema for AliExpress data structures",
+  "type": "object",
+  "properties": {
+    "products": {
+      "type": "array",
+      "description": "List of products available on AliExpress",
+      "items": {
+        "$ref": "#/definitions/product"
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "List of product categories on AliExpress",
+      "items": {
+        "$ref": "#/definitions/category"
+      }
+    },
+    "sellers": {
+      "type": "array",
+      "description": "List of sellers on AliExpress",
+      "items": {
+        "$ref": "#/definitions/seller"
+      }
+    },
+    "orders": {
+      "type": "array",
+      "description": "List of user orders",
+      "items": {
+        "$ref": "#/definitions/order"
+      }
+    },
+    "users": {
+      "type": "array",
+      "description": "List of AliExpress users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "promotions": {
+      "type": "array",
+      "description": "List of current promotions and deals",
+      "items": {
+        "$ref": "#/definitions/promotion"
+      }
+    },
+    "search": {
+      "type": "object",
+      "description": "Search query and results",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query string"
+        },
+        "results": {
+          "type": "array",
+          "description": "List of products matching the query",
+          "items": {
+            "$ref": "#/definitions/product"
+          }
+        },
+        "filters": {
+          "type": "array",
+          "description": "Available filters for refining search results",
+          "items": {
+            "$ref": "#/definitions/filter"
+          }
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  },
+  "definitions": {
+    "product": {
+      "type": "object",
+      "description": "An individual product listing",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "description": "Unique identifier for the product",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "description": "Product title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Product description"
+        },
+        "price": {
+          "type": "number",
+          "description": "Product price",
+          "format": "float",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., USD, EUR)",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "discountPrice": {
+          "type": "number",
+          "description": "Discounted price, if applicable",
+          "format": "float",
+          "minimum": 0
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the main product image",
+          "format": "URL"
+        },
+        "imageUrls": {
+          "type": "array",
+          "description": "List of product images",
+          "items": {
+            "type": "string",
+            "format": "URL"
+          }
+        },
+        "sellerId": {
+          "type": "string",
+          "description": "ID of the seller",
+          "format": "uuid"
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "ID of the product category",
+          "format": "uuid"
+        },
+        "shippingOptions": {
+          "type": "array",
+          "description": "Available shipping options",
+          "items": {
+            "$ref": "#/definitions/shippingOption"
+          }
+        },
+        "ratings": {
+          "type": "object",
+          "description": "Product ratings and reviews",
+          "properties": {
+            "averageRating": {
+              "type": "number",
+              "description": "Average rating out of 5",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "numberOfReviews": {
+              "type": "integer",
+              "description": "Number of reviews",
+              "minimum": 0
+            }
+          }
+        },
+        "inventory": {
+          "type": "integer",
+          "description": "Available quantity in stock",
+          "minimum": 0
+        },
+        "attributes": {
+          "type": "array",
+          "description": "List of product attributes (e.g., color, size)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Attribute name"
+              },
+              "value": {
+                "type": "string",
+                "description": "Attribute value"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          }
+        },
+        "variants": {
+          "type": "array",
+          "description": "List of product variants, if available",
+          "items": {
+            "type": "object",
+            "description": "A specific variant of the product",
+            "properties": {
+              "variantId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier for the product variant"
+              },
+              "attributes": {
+                "type": "array",
+                "description": "List of attributes specific to this variant",
+                "items": {
+                  "$ref": "#/definitions/product#/properties/attributes/items"
+                }
+              },
+              "price": {
+                "type": "number",
+                "description": "Variant price",
+                "format": "float",
+                "minimum": 0
+              },
+              "imageUrl": {
+                "type": "string",
+                "format": "URL",
+                "description": "Image URL for this variant"
+              },
+              "inventory": {
+                "type": "integer",
+                "description": "Inventory for this variant",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "variantId",
+              "attributes",
+              "price"
+            ]
+          }
+        }
+      },
+      "required": [
+        "productId",
+        "title",
+        "price",
+        "currency",
+        "imageUrl",
+        "sellerId",
+        "categoryId"
+      ]
+    },
+    "category": {
+      "type": "object",
+      "description": "A product category",
+      "properties": {
+        "categoryId": {
+          "type": "string",
+          "description": "Unique identifier for the category",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "description": "Category name"
+        },
+        "parentCategoryId": {
+          "type": "string",
+          "description": "ID of the parent category, if any",
+          "format": "uuid"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Image representing the category",
+          "format": "URL"
+        }
+      },
+      "required": [
+        "categoryId",
+        "name"
+      ]
+    },
+    "seller": {
+      "type": "object",
+      "description": "A seller on AliExpress",
+      "properties": {
+        "sellerId": {
+          "type": "string",
+          "description": "Unique identifier for the seller",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "description": "Seller name or store name"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Average seller rating",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "numberOfReviews": {
+          "type": "integer",
+          "description": "Number of reviews for the seller",
+          "minimum": 0
+        },
+        "logoUrl": {
+          "type": "string",
+          "description": "Seller's logo URL",
+          "format": "URL"
+        },
+        "positiveFeedbackRate": {
+          "type": "number",
+          "description": "Positive feedback percentage",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "sellerId",
+        "name",
+        "rating",
+        "numberOfReviews"
+      ]
+    },
+    "order": {
+      "type": "object",
+      "description": "A user's order",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Unique identifier for the order",
+          "format": "uuid"
+        },
+        "userId": {
+          "type": "string",
+          "description": "ID of the user who placed the order",
+          "format": "uuid"
+        },
+        "orderDate": {
+          "type": "string",
+          "description": "Date and time when the order was placed",
+          "format": "date-time"
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items in the order",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string",
+                "description": "ID of the product in the order",
+                "format": "uuid"
+              },
+              "variantId": {
+                "type": "string",
+                "description": "ID of the selected variant, if any",
+                "format": "uuid"
+              },
+              "quantity": {
+                "type": "integer",
+                "description": "Quantity ordered",
+                "minimum": 1
+              },
+              "price": {
+                "type": "number",
+                "description": "Price per item at the time of order",
+                "format": "float",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "productId",
+              "quantity",
+              "price"
+            ]
+          }
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "Total price of the order",
+          "format": "float",
+          "minimum": 0
+        },
+        "shippingAddress": {
+          "$ref": "#/definitions/address"
+        },
+        "shippingOption": {
+          "$ref": "#/definitions/shippingOption"
+        },
+        "paymentStatus": {
+          "type": "string",
+          "description": "Status of the payment (e.g., pending, paid, failed)",
+          "enum": [
+            "pending",
+            "paid",
+            "failed",
+            "refunded"
+          ]
+        },
+        "orderStatus": {
+          "type": "string",
+          "description": "Status of the order (e.g., processing, shipped, delivered, canceled)",
+          "enum": [
+            "processing",
+            "shipped",
+            "delivered",
+            "canceled",
+            "returned"
+          ]
+        },
+        "trackingNumber": {
+          "type": "string",
+          "description": "Shipping tracking number, if available"
+        }
+      },
+      "required": [
+        "orderId",
+        "userId",
+        "orderDate",
+        "items",
+        "totalPrice",
+        "shippingAddress",
+        "paymentStatus",
+        "orderStatus"
+      ]
+    },
+    "user": {
+      "type": "object",
+      "description": "An AliExpress user",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique identifier for the user",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "description": "User's name"
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address",
+          "format": "email"
+        },
+        "addresses": {
+          "type": "array",
+          "description": "User's saved addresses",
+          "items": {
+            "$ref": "#/definitions/address"
+          }
+        }
+      },
+      "required": [
+        "userId",
+        "email"
+      ]
+    },
+    "address": {
+      "type": "object",
+      "description": "A shipping or billing address",
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the recipient"
+        },
+        "streetAddress": {
+          "type": "string",
+          "description": "Street address"
+        },
+        "city": {
+          "type": "string",
+          "description": "City"
+        },
+        "stateOrProvince": {
+          "type": "string",
+          "description": "State or province"
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "Postal code"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Phone number"
+        }
+      },
+      "required": [
+        "fullName",
+        "streetAddress",
+        "city",
+        "postalCode",
+        "country"
+      ]
+    },
+    "shippingOption": {
+      "type": "object",
+      "description": "A shipping option",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the shipping option (e.g., Standard Shipping, Expedited Shipping)"
+        },
+        "estimatedDeliveryTime": {
+          "type": "string",
+          "description": "Estimated delivery time (e.g., 15-30 days)"
+        },
+        "cost": {
+          "type": "number",
+          "description": "Shipping cost",
+          "format": "float",
+          "minimum": 0
+        },
+        "shippingCompany": {
+          "type": "string",
+          "description": "Name of the company handling the shipment (e.g., AliExpress, Cainiao, DHL)"
+        }
+      },
+      "required": [
+        "name",
+        "estimatedDeliveryTime",
+        "cost"
+      ]
+    },
+    "promotion": {
+      "type": "object",
+      "description": "A promotion or deal",
+      "properties": {
+        "promotionId": {
+          "type": "string",
+          "description": "Unique identifier for the promotion",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the promotion"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the promotion"
+        },
+        "discountType": {
+          "type": "string",
+          "description": "Type of discount (e.g., percentage, fixed amount)",
+          "enum": [
+            "percentage",
+            "fixed"
+          ]
+        },
+        "discountValue": {
+          "type": "number",
+          "description": "Value of the discount (e.g., 10 for 10%, 5 for $5 off)",
+          "minimum": 0
+        },
+        "startDate": {
+          "type": "string",
+          "description": "Start date of the promotion",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "End date of the promotion",
+          "format": "date"
+        },
+        "applicableProducts": {
+          "type": "array",
+          "description": "List of product IDs to which the promotion applies, if specific",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "applicableCategories": {
+          "type": "array",
+          "description": "List of category IDs to which the promotion applies, if specific",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "minimumPurchaseAmount": {
+          "type": "number",
+          "description": "Minimum purchase amount required for the promotion, if any",
+          "format": "float",
+          "minimum": 0
+        },
+        "bannerImageUrl": {
+          "type": "string",
+          "description": "URL of the promotion banner image",
+          "format": "URL"
+        }
+      },
+      "required": [
+        "promotionId",
+        "title",
+        "discountType",
+        "discountValue",
+        "startDate",
+        "endDate"
+      ]
+    },
+    "filter": {
+      "type": "object",
+      "description": "A filter option for search results",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the filter (e.g., Price, Color, Brand)"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of filter (e.g., range, selection)",
+          "enum": [
+            "range",
+            "selection"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "description": "Available options for the filter",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": [
+                  "string",
+                  "number"
+                ],
+                "description": "Value of the filter option"
+              },
+              "count": {
+                "type": "integer",
+                "description": "Number of products matching this option",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "value",
+              "count"
+            ]
+          }
+        },
+        "min": {
+          "type": "number",
+          "description": "Minimum value for range filters"
+        },
+        "max": {
+          "type": "number",
+          "description": "Maximum value for range filters"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ]
+    }
+  }
+}

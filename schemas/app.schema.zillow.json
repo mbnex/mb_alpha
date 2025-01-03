@@ -1,0 +1,447 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Zillow App Data",
+  "description": "JSON Schema for data used in a Zillow-like real estate application.",
+  "type": "object",
+  "properties": {
+    "listings": {
+      "type": "array",
+      "description": "An array of property listings.",
+      "items": {
+        "$ref": "#/definitions/propertyListing"
+      }
+    },
+    "savedSearches": {
+      "type": "array",
+      "description": "An array of user-saved search criteria.",
+      "items": {
+        "$ref": "#/definitions/savedSearch"
+      }
+    },
+    "userProfile": {
+      "$ref": "#/definitions/userProfile"
+    },
+    "agents": {
+      "type": "array",
+      "description": "List of real estate agents",
+      "items": {
+        "$ref": "#/definitions/agent"
+      }
+    }
+  },
+  "definitions": {
+    "propertyListing": {
+      "type": "object",
+      "description": "Details of a single property listing.",
+      "properties": {
+        "zpid": {
+          "type": "string",
+          "description": "Zillow Property ID (unique identifier).",
+          "example": "12345678"
+        },
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Listing price.",
+          "example": 350000.00
+        },
+        "bedrooms": {
+          "type": "integer",
+          "description": "Number of bedrooms.",
+          "example": 3
+        },
+        "bathrooms": {
+          "type": "number",
+          "format": "float",
+          "description": "Number of bathrooms.",
+          "example": 2.5
+        },
+        "livingArea": {
+          "type": "integer",
+          "description": "Living area in square feet.",
+          "example": 1800
+        },
+        "lotSize": {
+          "type": "integer",
+          "description": "Lot size in square feet (optional).",
+          "example": 5000
+        },
+        "yearBuilt": {
+          "type": "integer",
+          "description": "Year the property was built.",
+          "example": 1995
+        },
+        "propertyType": {
+          "type": "string",
+          "description": "Type of property (e.g., Single Family, Condo, Townhouse).",
+          "enum": [
+            "Single Family",
+            "Condo",
+            "Townhouse",
+            "Multi-Family",
+            "Land",
+            "Manufactured",
+            "Other"
+          ]
+        },
+        "listingStatus": {
+          "type": "string",
+          "description": "Status of the listing (e.g., For Sale, Pending, Sold).",
+          "enum": ["For Sale", "Pending", "Sold", "For Rent", "Recently Sold"]
+        },
+        "photos": {
+          "type": "array",
+          "description": "Array of URLs to property photos.",
+          "items": {
+            "type": "string",
+            "format": "URL",
+            "example": "https://photos.zillow.com/image1.jpg"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Text description of the property.",
+          "example": "Beautiful home in a quiet neighborhood..."
+        },
+        "homeFacts": {
+          "type": "object",
+          "description": "Additional home facts, can be extended as needed.",
+          "properties": {
+            "cooling": {
+              "type": "string",
+              "example": "Central Air"
+            },
+            "heating": {
+              "type": "string",
+              "example": "Forced Air"
+            },
+            "parking": {
+              "type": "string",
+              "example": "Garage - Attached, 2 spaces"
+            },
+            "hoaFee": {
+              "type": "number",
+              "description": "HOA fee (optional)",
+              "example": 150.00
+            }
+          }
+        },
+        "zestimate": {
+          "type": "number",
+          "format": "float",
+          "description": "Zillow's estimated market value (optional).",
+          "example": 365000.00
+        },
+        "daysOnZillow": {
+          "type": "integer",
+          "description": "Number of days the property has been listed on Zillow.",
+          "example": 15
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the property's page on Zillow.",
+          "example": "https://www.zillow.com/homedetails/123-Main-St-Anytown-CA-91234/12345678_zpid/"
+        },
+        "listingAgent": {
+          "type": "string",
+          "description": "ID of the listing agent.",
+          "example": "agent-123"
+        }
+      },
+      "required": [
+        "zpid",
+        "address",
+        "price",
+        "bedrooms",
+        "bathrooms",
+        "livingArea",
+        "propertyType",
+        "listingStatus"
+      ]
+    },
+    "address": {
+      "type": "object",
+      "description": "Address details.",
+      "properties": {
+        "streetAddress": {
+          "type": "string",
+          "description": "Street address.",
+          "example": "123 Main St"
+        },
+        "unitNumber": {
+          "type": "string",
+          "description": "Apartment or unit number (optional).",
+          "example": "Apt 4B"
+        },
+        "city": {
+          "type": "string",
+          "description": "City.",
+          "example": "Anytown"
+        },
+        "state": {
+          "type": "string",
+          "description": "State (2-letter abbreviation).",
+          "example": "CA"
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "ZIP code.",
+          "example": "91234"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Latitude of the address location.",
+          "example": 34.052235
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Longitude of the address location.",
+          "example": -118.243683
+        }
+      },
+      "required": [
+        "streetAddress",
+        "city",
+        "state",
+        "zipCode",
+        "latitude",
+        "longitude"
+      ]
+    },
+    "savedSearch": {
+      "type": "object",
+      "description": "User's saved search criteria.",
+      "properties": {
+        "searchId": {
+          "type": "string",
+          "description": "Unique identifier for the saved search.",
+          "example": "search-123"
+        },
+        "name": {
+          "type": "string",
+          "description": "User-defined name for the search (optional).",
+          "example": "My Dream Home Search"
+        },
+        "location": {
+          "type": "object",
+          "description": "Geographic area for the search.",
+          "properties": {
+            "city": {
+              "type": "string",
+              "example": "San Francisco"
+            },
+            "state": {
+              "type": "string",
+              "example": "CA"
+            },
+            "zipCode": {
+              "type": "string",
+              "example": "94105"
+            },
+            "bounds": {
+              "type": "object",
+              "description": "Geographic bounds of the search area.",
+              "properties": {
+                "north": {
+                  "type": "number",
+                  "format": "float",
+                  "example": 34.1
+                },
+                "east": {
+                  "type": "number",
+                  "format": "float",
+                  "example": -118.2
+                },
+                "south": {
+                  "type": "number",
+                  "format": "float",
+                  "example": 34.0
+                },
+                "west": {
+                  "type": "number",
+                  "format": "float",
+                  "example": -118.3
+                }
+              }
+            }
+          }
+        },
+        "minPrice": {
+          "type": "integer",
+          "example": 200000
+        },
+        "maxPrice": {
+          "type": "integer",
+          "example": 500000
+        },
+        "minBedrooms": {
+          "type": "integer",
+          "example": 2
+        },
+        "minBathrooms": {
+          "type": "number",
+          "format": "float",
+          "example": 1.5
+        },
+        "propertyTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Single Family",
+              "Condo",
+              "Townhouse",
+              "Multi-Family",
+              "Land",
+              "Manufactured",
+              "Other"
+            ]
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "description": "List of keywords to filter search results (e.g., 'pool', 'garage').",
+          "items": {
+            "type": "string"
+          },
+          "example": ["pool", "garage", "hardwood floors"]
+        }
+      },
+      "required": ["searchId"]
+    },
+    "userProfile": {
+      "type": "object",
+      "description": "User profile information.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique user identifier.",
+          "example": "user-456"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "John"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Doe"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "john.doe@email.com"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number (optional)."
+        },
+        "favorites": {
+          "type": "array",
+          "description": "Array of ZPIDs of the user's favorite properties.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["userId", "email"]
+    },
+    "agent": {
+      "type": "object",
+      "description": "Real estate agent information.",
+      "properties": {
+        "agentId": {
+          "type": "string",
+          "description": "Unique agent identifier.",
+          "example": "agent-123"
+        },
+        "name": {
+          "type": "string",
+          "description": "Agent's full name.",
+          "example": "Jane Smith"
+        },
+        "brokerage": {
+          "type": "string",
+          "description": "Name of the brokerage the agent works for.",
+          "example": "Acme Realty"
+        },
+        "photoUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the agent's profile photo.",
+          "example": "https://example.com/agent-photo.jpg"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Agent's phone number.",
+          "example": "555-123-4567"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Agent's email address.",
+          "example": "jane.smith@example.com"
+        },
+        "licenseNumber": {
+          "type": "string",
+          "description": "Agent's real estate license number.",
+          "example": "CA-1234567"
+        },
+        "specialties": {
+          "type": "array",
+          "description": "List of the agent's specialties (e.g., 'Buyer's Agent', 'Listing Agent').",
+          "items": {
+            "type": "string"
+          },
+          "example": ["Buyer's Agent", "Listing Agent", "Relocation"]
+        },
+        "reviews": {
+          "type": "array",
+          "description": "List of agent reviews.",
+          "items": {
+            "$ref": "#/definitions/agentReview"
+          }
+        }
+      }
+    },
+    "agentReview": {
+      "type": "object",
+      "description": "Review information for an agent.",
+      "properties": {
+        "reviewId": {
+          "type": "string",
+          "description": "Unique identifier for the review.",
+          "example": "review-789"
+        },
+        "reviewerName": {
+          "type": "string",
+          "description": "Name of the person who wrote the review.",
+          "example": "John Doe"
+        },
+        "rating": {
+          "type": "integer",
+          "description": "Star rating given to the agent (e.g., 1-5).",
+          "minimum": 1,
+          "maximum": 5,
+          "example": 5
+        },
+        "comment": {
+          "type": "string",
+          "description": "Text content of the review.",
+          "example": "Jane was very helpful throughout the entire process."
+        },
+        "reviewDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the review was submitted.",
+          "example": "2023-10-27T10:00:00Z"
+        }
+      }
+    }
+  }
+}

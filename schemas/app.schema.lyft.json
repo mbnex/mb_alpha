@@ -1,0 +1,395 @@
+{
+  "type": "object",
+  "title": "Lyft App Schema",
+  "description": "JSON Schema representing the core data structures and interactions within the Lyft application.",
+  "properties": {
+    "user": {
+      "type": "object",
+      "title": "User Profile",
+      "description": "Represents a user of the Lyft app (rider or driver).",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "phone_number": {
+          "type": "string",
+          "description": "User's phone number."
+        },
+        "profile_picture_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "user_type": {
+          "type": "string",
+          "enum": ["rider", "driver"],
+          "description": "Indicates whether the user is a rider or a driver."
+        },
+        "rating": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Average rating of the user."
+        },
+        "payment_methods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/payment_method"
+          },
+          "description": "List of payment methods associated with the user."
+        },
+        "driver_details": {
+          "type": "object",
+          "description": "Details specific to drivers.",
+          "properties": {
+            "license_number": {
+              "type": "string"
+            },
+            "vehicle_details": {
+              "type": "object",
+              "properties": {
+                "make": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "year": {
+                  "type": "integer"
+                },
+                "color": {
+                  "type": "string"
+                },
+                "license_plate": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": [
+            "license_number",
+            "vehicle_details"
+          ]
+        }
+      },
+      "required": [
+        "user_id",
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "user_type"
+      ]
+    },
+    "ride": {
+      "type": "object",
+      "title": "Ride Details",
+      "description": "Represents a ride request or an ongoing/completed ride.",
+      "properties": {
+        "ride_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the ride."
+        },
+        "rider_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the rider requesting the ride."
+        },
+        "driver_id": {
+          "type": ["string", "null"],
+          "format": "uuid",
+          "description": "ID of the driver assigned to the ride (null if not yet assigned)."
+        },
+        "pickup_location": {
+          "$ref": "#/definitions/location",
+          "description": "Pickup location for the ride."
+        },
+        "dropoff_location": {
+          "$ref": "#/definitions/location",
+          "description": "Dropoff location for the ride."
+        },
+        "ride_type": {
+          "type": "string",
+          "enum": [
+            "Lyft",
+            "Lyft XL",
+            "Lux",
+            "Lux Black",
+            "Lux Black XL",
+            "Shared"
+          ],
+          "description": "Type of Lyft ride requested."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "requested",
+            "accepted",
+            "arrived",
+            "in_progress",
+            "completed",
+            "canceled"
+          ],
+          "description": "Current status of the ride."
+        },
+        "estimated_fare": {
+          "type": "number",
+          "format": "float",
+          "description": "Estimated fare for the ride."
+        },
+        "actual_fare": {
+          "type": ["number", "null"],
+          "format": "float",
+          "description": "Actual fare for the ride (null until ride is completed)."
+        },
+        "distance": {
+          "type": ["number", "null"],
+          "format": "float",
+          "description": "Distance of the ride in miles (null until ride is completed)."
+        },
+        "duration": {
+          "type": ["integer", "null"],
+          "description": "Duration of the ride in seconds (null until ride is completed)."
+        },
+        "requested_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the ride was requested."
+        },
+        "accepted_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp when the ride was accepted by a driver."
+        },
+        "arrived_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp when the driver arrived at the pickup location."
+        },
+        "started_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp when the ride started."
+        },
+        "completed_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp when the ride was completed."
+        },
+        "canceled_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp when the ride was canceled."
+        },
+        "cancellation_reason": {
+          "type": ["string", "null"],
+          "description": "Reason for ride cancellation (if applicable)."
+        }
+      },
+      "required": [
+        "ride_id",
+        "rider_id",
+        "pickup_location",
+        "dropoff_location",
+        "ride_type",
+        "status",
+        "requested_at"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "title": "Location",
+      "description": "Represents a geographical location.",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "float",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "Latitude of the location."
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "Longitude of the location."
+        },
+        "address": {
+          "type": "string",
+          "description": "Human-readable address of the location (optional)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name/label of the location, e.g. 'Home', 'Work' (optional)."
+        }
+      },
+      "required": [
+        "latitude",
+        "longitude"
+      ]
+    },
+    "payment": {
+      "type": "object",
+      "title": "Payment",
+      "description": "Represents a payment transaction.",
+      "properties": {
+        "payment_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the payment."
+        },
+        "ride_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the ride associated with the payment."
+        },
+        "amount": {
+          "type": "number",
+          "format": "float",
+          "description": "Amount of the payment."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency of the payment (e.g., USD)."
+        },
+        "payment_method_id": {
+          "type": "string",
+          "description": "ID of the payment method used."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "completed",
+            "failed"
+          ],
+          "description": "Status of the payment."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the payment."
+        }
+      },
+      "required": [
+        "payment_id",
+        "ride_id",
+        "amount",
+        "currency",
+        "payment_method_id",
+        "status",
+        "timestamp"
+      ]
+    },
+    "promotions": {
+      "type": "object",
+      "title": "Promotions",
+      "description": "Details about available promotions and discounts",
+      "properties": {
+        "promo_code": {
+          "type": "string",
+          "description": "Unique code for the promotion"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the promotion"
+        },
+        "discount_type": {
+          "type": "string",
+          "enum": ["percentage", "fixed_amount"],
+          "description": "Type of discount offered"
+        },
+        "discount_value": {
+          "type": "number",
+          "description": "Value of the discount (percentage or fixed amount)"
+        },
+        "valid_from": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start date and time of the promotion's validity"
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End date and time of the promotion's validity"
+        },
+        "usage_limit": {
+          "type": ["integer", "null"],
+          "description": "Maximum number of times the promotion can be used (null for unlimited)"
+        },
+        "minimum_fare": {
+          "type": ["number", "null"],
+          "description": "Minimum fare required to apply the promotion (null if no minimum)"
+        }
+      },
+      "required": [
+        "promo_code",
+        "description",
+        "discount_type",
+        "discount_value"
+      ]
+    }
+  },
+  "definitions": {
+    "payment_method": {
+      "type": "object",
+      "properties": {
+        "payment_method_id": {
+          "type": "string",
+          "description": "Unique identifier for the payment method."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "credit_card",
+            "debit_card",
+            "paypal",
+            "apple_pay",
+            "google_pay"
+          ],
+          "description": "Type of payment method."
+        },
+        "last_four": {
+          "type": "string",
+          "description": "Last four digits of the card (if applicable)."
+        },
+        "expiry_month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Expiry month of the card (if applicable)."
+        },
+        "expiry_year": {
+          "type": "integer",
+          "description": "Expiry year of the card (if applicable)."
+        },
+        "brand": {
+          "type": "string",
+          "description": "Card brand (e.g., Visa, Mastercard) (if applicable)."
+        }
+      },
+      "required": [
+        "payment_method_id",
+        "type"
+      ]
+    }
+  }
+}

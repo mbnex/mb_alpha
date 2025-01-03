@@ -1,0 +1,638 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Snapchat",
+  "description": "JSON Schema for the Snapchat App Data Model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Snapchat users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "stories": {
+      "type": "array",
+      "description": "List of user stories",
+      "items": {
+        "$ref": "#/definitions/story"
+      }
+    },
+    "snaps": {
+      "type": "array",
+      "description": "List of individual snaps",
+      "items": {
+        "$ref": "#/definitions/snap"
+      }
+    },
+    "chats": {
+      "type": "array",
+      "description": "List of chat conversations",
+      "items": {
+        "$ref": "#/definitions/chat"
+      }
+    },
+    "memories": {
+      "type": "array",
+      "description": "List of saved snaps and stories (Memories)",
+      "items": {
+        "$ref": "#/definitions/memory"
+      }
+    },
+    "discoverContent": {
+      "type": "array",
+      "description": "List of content available on the Discover page",
+      "items": {
+        "$ref": "#/definitions/discoverContentItem"
+      }
+    },
+    "filters": {
+      "type": "array",
+      "description": "List of available filters and lenses",
+      "items": {
+        "$ref": "#/definitions/filter"
+      }
+    },
+    "friends": {
+      "type": "object",
+      "description": "Friend relationships between users",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "Username of a friend"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "A Snapchat user",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user"
+        },
+        "username": {
+          "type": "string",
+          "description": "User's public username"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User's display name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "User's phone number (optional)",
+          "pattern": "^\\+[1-9]\\d{1,14}$"
+        },
+        "bitmojiAvatar": {
+          "type": "string",
+          "description": "URL to the user's Bitmoji avatar (optional)"
+        },
+        "snapcode": {
+          "type": "string",
+          "description": "URL or data for the user's Snapcode"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the account was created"
+        },
+        "lastLogin": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time of the user's last login"
+        },
+        "location": {
+          "type": "object",
+          "description": "User's current location (if shared)",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "format": "float"
+            },
+            "longitude": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "privacySettings": {
+          "$ref": "#/definitions/privacySettings"
+        },
+        "notificationSettings": {
+          "$ref": "#/definitions/notificationSettings"
+        }
+      },
+      "required": [
+        "userId",
+        "username",
+        "displayName",
+        "email"
+      ]
+    },
+    "story": {
+      "type": "object",
+      "description": "A user's story",
+      "properties": {
+        "storyId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the story"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who posted the story"
+        },
+        "snaps": {
+          "type": "array",
+          "description": "List of snaps in the story",
+          "items": {
+            "$ref": "#/definitions/snapReference"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the story was created"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the story will expire (typically 24 hours after creation)"
+        },
+        "viewers": {
+          "type": "array",
+          "description": "List of user IDs who have viewed the story",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Indicates if the story is visible to everyone or just friends."
+        }
+      },
+      "required": [
+        "storyId",
+        "userId",
+        "snaps",
+        "createdAt",
+        "expiresAt",
+        "isPublic"
+      ]
+    },
+    "snap": {
+      "type": "object",
+      "description": "A single snap (photo or video)",
+      "properties": {
+        "snapId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the snap"
+        },
+        "senderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sent the snap"
+        },
+        "recipientIds": {
+          "type": "array",
+          "description": "List of user IDs who received the snap",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "mediaType": {
+          "type": "string",
+          "enum": [
+            "image",
+            "video"
+          ],
+          "description": "Type of media (image or video)"
+        },
+        "mediaUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the snap's media content"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the snap in seconds (for videos)"
+        },
+        "filterId": {
+          "type": "string",
+          "description": "ID of the filter applied to the snap (optional)"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Text caption added to the snap (optional)"
+        },
+        "location": {
+          "type": "object",
+          "description": "Location attached to the snap (optional)",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "format": "float"
+            },
+            "longitude": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the snap was created"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the snap will expire"
+        },
+        "openedBy": {
+          "type": "array",
+          "description": "List of user IDs who have opened the snap",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "screenshotCount": {
+          "type": "integer",
+          "description": "Number of times the snap has been screenshotted",
+          "default": 0
+        }
+      },
+      "required": [
+        "snapId",
+        "senderId",
+        "recipientIds",
+        "mediaType",
+        "mediaUrl",
+        "createdAt",
+        "expiresAt"
+      ]
+    },
+    "snapReference": {
+      "type": "object",
+      "description": "Reference to a snap within a story.",
+      "properties": {
+        "snapId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the snap in seconds (for videos)"
+        }
+      },
+      "required": [
+        "snapId"
+      ]
+    },
+    "chat": {
+      "type": "object",
+      "description": "A chat conversation between users",
+      "properties": {
+        "chatId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the chat"
+        },
+        "participants": {
+          "type": "array",
+          "description": "List of user IDs participating in the chat",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "minItems": 2
+        },
+        "messages": {
+          "type": "array",
+          "description": "List of messages in the chat",
+          "items": {
+            "$ref": "#/definitions/chatMessage"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the chat was created"
+        },
+        "lastActivityAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time of the last activity in the chat"
+        }
+      },
+      "required": [
+        "chatId",
+        "participants",
+        "messages",
+        "createdAt",
+        "lastActivityAt"
+      ]
+    },
+    "chatMessage": {
+      "type": "object",
+      "description": "A single message within a chat",
+      "properties": {
+        "messageId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the message"
+        },
+        "senderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sent the message"
+        },
+        "contentType": {
+          "type": "string",
+          "enum": [
+            "text",
+            "snap",
+            "audio",
+            "sticker",
+            "gif"
+          ],
+          "description": "Type of content in the message"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the message (text, snapId, URL, etc.)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the message was sent"
+        },
+        "readBy": {
+          "type": "array",
+          "description": "List of user IDs who have read the message",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "messageId",
+        "senderId",
+        "contentType",
+        "content",
+        "createdAt"
+      ]
+    },
+    "memory": {
+      "type": "object",
+      "description": "A saved snap or story in Memories",
+      "properties": {
+        "memoryId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the memory"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who owns the memory"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "snap",
+            "story"
+          ],
+          "description": "Type of memory (snap or story)"
+        },
+        "snapId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the snap (if type is 'snap')"
+        },
+        "storyId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the story (if type is 'story')"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the memory was created (saved)"
+        }
+      },
+      "required": [
+        "memoryId",
+        "userId",
+        "type"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "snapId"
+          ]
+        },
+        {
+          "required": [
+            "storyId"
+          ]
+        }
+      ]
+    },
+    "discoverContentItem": {
+      "type": "object",
+      "description": "An item on the Discover page (e.g., article, video, show)",
+      "properties": {
+        "contentId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the content"
+        },
+        "publisher": {
+          "type": "string",
+          "description": "Name of the publisher"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the content"
+        },
+        "mediaType": {
+          "type": "string",
+          "enum": [
+            "article",
+            "video",
+            "show",
+            "collection"
+          ],
+          "description": "Type of media"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the content's thumbnail image"
+        },
+        "contentUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the actual content"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the content in seconds (for videos)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the content was published"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the content (e.g., news, entertainment, sports)"
+        }
+      },
+      "required": [
+        "contentId",
+        "publisher",
+        "title",
+        "mediaType",
+        "thumbnailUrl",
+        "contentUrl"
+      ]
+    },
+    "filter": {
+      "type": "object",
+      "description": "A filter or lens",
+      "properties": {
+        "filterId": {
+          "type": "string",
+          "description": "Unique identifier for the filter or lens"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the filter or lens"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "filter",
+            "lens"
+          ],
+          "description": "Type of filter (visual filter or AR lens)"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to an image representing the filter/lens"
+        },
+        "creator": {
+          "type": "string",
+          "description": "Username or ID of the creator (if applicable)"
+        },
+        "sponsored": {
+          "type": "boolean",
+          "description": "Indicates if the filter is sponsored"
+        }
+      },
+      "required": [
+        "filterId",
+        "name",
+        "type",
+        "imageUrl"
+      ]
+    },
+    "privacySettings": {
+      "type": "object",
+      "description": "User's privacy settings.",
+      "properties": {
+        "viewMyStory": {
+          "type": "string",
+          "enum": [
+            "everyone",
+            "friends",
+            "custom"
+          ],
+          "description": "Who can view the user's story"
+        },
+        "contactMe": {
+          "type": "string",
+          "enum": [
+            "everyone",
+            "friends"
+          ],
+          "description": "Who can contact the user"
+        },
+        "seeMyLocation": {
+          "type": "string",
+          "enum": [
+            "friends",
+            "custom",
+            "none"
+          ],
+          "description": "Who can see the user's location on the Snap Map"
+        },
+        "customList": {
+          "type": "array",
+          "description": "List of user IDs for custom privacy settings",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "notificationSettings": {
+      "type": "object",
+      "description": "User's notification settings.",
+      "properties": {
+        "sound": {
+          "type": "boolean",
+          "description": "Enable or disable sound for notifications"
+        },
+        "vibrate": {
+          "type": "boolean",
+          "description": "Enable or disable vibration for notifications"
+        },
+        "stories": {
+          "type": "boolean",
+          "description": "Receive notifications for new stories"
+        },
+        "mentions": {
+          "type": "boolean",
+          "description": "Receive notifications for mentions"
+        },
+        "friendSuggestions": {
+          "type": "boolean",
+          "description": "Receive notifications for friend suggestions"
+        },
+        "memories": {
+          "type": "boolean",
+          "description": "Receive notifications for memories"
+        }
+      }
+    }
+  }
+}

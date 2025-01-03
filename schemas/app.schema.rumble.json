@@ -1,0 +1,73 @@
+{
+  "event": {
+    "name": "Royal Rumble 2023",
+    "date": "2023-01-28",
+    "location": "Alamodome, San Antonio, Texas",
+    "matches": [
+      {
+        "type": "Singles",
+        "participants": [
+          {
+            "name": "Roman Reigns",
+            "brand": "SmackDown"
+          },
+          {
+            "name": "Kevin Owens",
+            "brand": "RAW"
+          }
+        ],
+        "winner": [
+          {
+            "name": "Roman Reigns"
+          }
+        ],
+        "championship": "Undisputed WWE Universal Championship"
+      }
+    ]
+  },
+  "rumbleMatch": {
+    "type": "Men's",
+    "participants": [
+      {
+        "entryNumber": 1,
+        "wrestler": {
+          "name": "Gunther",
+          "brand": "SmackDown"
+        },
+        "eliminatedBy": [
+          {
+            "name": "Cody Rhodes"
+          }
+        ],
+        "eliminationTime": "01:11:40",
+        "eliminations": 5
+      },
+      {
+        "entryNumber": 30,
+        "wrestler": {
+          "name": "Cody Rhodes",
+          "brand": "RAW"
+        },
+        "eliminations": 4
+      },
+      {
+        "entryNumber": 3,
+        "wrestler": {
+          "name": "Edge",
+          "brand": "RAW"
+        },
+        "eliminatedBy": [
+          {
+            "name": "Finn Bálor"
+          },
+          {
+            "name": "Damian Priest"
+          }
+        ],
+        "eliminationTime": "00:29:26",
+        "eliminations": 3
+      }
+    ],
+    "winner": 30
+  }
+}

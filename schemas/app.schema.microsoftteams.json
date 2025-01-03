@@ -1,0 +1,521 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Microsoft Teams",
+  "description": "JSON Schema for a simplified representation of Microsoft Teams data structure.",
+  "type": "object",
+  "properties": {
+    "teams": {
+      "type": "array",
+      "description": "List of Teams",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the Team",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the Team"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the Team"
+          },
+          "isArchived": {
+            "type": "boolean",
+            "description": "Indicates if the Team is archived"
+          },
+          "members": {
+            "type": "array",
+            "description": "List of Team members",
+            "items": {
+              "$ref": "#/definitions/user"
+            }
+          },
+          "owners": {
+            "type": "array",
+            "description": "List of Team owners",
+            "items": {
+              "$ref": "#/definitions/user"
+            }
+          },
+          "channels": {
+            "type": "array",
+            "description": "List of channels within the Team",
+            "items": {
+              "$ref": "#/definitions/channel"
+            }
+          },
+          "apps": {
+            "type": "array",
+            "description": "List of installed apps in the team",
+            "items": {
+              "$ref": "#/definitions/app"
+            }
+          },
+          "settings": {
+            "type": "object",
+            "description": "Team-specific settings",
+            "properties": {
+              "guestSettings": {
+                "$ref": "#/definitions/guestSettings"
+              },
+              "messagingSettings": {
+                "$ref": "#/definitions/messagingSettings"
+              },
+              "funSettings": {
+                "$ref": "#/definitions/funSettings"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      }
+    },
+    "users": {
+      "type": "array",
+      "description": "List of Users (can represent members across multiple teams)",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "apps": {
+      "type": "array",
+      "description": "List of apps that can be installed in teams or used in chats",
+      "items": {
+        "$ref": "#/definitions/app"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user",
+          "format": "uuid"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the user"
+        },
+        "userPrincipalName": {
+          "type": "string",
+          "description": "User Principal Name (UPN) - typically the user's email address",
+          "format": "email"
+        },
+        "jobTitle": {
+          "type": "string",
+          "description": "Job title of the user"
+        },
+        "department": {
+          "type": "string",
+          "description": "Department of the user"
+        }
+      },
+      "required": [
+        "id",
+        "displayName",
+        "userPrincipalName"
+      ]
+    },
+    "channel": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the channel",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the channel"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the channel"
+        },
+        "isFavorite": {
+          "type": "boolean",
+          "description": "Indicates if the channel is marked as a favorite by the current user"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address associated with the channel",
+          "format": "email"
+        },
+        "webUrl": {
+          "type": "string",
+          "description": "URL to access the channel in the web client",
+          "format": "URL"
+        },
+        "membershipType": {
+          "type": "string",
+          "description": "Type of channel membership (e.g., 'standard', 'private', 'shared')",
+          "enum": ["standard", "private", "shared"]
+        },
+        "messages": {
+          "type": "array",
+          "description": "List of messages in the channel",
+          "items": {
+            "$ref": "#/definitions/message"
+          }
+        },
+        "tabs": {
+          "type": "array",
+          "description": "List of tabs configured in the channel",
+          "items": {
+            "$ref": "#/definitions/tab"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "message": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the message",
+          "format": "uuid"
+        },
+        "replyToId": {
+          "type": "string",
+          "description": "ID of the message this message is a reply to (if applicable)",
+          "format": "uuid"
+        },
+        "from": {
+          "type": "object",
+          "description": "Sender of the message",
+          "properties": {
+            "user": {
+              "$ref": "#/definitions/user"
+            },
+            "application": {
+              "$ref": "#/definitions/application"
+            }
+          }
+        },
+        "body": {
+          "type": "object",
+          "description": "Content of the message",
+          "properties": {
+            "contentType": {
+              "type": "string",
+              "description": "Type of message content (e.g., 'text', 'html')",
+              "enum": ["text", "html"]
+            },
+            "content": {
+              "type": "string",
+              "description": "The actual message content"
+            }
+          },
+          "required": [
+            "contentType",
+            "content"
+          ]
+        },
+        "createdDateTime": {
+          "type": "string",
+          "description": "Timestamp when the message was created",
+          "format": "date-time"
+        },
+        "lastModifiedDateTime": {
+          "type": "string",
+          "description": "Timestamp when the message was last modified",
+          "format": "date-time"
+        },
+        "attachments": {
+          "type": "array",
+          "description": "List of attachments in the message",
+          "items": {
+            "$ref": "#/definitions/attachment"
+          }
+        },
+        "mentions": {
+          "type": "array",
+          "description": "List of mentions in the message",
+          "items": {
+            "$ref": "#/definitions/mention"
+          }
+        },
+        "reactions": {
+          "type": "array",
+          "description": "List of reactions to the message",
+          "items": {
+            "$ref": "#/definitions/reaction"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "from",
+        "body",
+        "createdDateTime"
+      ]
+    },
+    "attachment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the attachment",
+          "format": "uuid"
+        },
+        "contentType": {
+          "type": "string",
+          "description": "MIME type of the attachment"
+        },
+        "contentUrl": {
+          "type": "string",
+          "description": "URL to the attachment content",
+          "format": "URL"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the attachment (if not represented by a URL)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the attachment"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "description": "URL to a thumbnail of the attachment (if applicable)",
+          "format": "URL"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "mention": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Index of the mention within the message content"
+        },
+        "mentionText": {
+          "type": "string",
+          "description": "Text representation of the mention in the message content"
+        },
+        "mentioned": {
+          "type": "object",
+          "description": "The entity mentioned",
+          "properties": {
+            "user": {
+              "$ref": "#/definitions/user"
+            },
+            "conversation": {
+              "type": "object",
+              "description": "Represents the conversation where the mention occurred",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "displayName": {
+                  "type": "string"
+                }
+              }
+            },
+            "application": {
+              "$ref": "#/definitions/application"
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "mentioned"
+      ]
+    },
+    "reaction": {
+      "type": "object",
+      "properties": {
+        "reactionType": {
+          "type": "string",
+          "description": "Type of reaction (e.g., 'like', 'heart', 'laugh', 'surprised', 'sad', 'angry')",
+          "enum": ["like", "heart", "laugh", "surprised", "sad", "angry"]
+        },
+        "createdDateTime": {
+          "type": "string",
+          "description": "Timestamp when the reaction was created",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/user"
+        }
+      },
+      "required": [
+        "reactionType",
+        "createdDateTime",
+        "user"
+      ]
+    },
+    "tab": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the tab",
+          "format": "uuid"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the tab"
+        },
+        "webUrl": {
+          "type": "string",
+          "description": "URL to access the tab in the web client",
+          "format": "URL"
+        },
+        "configuration": {
+          "type": "object",
+          "description": "Configuration settings for the tab"
+        },
+        "teamsAppId": {
+          "type": "string",
+          "description": "Id of the Teams app this tab is associated with"
+        }
+      },
+      "required": [
+        "id",
+        "displayName",
+        "teamsAppId"
+      ]
+    },
+    "app": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Id of the app",
+          "format": "uuid"
+        },
+        "externalId": {
+          "type": "string",
+          "description": "External Id of the app"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the app"
+        },
+        "distributionMethod": {
+          "type": "string",
+          "description": "Method by which the app is distributed (e.g., 'store', 'sideloaded')",
+          "enum": ["store", "organization", "sideloaded"]
+        }
+      },
+      "required": [
+        "id",
+        "displayName",
+        "distributionMethod"
+      ]
+    },
+    "guestSettings": {
+      "type": "object",
+      "properties": {
+        "allowCreateUpdateChannels": {
+          "type": "boolean",
+          "description": "Indicates if guests can create and update channels"
+        },
+        "allowDeleteChannels": {
+          "type": "boolean",
+          "description": "Indicates if guests can delete channels"
+        }
+      },
+      "required": [
+        "allowCreateUpdateChannels",
+        "allowDeleteChannels"
+      ]
+    },
+    "messagingSettings": {
+      "type": "object",
+      "properties": {
+        "allowUserEditMessages": {
+          "type": "boolean",
+          "description": "Indicates if users can edit their messages"
+        },
+        "allowUserDeleteMessages": {
+          "type": "boolean",
+          "description": "Indicates if users can delete their messages"
+        },
+        "allowOwnerDeleteMessages": {
+          "type": "boolean",
+          "description": "Indicates if owners can delete any message"
+        },
+        "allowTeamMentions": {
+          "type": "boolean",
+          "description": "Indicates if team mentions (@team) are allowed"
+        },
+        "allowChannelMentions": {
+          "type": "boolean",
+          "description": "Indicates if channel mentions (@channel) are allowed"
+        }
+      },
+      "required": [
+        "allowUserEditMessages",
+        "allowUserDeleteMessages",
+        "allowOwnerDeleteMessages",
+        "allowTeamMentions",
+        "allowChannelMentions"
+      ]
+    },
+    "funSettings": {
+      "type": "object",
+      "properties": {
+        "allowGiphy": {
+          "type": "boolean",
+          "description": "Indicates if Giphy usage is allowed"
+        },
+        "giphyContentRating": {
+          "type": "string",
+          "description": "Content rating for Giphy (e.g., 'strict', 'moderate')",
+          "enum": ["strict", "moderate"]
+        },
+        "allowStickersAndMemes": {
+          "type": "boolean",
+          "description": "Indicates if stickers and memes are allowed"
+        },
+        "allowCustomMemes": {
+          "type": "boolean",
+          "description": "Indicates if custom memes are allowed"
+        }
+      },
+      "required": [
+        "allowGiphy",
+        "giphyContentRating",
+        "allowStickersAndMemes",
+        "allowCustomMemes"
+      ]
+    },
+    "application": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique identifier of the application."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The display name of the application."
+        }
+      },
+      "required": [
+        "id"
+      ]
+    }
+  }
+}

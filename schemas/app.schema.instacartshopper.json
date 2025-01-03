@@ -1,0 +1,754 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Instacart Shopper App Schema",
+  "description": "Schema for data used in the Instacart Shopper App",
+  "type": "object",
+  "properties": {
+    "shopper": {
+      "type": "object",
+      "description": "Information about the Instacart shopper",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the shopper"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "Shopper's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Shopper's last name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Shopper's email address"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Shopper's phone number (e.g., +15551234567)"
+        },
+        "profilePictureUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the shopper's profile picture"
+        },
+        "vehicle": {
+          "type": "object",
+          "description": "Information about the shopper's vehicle (if applicable)",
+          "properties": {
+            "make": {
+              "type": "string",
+              "description": "Vehicle make"
+            },
+            "model": {
+              "type": "string",
+              "description": "Vehicle model"
+            },
+            "year": {
+              "type": "integer",
+              "description": "Vehicle year"
+            },
+            "color": {
+              "type": "string",
+              "description": "Vehicle color"
+            },
+            "licensePlate": {
+              "type": "string",
+              "description": "Vehicle license plate number"
+            }
+          },
+          "required": [
+            "make",
+            "model",
+            "year",
+            "color",
+            "licensePlate"
+          ]
+        },
+        "rating": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Shopper's average rating"
+        },
+        "completedOrders": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of orders completed by the shopper"
+        },
+        "accountStatus": {
+          "type": "string",
+          "enum": [
+            "active",
+            "inactive",
+            "pending",
+            "suspended"
+          ],
+          "description": "Status of the shopper's account"
+        },
+        "location": {
+          "type": "object",
+          "description": "Current location of the shopper",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "format": "float",
+              "description": "Latitude coordinate"
+            },
+            "longitude": {
+              "type": "number",
+              "format": "float",
+              "description": "Longitude coordinate"
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "accountStatus"
+      ]
+    },
+    "batch": {
+      "type": "object",
+      "description": "Information about a batch of orders",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the batch"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "available",
+            "accepted",
+            "shopping",
+            "in_transit",
+            "delivered",
+            "canceled"
+          ],
+          "description": "Current status of the batch"
+        },
+        "store": {
+          "type": "object",
+          "description": "Information about the store for this batch",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Unique identifier for the store"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the store"
+            },
+            "address": {
+              "type": "string",
+              "description": "Address of the store"
+            },
+            "location": {
+              "type": "object",
+              "description": "Location of the store",
+              "properties": {
+                "latitude": {
+                  "type": "number",
+                  "format": "float"
+                },
+                "longitude": {
+                  "type": "number",
+                  "format": "float"
+                }
+              },
+              "required": [
+                "latitude",
+                "longitude"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "address",
+            "location"
+          ]
+        },
+        "orders": {
+          "type": "array",
+          "description": "List of orders in the batch",
+          "items": {
+            "$ref": "#/properties/order"
+          },
+          "minItems": 1
+        },
+        "batchPay": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Pay for completing the entire batch"
+        },
+        "estimatedDistance": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Estimated distance for the batch in miles or kilometers"
+        },
+        "estimatedTime": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Estimated time to complete the batch in minutes"
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the batch was started"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the batch was ended"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "store",
+        "orders",
+        "batchPay",
+        "estimatedDistance",
+        "estimatedTime"
+      ]
+    },
+    "order": {
+      "type": "object",
+      "description": "Information about a customer's order",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the order"
+        },
+        "customer": {
+          "type": "object",
+          "description": "Information about the customer who placed the order",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Unique identifier for the customer"
+            },
+            "firstName": {
+              "type": "string",
+              "description": "Customer's first name"
+            },
+            "lastName": {
+              "type": "string",
+              "description": "Customer's last name"
+            },
+            "phoneNumber": {
+              "type": "string",
+              "description": "Customer's phone number"
+            }
+          },
+          "required": [
+            "id",
+            "firstName",
+            "lastName"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items in the order",
+          "items": {
+            "$ref": "#/properties/item"
+          },
+          "minItems": 1
+        },
+        "deliveryAddress": {
+          "type": "object",
+          "description": "Delivery address for the order",
+          "properties": {
+            "street": {
+              "type": "string",
+              "description": "Street address"
+            },
+            "city": {
+              "type": "string",
+              "description": "City"
+            },
+            "state": {
+              "type": "string",
+              "description": "State (e.g., CA)"
+            },
+            "zipCode": {
+              "type": "string",
+              "description": "Zip code"
+            },
+            "apartment": {
+              "type": "string",
+              "description": "Apartment, suite, or unit number (optional)"
+            },
+            "instructions": {
+              "type": "string",
+              "description": "Delivery instructions (optional)"
+            },
+            "location": {
+              "type": "object",
+              "description": "Location of the delivery address",
+              "properties": {
+                "latitude": {
+                  "type": "number",
+                  "format": "float"
+                },
+                "longitude": {
+                  "type": "number",
+                  "format": "float"
+                }
+              },
+              "required": [
+                "latitude",
+                "longitude"
+              ]
+            }
+          },
+          "required": [
+            "street",
+            "city",
+            "state",
+            "zipCode",
+            "location"
+          ]
+        },
+        "tip": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Tip amount for the order"
+        },
+        "total": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Total cost of the order"
+        },
+        "deliveryTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Time the order was delivered"
+        },
+        "orderStatus": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "accepted",
+            "shopping",
+            "in_transit",
+            "delivered",
+            "canceled"
+          ]
+        },
+        "messageHistory": {
+          "type": "array",
+          "description": "Message history between customer and shopper",
+          "items": {
+            "$ref": "#/properties/message"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "customer",
+        "items",
+        "deliveryAddress",
+        "total",
+        "orderStatus"
+      ]
+    },
+    "item": {
+      "type": "object",
+      "description": "Information about an item in an order",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the item"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the item"
+        },
+        "brand": {
+          "type": "string",
+          "description": "Brand of the item (optional)"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Quantity of the item ordered"
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement (e.g., oz, lbs, count)"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Price per unit of the item"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to an image of the item"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Customer notes about the item (optional)"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "found",
+            "out_of_stock",
+            "replaced"
+          ],
+          "description": "Status of the item during shopping"
+        },
+        "replacement": {
+          "type": "object",
+          "description": "Details of the replacement item, if any",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Unique identifier for the replacement item"
+            },
+            "name": {
+              "type": "string"
+            },
+            "brand": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "integer"
+            },
+            "unit": {
+              "type": "string"
+            },
+            "price": {
+              "type": "number"
+            },
+            "imageUrl": {
+              "type": "string",
+              "format": "URL"
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "quantity",
+        "unit",
+        "price"
+      ]
+    },
+    "message": {
+      "type": "object",
+      "description": "A message sent between shopper and customer",
+      "properties": {
+        "sender": {
+          "type": "string",
+          "enum": [
+            "shopper",
+            "customer"
+          ]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "content": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "sender",
+        "timestamp",
+        "content"
+      ]
+    },
+    "supportTicket": {
+      "type": "object",
+      "description": "Information about a shopper support ticket",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the support ticket"
+        },
+        "shopperId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the shopper who created the ticket"
+        },
+        "orderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the related order (if applicable)"
+        },
+        "batchId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the related batch (if applicable)"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "account issue",
+            "payment issue",
+            "order issue",
+            "technical issue",
+            "other"
+          ],
+          "description": "Category of the support ticket"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject of the support ticket"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the issue"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "in progress",
+            "resolved",
+            "closed"
+          ],
+          "description": "Current status of the support ticket"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the ticket was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the ticket was last updated"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sender": {
+                "type": "string",
+                "enum": [
+                  "shopper",
+                  "support"
+                ],
+                "description": "Who sent the message"
+              },
+              "message": {
+                "type": "string",
+                "description": "The message content"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When the message was sent"
+              }
+            },
+            "required": [
+              "sender",
+              "message",
+              "timestamp"
+            ]
+          },
+          "description": "Messages exchanged between shopper and support"
+        }
+      },
+      "required": [
+        "id",
+        "shopperId",
+        "category",
+        "subject",
+        "description",
+        "status",
+        "createdAt"
+      ]
+    },
+    "earnings": {
+      "type": "object",
+      "description": "Shopper's earnings information",
+      "properties": {
+        "currentBalance": {
+          "type": "number",
+          "format": "float",
+          "description": "Current balance available for cashout"
+        },
+        "totalEarnings": {
+          "type": "number",
+          "format": "float",
+          "description": "Total earnings since joining"
+        },
+        "weeklyEarnings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "weekStartDate": {
+                "type": "string",
+                "format": "date",
+                "description": "Start date of the week"
+              },
+              "earnings": {
+                "type": "number",
+                "format": "float",
+                "description": "Total earnings for the week"
+              },
+              "batches": {
+                "type": "integer",
+                "description": "Number of batches completed this week"
+              },
+              "hours": {
+                "type": "number",
+                "format": "float",
+                "description": "Number of hours worked this week"
+              }
+            },
+            "required": [
+              "weekStartDate",
+              "earnings",
+              "batches",
+              "hours"
+            ]
+          },
+          "description": "Earnings for each week"
+        },
+        "dailyEarnings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date",
+                "description": "Date of earnings"
+              },
+              "earnings": {
+                "type": "number",
+                "format": "float",
+                "description": "Total earnings for the day"
+              },
+              "batches": {
+                "type": "integer",
+                "description": "Number of batches completed today"
+              },
+              "hours": {
+                "type": "number",
+                "format": "float",
+                "description": "Number of hours worked today"
+              }
+            },
+            "required": [
+              "date",
+              "earnings",
+              "batches",
+              "hours"
+            ]
+          },
+          "description": "Earnings for each day"
+        },
+        "batchEarnings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "batchId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "ID of the batch"
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Date and time when batch earnings were recorded"
+              },
+              "basePay": {
+                "type": "number",
+                "format": "float",
+                "description": "Base pay for the batch"
+              },
+              "peakBoost": {
+                "type": "number",
+                "format": "float",
+                "description": "Additional pay during peak hours"
+              },
+              "distance": {
+                "type": "number",
+                "format": "float",
+                "description": "Distance traveled for the batch in miles or kilometers"
+              },
+              "mileagePay": {
+                "type": "number",
+                "format": "float",
+                "description": "Pay for mileage"
+              },
+              "heavyPay": {
+                "type": "number",
+                "format": "float",
+                "description": "Additional pay for heavy items"
+              },
+              "tips": {
+                "type": "number",
+                "format": "float",
+                "description": "Total tips received for the batch"
+              },
+              "totalEarnings": {
+                "type": "number",
+                "format": "float",
+                "description": "Total earnings for the batch (including tips)"
+              }
+            },
+            "required": [
+              "batchId",
+              "date",
+              "basePay",
+              "tips",
+              "totalEarnings"
+            ]
+          },
+          "description": "Detailed earnings breakdown for each batch"
+        }
+      },
+      "required": [
+        "currentBalance",
+        "totalEarnings",
+        "weeklyEarnings",
+        "dailyEarnings",
+        "batchEarnings"
+      ]
+    }
+  },
+  "required": [
+    "shopper"
+  ]
+}

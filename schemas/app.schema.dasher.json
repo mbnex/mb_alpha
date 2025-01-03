@@ -1,0 +1,626 @@
+{
+  "type": "object",
+  "title": "DoorDash Schema",
+  "description": "JSON Schema for the DoorDash application data model",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "restaurants": {
+      "type": "array",
+      "description": "List of restaurants",
+      "items": {
+        "$ref": "#/definitions/restaurant"
+      }
+    },
+    "orders": {
+      "type": "array",
+      "description": "List of orders",
+      "items": {
+        "$ref": "#/definitions/order"
+      }
+    },
+    "dashers": {
+      "type": "array",
+      "description": "List of delivery drivers (Dashers)",
+      "items": {
+        "$ref": "#/definitions/dasher"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "pattern": "^\\+?[1-9]\\d{1,14}$",
+          "description": "User's phone number (E.164 format)"
+        },
+        "address": {
+          "$ref": "#/definitions/address",
+          "description": "User's delivery address"
+        },
+        "paymentMethods": {
+          "type": "array",
+          "description": "User's payment methods",
+          "items": {
+            "$ref": "#/definitions/paymentMethod"
+          }
+        },
+        "orderHistory": {
+          "type": "array",
+          "description": "User's order history (references order IDs)",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "address"
+      ]
+    },
+    "restaurant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the restaurant"
+        },
+        "name": {
+          "type": "string",
+          "description": "Restaurant's name"
+        },
+        "cuisine": {
+          "type": "array",
+          "description": "Types of cuisine offered",
+          "items": {
+            "type": "string"
+          }
+        },
+        "address": {
+          "$ref": "#/definitions/address",
+          "description": "Restaurant's address"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "pattern": "^\\+?[1-9]\\d{1,14}$",
+          "description": "Restaurant's phone number (E.164 format)"
+        },
+        "rating": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Average rating of the restaurant"
+        },
+        "menu": {
+          "type": "array",
+          "description": "Restaurant's menu",
+          "items": {
+            "$ref": "#/definitions/menuItem"
+          }
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the restaurant's image"
+        },
+        "deliveryFee": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Delivery fee for this restaurant"
+        },
+        "estimatedDeliveryTime": {
+          "type": "string",
+          "description": "Estimated delivery time range (e.g., '30-45 mins')"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "cuisine",
+        "address",
+        "phoneNumber",
+        "menu"
+      ]
+    },
+    "menuItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the menu item"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the menu item"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the menu item"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Price of the menu item"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the menu item's image"
+        },
+        "dietaryRestrictions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dietaryRestriction"
+          }
+        },
+        "options": {
+          "type": "array",
+          "description": "Customization options for the item",
+          "items": {
+            "$ref": "#/definitions/itemOption"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "price"
+      ]
+    },
+    "itemOption": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the option (e.g., 'Size', 'Spice Level')"
+        },
+        "choices": {
+          "type": "array",
+          "description": "Choices for this option",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the choice (e.g., 'Small', 'Medium', 'Hot')"
+              },
+              "price": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "description": "Additional price for this choice (can be 0)"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        }
+      },
+      "required": [
+        "name",
+        "choices"
+      ]
+    },
+    "dietaryRestriction": {
+      "type": "string",
+      "enum": [
+        "Vegetarian",
+        "Vegan",
+        "Gluten-Free",
+        "Dairy-Free",
+        "Nut-Free",
+        "Halal",
+        "Kosher"
+      ],
+      "description": "Dietary restriction tags"
+    },
+    "order": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the order"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who placed the order"
+        },
+        "restaurantId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the restaurant the order is from"
+        },
+        "items": {
+          "type": "array",
+          "description": "Items in the order",
+          "items": {
+            "$ref": "#/definitions/orderItem"
+          }
+        },
+        "subtotal": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Subtotal of the order"
+        },
+        "deliveryFee": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Delivery fee"
+        },
+        "tax": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Tax amount"
+        },
+        "tip": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Tip amount"
+        },
+        "total": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Total amount of the order"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Placed",
+            "Confirmed",
+            "Preparing",
+            "Out for Delivery",
+            "Delivered",
+            "Cancelled"
+          ],
+          "description": "Current status of the order"
+        },
+        "dasherId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the assigned Dasher (if any)"
+        },
+        "placedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the order was placed"
+        },
+        "deliveredAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the order was delivered (if applicable)"
+        },
+        "deliveryAddress": {
+          "$ref": "#/definitions/address",
+          "description": "Delivery address for the order"
+        },
+        "paymentMethod": {
+          "$ref": "#/definitions/paymentMethod"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "restaurantId",
+        "items",
+        "subtotal",
+        "deliveryFee",
+        "tax",
+        "total",
+        "status",
+        "placedAt",
+        "deliveryAddress",
+        "paymentMethod"
+      ]
+    },
+    "orderItem": {
+      "type": "object",
+      "properties": {
+        "menuItemId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the menu item"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Quantity of the item ordered"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price at the time of ordering"
+        },
+        "specialInstructions": {
+          "type": "string",
+          "description": "Special instructions for the item"
+        },
+        "selectedOptions": {
+          "type": "array",
+          "description": "Options selected by the user",
+          "items": {
+            "type": "object",
+            "properties": {
+              "optionName": {
+                "type": "string",
+                "description": "Name of the option"
+              },
+              "choiceName": {
+                "type": "string",
+                "description": "Name of the chosen option"
+              },
+              "price": {
+                "type": "number",
+                "format": "float",
+                "description": "Additional price of the chosen option"
+              }
+            },
+            "required": [
+              "optionName",
+              "choiceName"
+            ]
+          }
+        }
+      },
+      "required": [
+        "menuItemId",
+        "quantity",
+        "price"
+      ]
+    },
+    "dasher": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the Dasher"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "Dasher's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Dasher's last name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Dasher's email address"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "pattern": "^\\+?[1-9]\\d{1,14}$",
+          "description": "Dasher's phone number (E.164 format)"
+        },
+        "vehicle": {
+          "$ref": "#/definitions/vehicle",
+          "description": "Dasher's vehicle information"
+        },
+        "rating": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Dasher's average rating"
+        },
+        "location": {
+          "type": "object",
+          "description": "Dasher's current location",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "format": "float"
+            },
+            "longitude": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Online",
+            "Offline",
+            "On Delivery"
+          ],
+          "description": "Dasher's current status"
+        },
+        "bankAccount": {
+          "$ref": "#/definitions/bankAccount",
+          "description": "Dasher's bank account information for earnings"
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "vehicle",
+        "location",
+        "status"
+      ]
+    },
+    "vehicle": {
+      "type": "object",
+      "properties": {
+        "make": {
+          "type": "string",
+          "description": "Vehicle make"
+        },
+        "model": {
+          "type": "string",
+          "description": "Vehicle model"
+        },
+        "year": {
+          "type": "integer",
+          "description": "Vehicle year"
+        },
+        "color": {
+          "type": "string",
+          "description": "Vehicle color"
+        },
+        "licensePlate": {
+          "type": "string",
+          "description": "Vehicle license plate number"
+        }
+      },
+      "required": [
+        "make",
+        "model",
+        "year",
+        "color",
+        "licensePlate"
+      ]
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "streetAddress": {
+          "type": "string",
+          "description": "Street address"
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "Apartment, suite, etc. (optional)"
+        },
+        "city": {
+          "type": "string",
+          "description": "City"
+        },
+        "state": {
+          "type": "string",
+          "description": "State (e.g., CA, NY)"
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "Postal code"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country (e.g., USA)"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "float"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float"
+        }
+      },
+      "required": [
+        "streetAddress",
+        "city",
+        "state",
+        "zipCode",
+        "country"
+      ]
+    },
+    "paymentMethod": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "Credit Card",
+            "Debit Card",
+            "PayPal",
+            "Apple Pay",
+            "Google Pay",
+            "DoorDash Gift Card"
+          ]
+        },
+        "lastFourDigits": {
+          "type": "string",
+          "description": "Last four digits of the card (if applicable)",
+          "pattern": "^\\d{4}$"
+        },
+        "expirationDate": {
+          "type": "string",
+          "description": "Expiration date of the card (if applicable, MM/YY)"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "description": "Whether this is the default payment method"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "bankAccount": {
+      "type": "object",
+      "properties": {
+        "accountNumber": {
+          "type": "string",
+          "description": "Bank account number"
+        },
+        "routingNumber": {
+          "type": "string",
+          "description": "Bank routing number"
+        },
+        "accountType": {
+          "type": "string",
+          "enum": [
+            "Checking",
+            "Savings"
+          ],
+          "description": "Type of bank account"
+        }
+      },
+      "required": [
+        "accountNumber",
+        "routingNumber",
+        "accountType"
+      ]
+    }
+  }
+}

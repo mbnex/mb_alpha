@@ -1,0 +1,639 @@
+{
+  "type": "object",
+  "title": "Coinbase API Schema",
+  "description": "JSON Schema representation of key Coinbase API endpoints and data structures.",
+  "properties": {
+    "accounts": {
+      "type": "object",
+      "description": "Represents user accounts.",
+      "properties": {
+        "list": {
+          "type": "object",
+          "description": "List all accounts.",
+          "properties": {
+            "response": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/account"
+              }
+            }
+          },
+          "required": [
+            "response"
+          ]
+        },
+        "show": {
+          "type": "object",
+          "description": "Get a specific account.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account."
+                }
+              },
+              "required": [
+                "account_id"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/account"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        }
+      },
+      "required": [
+        "list",
+        "show"
+      ]
+    },
+    "transactions": {
+      "type": "object",
+      "description": "Represents transactions.",
+      "properties": {
+        "list": {
+          "type": "object",
+          "description": "List transactions for an account.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account."
+                }
+              },
+              "required": [
+                "account_id"
+              ]
+            },
+            "response": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/transaction"
+              }
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "show": {
+          "type": "object",
+          "description": "Get a specific transaction.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account."
+                },
+                "transaction_id": {
+                  "type": "string",
+                  "description": "The ID of the transaction."
+                }
+              },
+              "required": [
+                "account_id",
+                "transaction_id"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/transaction"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "send": {
+          "type": "object",
+          "description": "Send funds.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account to send from."
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "send"
+                  ],
+                  "description": "Transaction type (must be 'send')."
+                },
+                "to": {
+                  "type": "string",
+                  "description": "Destination address or email."
+                },
+                "amount": {
+                  "type": "string",
+                  "description": "Amount to send (in the currency of the account)."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code (e.g., 'BTC', 'ETH')."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Optional description."
+                }
+              },
+              "required": [
+                "account_id",
+                "type",
+                "to",
+                "amount",
+                "currency"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/transaction"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "request": {
+          "type": "object",
+          "description": "Request funds.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account to request funds to."
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "request"
+                  ],
+                  "description": "Transaction type (must be 'request')."
+                },
+                "from": {
+                  "type": "string",
+                  "description": "Email of the person to request funds from."
+                },
+                "amount": {
+                  "type": "string",
+                  "description": "Amount to request (in the currency of the account)."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Optional description."
+                }
+              },
+              "required": [
+                "account_id",
+                "type",
+                "from",
+                "amount",
+                "currency"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/transaction"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        }
+      },
+      "required": [
+        "list",
+        "show",
+        "send"
+      ]
+    },
+    "prices": {
+      "type": "object",
+      "description": "Represents cryptocurrency prices.",
+      "properties": {
+        "buy": {
+          "type": "object",
+          "description": "Get the buy price for a cryptocurrency.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "currency_pair": {
+                  "type": "string",
+                  "description": "Currency pair (e.g., 'BTC-USD')."
+                }
+              },
+              "required": [
+                "currency_pair"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/price"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "sell": {
+          "type": "object",
+          "description": "Get the sell price for a cryptocurrency.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "currency_pair": {
+                  "type": "string",
+                  "description": "Currency pair (e.g., 'BTC-USD')."
+                }
+              },
+              "required": [
+                "currency_pair"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/price"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "spot": {
+          "type": "object",
+          "description": "Get the spot price for a cryptocurrency.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "currency_pair": {
+                  "type": "string",
+                  "description": "Currency pair (e.g., 'BTC-USD')."
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Optional date for historical price."
+                }
+              },
+              "required": [
+                "currency_pair"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/price"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        }
+      },
+      "required": [
+        "buy",
+        "sell",
+        "spot"
+      ]
+    },
+    "user": {
+      "type": "object",
+      "description": "Represents user information.",
+      "properties": {
+        "show": {
+          "type": "object",
+          "description": "Get current user's information.",
+          "properties": {
+            "response": {
+              "$ref": "#/definitions/user"
+            }
+          },
+          "required": [
+            "response"
+          ]
+        }
+      },
+      "required": [
+        "show"
+      ]
+    }
+  },
+  "required": [
+    "accounts",
+    "transactions",
+    "prices",
+    "user"
+  ],
+  "definitions": {
+    "account": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Account ID."
+        },
+        "name": {
+          "type": "string",
+          "description": "Account name."
+        },
+        "balance": {
+          "$ref": "#/definitions/money"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., 'BTC', 'USD')."
+        },
+        "type": {
+          "type": "string",
+          "description": "Account type (e.g., 'wallet', 'fiat')."
+        },
+        "primary": {
+          "type": "boolean",
+          "description": "Whether this is the user's primary account."
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether this account is active."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "balance",
+        "currency"
+      ]
+    },
+    "transaction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Transaction ID."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "send",
+            "request",
+            "transfer",
+            "buy",
+            "sell",
+            "fiat_deposit",
+            "fiat_withdrawal",
+            "exchange_deposit",
+            "exchange_withdrawal",
+            "vault_withdrawal"
+          ],
+          "description": "Transaction type."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "completed",
+            "failed",
+            "expired",
+            "canceled",
+            "waiting_for_signature",
+            "waiting_for_clearing"
+          ],
+          "description": "Transaction status."
+        },
+        "amount": {
+          "$ref": "#/definitions/money"
+        },
+        "native_amount": {
+          "$ref": "#/definitions/money"
+        },
+        "description": {
+          "type": "string",
+          "description": "Transaction description."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "to": {
+          "$ref": "#/definitions/resource"
+        },
+        "from": {
+          "$ref": "#/definitions/resource"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "status",
+        "amount",
+        "native_amount"
+      ]
+    },
+    "price": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "description": "Price amount."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., 'USD')."
+        },
+        "base": {
+          "type": "string",
+          "description": "Base currency code."
+        }
+      },
+      "required": [
+        "amount",
+        "currency",
+        "base"
+      ]
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User ID."
+        },
+        "name": {
+          "type": "string",
+          "description": "User's name."
+        },
+        "username": {
+          "type": "string",
+          "description": "Username."
+        },
+        "profile_location": {
+          "type": "string",
+          "description": "Profile location."
+        },
+        "profile_bio": {
+          "type": "string",
+          "description": "Profile bio."
+        },
+        "profile_url": {
+          "type": "string",
+          "description": "Profile URL."
+        },
+        "avatar_url": {
+          "type": "string",
+          "description": "Avatar URL."
+        },
+        "resource": {
+          "type": "string",
+          "description": "Resource type (should be 'user')."
+        },
+        "resource_path": {
+          "type": "string",
+          "description": "Resource path."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email."
+        },
+        "legacy_id": {
+          "type": "string",
+          "description": "Legacy ID."
+        },
+        "time_zone": {
+          "type": "string",
+          "description": "Time zone."
+        },
+        "native_currency": {
+          "type": "string",
+          "description": "Native currency."
+        },
+        "bitcoin_unit": {
+          "type": "string",
+          "description": "Bitcoin unit."
+        },
+        "state": {
+          "type": "string",
+          "description": "State."
+        },
+        "country": {
+          "$ref": "#/definitions/country"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tiers": {
+          "type": "object",
+          "properties": {
+            "completed_description": {
+              "type": "string"
+            }
+          },
+          "required": ["completed_description"]
+        }
+      },
+      "required": [
+        "id",
+        "resource",
+        "resource_path"
+      ]
+    },
+    "money": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "description": "Amount as string."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code."
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Resource ID."
+        },
+        "resource": {
+          "type": "string",
+          "description": "Resource type."
+        },
+        "resource_path": {
+          "type": "string",
+          "description": "Resource path."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address (for user resources)."
+        }
+      },
+      "required": [
+        "id",
+        "resource",
+        "resource_path"
+      ]
+    },
+    "country": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Country code (e.g., 'US')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Country name."
+        }
+      },
+      "required": [
+        "code",
+        "name"
+      ]
+    }
+  }
+}

@@ -1,0 +1,410 @@
+{
+  "type": "object",
+  "title": "Jitsi Meet Application Schema",
+  "description": "Schema for a Jitsi Meet application configuration, including user interface, meeting features, and integration details.",
+  "properties": {
+    "general": {
+      "type": "object",
+      "description": "General application settings.",
+      "properties": {
+        "appName": {
+          "type": "string",
+          "description": "Name of the Jitsi Meet application.",
+          "example": "My Jitsi App"
+        },
+        "defaultLanguage": {
+          "type": "string",
+          "description": "Default language for the application interface.",
+          "example": "en",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+        },
+        "domain": {
+          "type": "string",
+          "description": "Domain name where the Jitsi server is hosted.",
+          "example": "meet.example.com",
+          "format": "hostname"
+        },
+        "logoURL": {
+          "type": "string",
+          "description": "URL to the application logo.",
+          "format": "URL"
+        },
+        "faviconURL": {
+          "type": "string",
+          "description": "URL to the application favicon.",
+          "format": "URL"
+        },
+        "supportEmail": {
+          "type": "string",
+          "description": "Email address for support inquiries",
+          "format": "email"
+        }
+      }
+    },
+    "interfaceConfig": {
+      "type": "object",
+      "description": "Configuration for the user interface.",
+      "properties": {
+        "TOOLBAR_BUTTONS": {
+          "type": "array",
+          "description": "List of toolbar buttons to display.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "microphone",
+              "camera",
+              "closedcaptions",
+              "desktop",
+              "fullscreen",
+              "fodeviceselection",
+              "hangup",
+              "profile",
+              "chat",
+              "recording",
+              "livestreaming",
+              "etherpad",
+              "sharedvideo",
+              "settings",
+              "raisehand",
+              "videoquality",
+              "filmstrip",
+              "invite",
+              "feedback",
+              "stats",
+              "shortcuts",
+              "tileview",
+              "videobackgroundblur",
+              "download",
+              "help",
+              "mute-everyone",
+              "security"
+            ]
+          }
+        },
+        "SHOW_WATERMARK": {
+          "type": "boolean",
+          "description": "Whether to display the Jitsi watermark.",
+          "default": false
+        },
+        "SHOW_JITSI_WATERMARK": {
+          "type": "boolean",
+          "description": "Whether to display Jitsi branded watermark",
+          "default": false
+        },
+        "SHOW_BRAND_WATERMARK": {
+          "type": "boolean",
+          "description": "Whether to display custom brand watermark",
+          "default": false
+        },
+        "BRAND_WATERMARK_LINK": {
+          "type": "string",
+          "description": "URL to which the custom brand watermark will point",
+          "format": "URL"
+        },
+        "DEFAULT_LOCAL_DISPLAY_NAME": {
+          "type": "string",
+          "description": "Default display name for local participants",
+          "example": "Me"
+        },
+        "DEFAULT_REMOTE_DISPLAY_NAME": {
+          "type": "string",
+          "description": "Default display name for remote participants",
+          "example": "Fellow Jitster"
+        },
+        "disableDeepLinking": {
+          "type": "boolean",
+          "description": "Disable deep linking to specific rooms",
+          "default": false
+        },
+        "disableAudioLevels": {
+          "type": "boolean",
+          "description": "Disable visual audio level indicators",
+          "default": false
+        },
+        "disableRemoteMute": {
+          "type": "boolean",
+          "description": "Disable the option to remotely mute participants",
+          "default": false
+        },
+        "hideConferenceSubject": {
+          "type": "boolean",
+          "description": "Whether to hide the subject/topic field.",
+          "default": false
+        },
+        "hideConferenceTimer": {
+          "type": "boolean",
+          "description": "Whether to hide the meeting timer",
+          "default": false
+        },
+        "OPTIMAL_BROWSERS": {
+          "type": "array",
+          "description": "List of browsers that are recommended",
+          "default": ["chrome", "chromium", "firefox", "nwjs", "electron", "safari"],
+          "items": {
+            "type": "string",
+            "enum": ["chrome", "chromium", "firefox", "nwjs", "electron", "safari", "edge"]
+          }
+        },
+        "UNSUPPORTED_BROWSERS": {
+          "type": "array",
+          "description": "List of browsers that are not supported",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "configOverwrite": {
+      "type": "object",
+      "description": "Configuration options that overwrite Jitsi Meet's default settings.",
+      "properties": {
+        "prejoinPageEnabled": {
+          "type": "boolean",
+          "description": "Enables or disables the pre-join page.",
+          "default": false
+        },
+        "disableAP": {
+          "type": "boolean",
+          "description": "Disable Acoustic Echo Cancellation (AEC)",
+          "default": false
+        },
+        "disableAEC": {
+          "type": "boolean",
+          "description": "Disable Automatic Echo Cancellation",
+          "default": false
+        },
+        "disableNS": {
+          "type": "boolean",
+          "description": "Disable Noise Suppression",
+          "default": false
+        },
+        "disableAGC": {
+          "type": "boolean",
+          "description": "Disable Automatic Gain Control",
+          "default": false
+        },
+        "disableHPF": {
+          "type": "boolean",
+          "description": "Disable High Pass Filter",
+          "default": false
+        },
+        "stereo": {
+          "type": "boolean",
+          "description": "Enable stereo audio",
+          "default": false
+        },
+        "enableNoAudioDetection": {
+          "type": "boolean",
+          "description": "Enables No Audio Detection",
+          "default": true
+        },
+        "enableNoisyMicDetection": {
+          "type": "boolean",
+          "description": "Enables Noisy Mic Detection",
+          "default": true
+        },
+        "startAudioOnly": {
+          "type": "boolean",
+          "description": "Start the meeting with audio only.",
+          "default": false
+        },
+        "startWithAudioMuted": {
+          "type": "boolean",
+          "description": "Start the meeting with audio muted.",
+          "default": false
+        },
+        "startWithVideoMuted": {
+          "type": "boolean",
+          "description": "Start the meeting with video muted.",
+          "default": false
+        },
+        "enableClosePage": {
+          "type": "boolean",
+          "description": "Enable a close page at the end of the meeting.",
+          "default": false
+        },
+        "disableInviteFunctions": {
+          "type": "boolean",
+          "description": "Disable invitation functionalities",
+          "default": false
+        },
+        "disableJoinLeaveSounds": {
+          "type": "boolean",
+          "description": "Disable playing sounds on user join/leave.",
+          "default": false
+        },
+        "disableThirdPartyRequests": {
+          "type": "boolean",
+          "description": "Disable making requests to third-party servers",
+          "default": false
+        },
+        "enableInsecureRoomNameWarning": {
+          "type": "boolean",
+          "description": "Enable warning for insecure room names",
+          "default": false
+        },
+        "resolution": {
+          "type": "integer",
+          "description": "Default video resolution (height in pixels).",
+          "default": 720,
+          "enum": [180, 240, 360, 480, 720, 1080, 1440, 2160]
+        },
+        "constraints": {
+          "type": "object",
+          "description": "Video resolution constraints for different scenarios",
+          "properties": {
+            "video": {
+              "type": "object",
+              "properties": {
+                "ideal": {
+                  "type": "integer",
+                  "description": "Ideal resolution",
+                  "default": 720,
+                  "enum": [180, 240, 360, 480, 720, 1080, 1440, 2160]
+                },
+                "max": {
+                  "type": "integer",
+                  "description": "Maximum resolution",
+                  "default": 720,
+                  "enum": [180, 240, 360, 480, 720, 1080, 1440, 2160]
+                },
+                "min": {
+                  "type": "integer",
+                  "description": "Minimum resolution",
+                  "default": 180,
+                  "enum": [180, 240, 360, 480, 720, 1080, 1440, 2160]
+                }
+              }
+            }
+          }
+        },
+        "disableSimulcast": {
+          "type": "boolean",
+          "description": "Disable simulcast to reduce bandwidth consumption",
+          "default": false
+        },
+        "disableRtx": {
+          "type": "boolean",
+          "description": "Disable the RTX (retransmission) feature in video",
+          "default": false
+        },
+        "enableOpusRed": {
+          "type": "boolean",
+          "description": "Enable RED (redundant encoding) for Opus audio codec",
+          "default": false
+        },
+        "p2p": {
+          "type": "object",
+          "description": "Peer-to-peer connection settings",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable peer-to-peer connections",
+              "default": true
+            }
+          }
+        },
+        "analytics": {
+          "type": "object",
+          "description": "Settings for usage analytics.",
+          "properties": {
+            "disabled": {
+              "type": "boolean",
+              "description": "Disable analytics globally",
+              "default": false
+            }
+          }
+        },
+        "hosts": {
+          "type": "object",
+          "description": "Domain settings for moderators and authentication.",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Domain for authentication and room management.",
+              "example": "auth.example.com"
+            },
+            "muc": {
+              "type": "string",
+              "description": "Multi-User Chat (MUC) domain.",
+              "example": "conference.example.com"
+            }
+          }
+        },
+        "externalConnectUrl": {
+          "type": "string",
+          "description": "URL for external authentication or user management services.",
+          "format": "URL"
+        },
+        "recordingService": {
+          "type": "object",
+          "description": "Configuration for recording service integration",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable integration with recording service",
+              "default": false
+            }
+          }
+        },
+        "liveStreamingEnabled": {
+          "type": "boolean",
+          "description": "Whether to enable live streaming.",
+          "default": false
+        },
+        "fileRecordingsEnabled": {
+          "type": "boolean",
+          "description": "Whether to enable file-based recordings.",
+          "default": false
+        },
+        "fileRecordingsServiceEnabled": {
+          "type": "boolean",
+          "description": "Whether to enable the file-based recording service",
+          "default": false
+        },
+        "hiddenDomain": {
+          "type": "string",
+          "description": "A hidden domain used for specific purposes like shared document editing.",
+          "example": "shared-doc.example.com"
+        }
+      }
+    },
+    "integration": {
+      "type": "object",
+      "description": "Configuration for integrations with other services.",
+      "properties": {
+        "calendar": {
+          "type": "object",
+          "description": "Settings for calendar integration",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable calendar integration",
+              "default": false
+            }
+          }
+        },
+        "etherpad": {
+          "type": "object",
+          "description": "Settings for Etherpad integration (collaborative document editing)",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable Etherpad integration",
+              "default": false
+            },
+            "baseUrl": {
+              "type": "string",
+              "description": "Base URL of the Etherpad instance",
+              "format": "URL"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "general"
+  ]
+}

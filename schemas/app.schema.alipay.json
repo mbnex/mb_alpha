@@ -1,0 +1,650 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AliPay Transaction",
+  "description": "JSON Schema for an AliPay transaction, covering common API interactions.",
+  "type": "object",
+  "definitions": {
+    "address": {
+      "type": "object",
+      "properties": {
+        "country_code": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code (e.g., CN, US)",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "state_or_province": {
+          "type": "string",
+          "description": "State or province"
+        },
+        "city": {
+          "type": "string",
+          "description": "City"
+        },
+        "district": {
+          "type": "string",
+          "description": "District or region within the city"
+        },
+        "street_address": {
+          "type": "string",
+          "description": "Street address line 1"
+        },
+        "street_address2": {
+          "type": "string",
+          "description": "Street address line 2 (optional)"
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "Postal or ZIP code"
+        }
+      },
+      "required": [
+        "country_code",
+        "city",
+        "street_address"
+      ]
+    },
+    "product": {
+      "type": "object",
+      "properties": {
+        "product_code": {
+          "type": "string",
+          "description": "Merchant's product code"
+        },
+        "product_name": {
+          "type": "string",
+          "description": "Name of the product"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Quantity of the product",
+          "minimum": 1
+        },
+        "unit_price": {
+          "type": "number",
+          "description": "Price per unit",
+          "minimum": 0
+        },
+        "product_description": {
+          "type": "string",
+          "description": "Optional description"
+        }
+      },
+      "required": [
+        "product_code",
+        "product_name",
+        "quantity",
+        "unit_price"
+      ]
+    },
+    "buyer": {
+      "type": "object",
+      "properties": {
+        "buyer_id": {
+          "type": "string",
+          "description": "AliPay user ID"
+        },
+        "buyer_logon_id": {
+          "type": "string",
+          "description": "AliPay user login ID (e.g., email or phone)"
+        },
+        "buyer_name": {
+          "type": "string",
+          "description": "Name of the buyer"
+        }
+      },
+      "required": [
+        "buyer_id"
+      ]
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code (e.g., CNY, USD)",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method type.",
+      "enum": [
+        "QR_CODE",
+        "BAR_CODE",
+        "WEB",
+        "APP",
+        "IN_APP_MINI_PROGRAM"
+      ]
+    }
+  },
+  "properties": {
+    "request": {
+      "type": "object",
+      "description": "Details of the transaction request",
+      "oneOf": [
+        {
+          "title": "Create Payment/Order",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.create",
+                "alipay.trade.app.pay",
+                "alipay.trade.wap.pay",
+                "alipay.trade.page.pay",
+                "alipay.trade.precreate"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number",
+              "maxLength": 64
+            },
+            "total_amount": {
+              "type": "number",
+              "description": "Total amount of the transaction",
+              "minimum": 0.01
+            },
+            "currency": {
+              "$ref": "#/definitions/currency"
+            },
+            "subject": {
+              "type": "string",
+              "description": "Brief description of the transaction"
+            },
+            "body": {
+              "type": "string",
+              "description": "Detailed description of the transaction"
+            },
+            "product_code": {
+              "type": "string",
+              "description": "Specific product code for different AliPay services",
+              "enum": [
+                "FAST_INSTANT_TRADE_PAY",
+                "QUICK_MSECURITY_PAY",
+                "QUICK_WAP_WAY"
+              ]
+            },
+            "timeout_express": {
+              "type": "string",
+              "description": "Order timeout period (e.g., 15m, 1h, 1d)",
+              "pattern": "^\\d+[mhdw]$"
+            },
+            "goods_detail": {
+              "type": "array",
+              "description": "List of goods included in the order",
+              "items": {
+                "$ref": "#/definitions/product"
+              }
+            },
+            "extend_params": {
+              "type": "object",
+              "description": "Additional parameters",
+              "properties": {
+                "sys_service_provider_id": {
+                  "type": "string",
+                  "description": "System service provider ID (for ISVs)"
+                },
+                "hb_fq_num":{
+                  "type": "string",
+                  "description": "Number of Huabei Fenqi (installments). For example: 3, 6, 12"
+                },
+                "hb_fq_seller_percent": {
+                  "type": "string",
+                  "description": "Percentage of the installment fee borne by the seller. '0' for buyer pays all, '100' for seller pays all. Between 0 and 100."
+                }
+
+              },
+              "additionalProperties": true
+            },
+            "passback_params": {
+              "type": "string",
+              "description": "Custom parameters that will be returned in the response",
+              "maxLength": 512
+            },
+            "notify_url": {
+              "type": "string",
+              "description": "URL for asynchronous notifications",
+              "format": "URL"
+            },
+            "return_url": {
+              "type": "string",
+              "description": "URL for synchronous redirect after payment (for web)",
+              "format": "URL"
+            },
+            "show_url": {
+              "type": "string",
+              "description": "URL of product display page (for web)",
+              "format": "URL"
+            },
+            "payment_method": {
+              "$ref": "#/definitions/payment_method"
+            },
+            "store_id": {
+              "type": "string",
+              "description": "Store ID."
+            },
+            "merchant_order_no": {
+              "type": "string",
+              "description": "Merchant order number. This is the same as `out_trade_no`"
+            }
+          },
+          "required": [
+            "method",
+            "out_trade_no",
+            "total_amount",
+            "currency",
+            "subject"
+          ]
+        },
+        {
+          "title": "Query Order",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.query"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            }
+          },
+          "required": [
+            "method"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "out_trade_no"
+              ]
+            },
+            {
+              "required": [
+                "trade_no"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Refund",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.refund"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "refund_amount": {
+              "type": "number",
+              "description": "Amount to be refunded",
+              "minimum": 0.01
+            },
+            "out_request_no": {
+              "type": "string",
+              "description": "Unique refund request number (for partial refunds)"
+            },
+            "refund_reason": {
+              "type": "string",
+              "description": "Reason for the refund"
+            }
+          },
+          "required": [
+            "method",
+            "refund_amount"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "out_trade_no"
+              ]
+            },
+            {
+              "required": [
+                "trade_no"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Cancel Order",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.cancel"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            }
+          },
+          "required": [
+            "method"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "out_trade_no"
+              ]
+            },
+            {
+              "required": [
+                "trade_no"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Close Order",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.close"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            }
+          },
+          "required": [
+            "method"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "out_trade_no"
+              ]
+            },
+            {
+              "required": [
+                "trade_no"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "response": {
+      "type": "object",
+      "description": "Details of the transaction response",
+      "oneOf": [
+        {
+          "title": "Create Payment/Order Response",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Response code (e.g., 10000 for success)",
+              "enum": [
+                "10000",
+                "20000",
+                "20001",
+                "40001",
+                "40002",
+                "40003",
+                "40004",
+                "40006"
+              ]
+            },
+            "msg": {
+              "type": "string",
+              "description": "Response message (e.g., Success)"
+            },
+            "sub_code": {
+              "type": "string",
+              "description": "Sub-error code (e.g., ACQ.TRADE_HAS_SUCCESS)"
+            },
+            "sub_msg": {
+              "type": "string",
+              "description": "Sub-error message"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "qr_code": {
+              "type": "string",
+              "description": "QR code URL (for QR code payments)"
+            },
+            "code_url": {
+              "type": "string",
+              "description": "URL to redirect to for payment (for web)",
+              "format": "URL"
+            }
+          },
+          "required": [
+            "code",
+            "msg"
+          ]
+        },
+        {
+          "title": "Query Order Response",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Response code",
+              "enum": [
+                "10000",
+                "20000",
+                "20001",
+                "40001",
+                "40002",
+                "40003",
+                "40004",
+                "40006"
+              ]
+            },
+            "msg": {
+              "type": "string",
+              "description": "Response message"
+            },
+            "sub_code": {
+              "type": "string",
+              "description": "Sub-error code"
+            },
+            "sub_msg": {
+              "type": "string",
+              "description": "Sub-error message"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "buyer_logon_id": {
+              "type": "string",
+              "description": "AliPay user login ID"
+            },
+            "trade_status": {
+              "type": "string",
+              "description": "Transaction status",
+              "enum": [
+                "WAIT_BUYER_PAY",
+                "TRADE_CLOSED",
+                "TRADE_SUCCESS",
+                "TRADE_FINISHED"
+              ]
+            },
+            "total_amount": {
+              "type": "number",
+              "description": "Total amount of the transaction"
+            },
+            "send_pay_date": {
+              "type": "string",
+              "description": "Date and time of payment",
+              "format": "date-time"
+            },
+            "buyer_user_id": {
+              "type": "string",
+              "description": "AliPay user ID"
+            },
+            "receipt_amount": {
+              "type": "number",
+              "description": "Amount received by the seller."
+            },
+            "point_amount": {
+              "type": "number",
+              "description": "Amount paid with points."
+            },
+            "invoice_amount": {
+              "type": "number",
+              "description": "Amount on the invoice."
+            },
+            "buyer_pay_amount": {
+              "type": "number",
+              "description": "Amount paid by the buyer"
+            }
+          },
+          "required": [
+            "code",
+            "msg"
+          ]
+        },
+        {
+          "title": "Refund Response",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Response code",
+              "enum": [
+                "10000",
+                "20000",
+                "20001",
+                "40001",
+                "40002",
+                "40003",
+                "40004",
+                "40006"
+              ]
+            },
+            "msg": {
+              "type": "string",
+              "description": "Response message"
+            },
+            "sub_code": {
+              "type": "string",
+              "description": "Sub-error code"
+            },
+            "sub_msg": {
+              "type": "string",
+              "description": "Sub-error message"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "refund_fee": {
+              "type": "number",
+              "description": "Refunded amount"
+            },
+            "gmt_refund_pay": {
+              "type": "string",
+              "description": "Date and time of refund",
+              "format": "date-time"
+            },
+            "buyer_logon_id": {
+              "type": "string",
+              "description": "AliPay user login ID"
+            },
+            "fund_change": {
+              "type": "string",
+              "description": "Indicates whether the refund caused a fund change (Y/N)",
+              "enum": ["Y", "N"]
+            }
+          },
+          "required": [
+            "code",
+            "msg"
+          ]
+        },
+        {
+          "title": "Cancel/Close Order Response",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Response code",
+              "enum": [
+                "10000",
+                "20000",
+                "20001",
+                "40001",
+                "40002",
+                "40003",
+                "40004",
+                "40006"
+              ]
+            },
+            "msg": {
+              "type": "string",
+              "description": "Response message"
+            },
+            "sub_code": {
+              "type": "string",
+              "description": "Sub-error code"
+            },
+            "sub_msg": {
+              "type": "string",
+              "description": "Sub-error message"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "action": {
+              "type": "string",
+              "description": "For alipay.trade.close it indicates whether to retry closing the order. For alipay.trade.cancel this field is not present.",
+              "enum": ["retry", "close"]
+            }
+          },
+          "required": [
+            "code",
+            "msg"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "request"
+  ]
+}

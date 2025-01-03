@@ -1,0 +1,753 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pokemon Go App Data",
+  "description": "JSON Schema for the data used in the Pokemon Go mobile app.",
+  "type": "object",
+  "properties": {
+    "player": {
+      "type": "object",
+      "description": "Information about the player.",
+      "properties": {
+        "trainer_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the player."
+        },
+        "trainer_name": {
+          "type": "string",
+          "description": "Player's in-game name."
+        },
+        "team": {
+          "type": "string",
+          "enum": ["Mystic", "Valor", "Instinct", "None"],
+          "description": "Team the player belongs to."
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "description": "Player's current level."
+        },
+        "experience": {
+          "type": "integer",
+          "description": "Player's current experience points."
+        },
+        "stardust": {
+          "type": "integer",
+          "description": "Amount of stardust the player has."
+        },
+        "coins": {
+          "type": "integer",
+          "description": "Amount of Pokecoins the player has."
+        },
+        "inventory": {
+          "type": "array",
+          "description": "Items in the player's inventory.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item_id": {
+                "type": "string",
+                "description": "Unique identifier for the item."
+              },
+              "quantity": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Number of this item in the inventory."
+              }
+            },
+            "required": ["item_id", "quantity"]
+          }
+        },
+        "pokedex": {
+          "type": "array",
+          "description": "Pokemon species the player has seen and caught.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pokemon_id": {
+                "type": "integer",
+                "description": "Pokedex number of the Pokemon."
+              },
+              "seen": {
+                "type": "boolean",
+                "description": "Whether the player has seen this Pokemon."
+              },
+              "caught": {
+                "type": "boolean",
+                "description": "Whether the player has caught this Pokemon."
+              }
+            },
+            "required": ["pokemon_id", "seen", "caught"]
+          }
+        },
+        "pokemon_storage": {
+          "type": "array",
+          "description": "Pokemon currently in the player's storage.",
+          "items": {
+            "$ref": "#/definitions/pokemon"
+          }
+        },
+        "friends": {
+          "type": "array",
+          "description": "List of the player's friends.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "trainer_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier of the friend."
+              },
+              "trainer_name": {
+                "type": "string",
+                "description": "Friend's in-game name."
+              },
+              "friendship_level": {
+                "type": "integer",
+                "enum": [0, 1, 2, 3, 4],
+                "description": "Current friendship level."
+              }
+            },
+            "required": ["trainer_id", "trainer_name", "friendship_level"]
+          }
+        },
+        "badges": {
+          "type": "array",
+          "description": "Badges earned by the player.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "badge_id": {
+                "type": "string",
+                "description": "Unique identifier for the badge."
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Current level of the badge (e.g., Bronze, Silver, Gold)."
+              }
+            },
+            "required": ["badge_id", "level"]
+          }
+        },
+        "settings": {
+          "type": "object",
+          "description": "Player's in-game settings.",
+          "properties": {
+            "music": {
+              "type": "boolean",
+              "description": "Whether music is enabled."
+            },
+            "sfx": {
+              "type": "boolean",
+              "description": "Whether sound effects are enabled."
+            },
+            "vibration": {
+              "type": "boolean",
+              "description": "Whether vibration is enabled."
+            },
+            "battery_saver": {
+              "type": "boolean",
+              "description": "Whether battery saver mode is enabled."
+            }
+          },
+          "required": ["music", "sfx", "vibration", "battery_saver"]
+        }
+      },
+      "required": [
+        "trainer_id",
+        "trainer_name",
+        "team",
+        "level",
+        "experience",
+        "stardust",
+        "coins",
+        "inventory",
+        "pokedex",
+        "pokemon_storage",
+        "friends",
+        "badges"
+      ]
+    },
+    "map_objects": {
+      "type": "array",
+      "description": "Objects on the game map.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["pokestop", "gym", "spawn_point"],
+            "description": "Type of the map object."
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the map object."
+          },
+          "latitude": {
+            "type": "number",
+            "format": "float",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Latitude of the map object."
+          },
+          "longitude": {
+            "type": "number",
+            "format": "float",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Longitude of the map object."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the Pokestop or Gym (if applicable)."
+          },
+          "image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the image associated with the Pokestop or Gym (if applicable)."
+          },
+          "team": {
+            "type": "string",
+            "enum": ["Mystic", "Valor", "Instinct", "None"],
+            "description": "Team controlling the Gym (if applicable)."
+          },
+          "gym_details": {
+            "type": "object",
+            "description": "Details about the Gym, if the object is a Gym.",
+            "properties": {
+              "pokemon": {
+                "type": "array",
+                "description": "Pokemon defending the Gym.",
+                "items": {
+                  "$ref": "#/definitions/pokemon"
+                }
+              },
+              "raid": {
+                "type": "object",
+                "description": "Raid details, if a Raid is active.",
+                "properties": {
+                  "raid_boss": {
+                    "$ref": "#/definitions/pokemon",
+                    "description": "The Pokemon that is the Raid Boss."
+                  },
+                  "level": {
+                    "type": "integer",
+                    "description": "Level of the Raid."
+                  },
+                  "start_time": {
+                    "type": "integer",
+                    "format": "unix-timestamp",
+                    "description": "Start time of the Raid."
+                  },
+                  "end_time": {
+                    "type": "integer",
+                    "format": "unix-timestamp",
+                    "description": "End time of the Raid."
+                  }
+                },
+                "required": ["raid_boss", "level", "start_time", "end_time"]
+              }
+            },
+            "required": ["pokemon"]
+          },
+          "nearby_pokemon": {
+            "type": "array",
+            "description": "Pokemon that are nearby a pokestop.",
+            "items": {
+              "$ref": "#/definitions/pokemon"
+            }
+          }
+        },
+        "required": ["type", "id", "latitude", "longitude"]
+      }
+    },
+    "pokemon_data": {
+      "type": "array",
+      "description": "Static data about all Pokemon species.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pokemon_id": {
+            "type": "integer",
+            "description": "Pokedex number of the Pokemon."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the Pokemon."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
+                "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
+                "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
+              ],
+              "description": "Type of the Pokemon."
+            },
+            "minItems": 1,
+            "maxItems": 2
+          },
+          "base_stats": {
+            "type": "object",
+            "properties": {
+              "hp": {
+                "type": "integer",
+                "description": "Base HP stat."
+              },
+              "attack": {
+                "type": "integer",
+                "description": "Base Attack stat."
+              },
+              "defense": {
+                "type": "integer",
+                "description": "Base Defense stat."
+              },
+              "special_attack": {
+                "type": "integer",
+                "description": "Base Special Attack stat."
+              },
+              "special_defense": {
+                "type": "integer",
+                "description": "Base Special Defense stat."
+              },
+              "speed": {
+                "type": "integer",
+                "description": "Base Speed stat."
+              }
+            },
+            "required": [
+              "hp",
+              "attack",
+              "defense",
+              "special_attack",
+              "special_defense",
+              "speed"
+            ]
+          },
+          "height": {
+            "type": "number",
+            "format": "float",
+            "description": "Average height of the Pokemon in meters."
+          },
+          "weight": {
+            "type": "number",
+            "format": "float",
+            "description": "Average weight of the Pokemon in kilograms."
+          },
+          "description": {
+            "type": "string",
+            "description": "Pokedex description of the Pokemon."
+          },
+          "evolutions": {
+            "type": "array",
+            "description": "IDs of Pokemon this Pokemon can evolve into.",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "moves": {
+            "type": "object",
+            "properties": {
+              "quick": {
+                "type": "array",
+                "description": "List of quick moves the Pokemon can learn.",
+                "items": {
+                  "$ref": "#/definitions/move"
+                }
+              },
+              "charged": {
+                "type": "array",
+                "description": "List of charged moves the Pokemon can learn.",
+                "items": {
+                  "$ref": "#/definitions/move"
+                }
+              }
+            },
+            "required": ["quick", "charged"]
+          },
+          "rarity": {
+            "type": "string",
+            "enum": ["Common", "Uncommon", "Rare", "Mythic", "Legendary"],
+            "description": "Rarity classification of the Pokemon."
+          },
+          "capture_rate": {
+            "type": "number",
+            "format": "float",
+            "description": "Base capture rate of the Pokemon."
+          },
+          "flee_rate": {
+            "type": "number",
+            "format": "float",
+            "description": "Base flee rate of the Pokemon."
+          }
+        },
+        "required": [
+          "pokemon_id",
+          "name",
+          "types",
+          "base_stats",
+          "height",
+          "weight",
+          "description"
+        ]
+      }
+    },
+    "item_data": {
+      "type": "array",
+      "description": "Static data about all items.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "description": "Unique identifier for the item."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the item."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the item."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Pokeball",
+              "Potion",
+              "Revive",
+              "Berry",
+              "Incense",
+              "Lure Module",
+              "Incubator",
+              "Special Item",
+              "Raid Pass",
+              "Camera",
+              "Gift"
+            ],
+            "description": "Category of the item."
+          },
+          "image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the image associated with the item."
+          }
+        },
+        "required": ["item_id", "name", "description", "type"]
+      }
+    },
+    "news_feed": {
+      "type": "array",
+      "description": "In-game news and announcements.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the news item."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the news item."
+          },
+          "content": {
+            "type": "string",
+            "description": "Content of the news item."
+          },
+          "image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the image associated with the news item."
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "unix-timestamp",
+            "description": "Timestamp of when the news item was published."
+          }
+        },
+        "required": ["id", "title", "content", "timestamp"]
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "In-game events.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the event."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the event."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the event."
+          },
+          "start_time": {
+            "type": "integer",
+            "format": "unix-timestamp",
+            "description": "Start time of the event."
+          },
+          "end_time": {
+            "type": "integer",
+            "format": "unix-timestamp",
+            "description": "End time of the event."
+          },
+          "bonuses": {
+            "type": "array",
+            "description": "Bonuses active during the event.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "featured_pokemon": {
+            "type": "array",
+            "description": "Pokemon with increased spawn rates during the event.",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "required": ["id", "name", "description", "start_time", "end_time"]
+      }
+    },
+    "research_tasks": {
+      "type": "array",
+      "description": "Field and Special Research Tasks",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the research task."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["field", "special"],
+            "description": "Type of research task."
+          },
+          "objective": {
+            "type": "string",
+            "description": "Description of the research objective."
+          },
+          "reward": {
+            "type": "object",
+            "description": "Reward for completing the research task.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["item", "pokemon_encounter", "stardust", "xp"],
+                "description": "Type of reward."
+              },
+              "item_id": {
+                "type": "string",
+                "description": "ID of the item reward (if applicable)."
+              },
+              "quantity": {
+                "type": "integer",
+                "description": "Quantity of the item or resource reward (if applicable)."
+              },
+              "pokemon_id": {
+                "type": "integer",
+                "description": "ID of the Pokemon reward (if applicable)."
+              }
+            }
+          },
+          "quest_id": {
+            "type": "string",
+            "description": "ID of the quest this task belongs to (if applicable)."
+          }
+        },
+        "required": ["id", "type", "objective", "reward"]
+      }
+    },
+    "weather": {
+      "type": "object",
+      "description": "Current in-game weather information.",
+      "properties": {
+        "condition": {
+          "type": "string",
+          "enum": ["Clear", "Partly Cloudy", "Cloudy", "Rainy", "Windy", "Snowy", "Foggy"],
+          "description": "Current weather condition."
+        },
+        "boosted_types": {
+          "type": "array",
+          "description": "Pokemon types that are boosted by the current weather.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
+              "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
+              "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
+            ]
+          }
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "unix-timestamp",
+          "description": "Timestamp of the last weather update."
+        }
+      },
+      "required": ["condition", "boosted_types", "updated_at"]
+    }
+  },
+  "required": [
+    "player",
+    "map_objects",
+    "pokemon_data",
+    "item_data",
+    "news_feed"
+  ],
+  "definitions": {
+    "pokemon": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for this specific Pokemon instance."
+        },
+        "pokemon_id": {
+          "type": "integer",
+          "description": "Pokedex number of the Pokemon."
+        },
+        "nickname": {
+          "type": "string",
+          "description": "Nickname given to the Pokemon by the player (if any)."
+        },
+        "cp": {
+          "type": "integer",
+          "description": "Combat Power of the Pokemon."
+        },
+        "hp": {
+          "type": "integer",
+          "description": "Current HP of the Pokemon."
+        },
+        "max_hp": {
+          "type": "integer",
+          "description": "Maximum HP of the Pokemon."
+        },
+        "iv_attack": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15,
+          "description": "Attack individual value (IV)."
+        },
+        "iv_defense": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15,
+          "description": "Defense individual value (IV)."
+        },
+        "iv_stamina": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15,
+          "description": "Stamina individual value (IV)."
+        },
+        "move_1": {
+          "type": "string",
+          "description": "ID of the Pokemon's first move (quick move)."
+        },
+        "move_2": {
+          "type": "string",
+          "description": "ID of the Pokemon's second move (charged move)."
+        },
+        "height": {
+          "type": "number",
+          "format": "float",
+          "description": "Height of the Pokemon in meters."
+        },
+        "weight": {
+          "type": "number",
+          "format": "float",
+          "description": "Weight of the Pokemon in kilograms."
+        },
+        "gender": {
+          "type": "string",
+          "enum": ["Male", "Female", "Genderless"],
+          "description": "Gender of the Pokemon."
+        },
+        "is_shiny": {
+          "type": "boolean",
+          "description": "Whether the Pokemon is shiny."
+        },
+        "form": {
+          "type": "string",
+          "description": "Specific form of the Pokemon (e.g., Alolan, Galarian)."
+        },
+        "date_caught": {
+          "type": "integer",
+          "format": "unix-timestamp",
+          "description": "Timestamp of when the Pokemon was caught."
+        }
+      },
+      "required": [
+        "id",
+        "pokemon_id",
+        "cp",
+        "hp",
+        "max_hp",
+        "iv_attack",
+        "iv_defense",
+        "iv_stamina",
+        "move_1",
+        "move_2"
+      ]
+    },
+    "move": {
+      "type": "object",
+      "properties": {
+        "move_id": {
+          "type": "string",
+          "description": "Unique identifier for the move."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the move."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
+            "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
+            "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
+          ],
+          "description": "Type of the move."
+        },
+        "power": {
+          "type": "integer",
+          "description": "Power of the move."
+        },
+        "energy_delta": {
+          "type": "integer",
+          "description": "Energy gained or consumed by the move."
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the move in milliseconds."
+        },
+        "damage_window_start": {
+          "type": "integer",
+          "description": "Start of the damage window in milliseconds."
+        },
+        "damage_window_end": {
+          "type": "integer",
+          "description": "End of the damage window in milliseconds."
+        }
+      },
+      "required": ["move_id", "name", "type", "power", "energy_delta"]
+    }
+  }
+}

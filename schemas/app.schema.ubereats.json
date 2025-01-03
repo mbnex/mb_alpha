@@ -1,0 +1,335 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UberEats App Schema",
+  "description": "JSON Schema for a simplified UberEats app data model.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users (customers and drivers).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique user ID."
+          },
+          "name": {
+            "type": "string",
+            "description": "User's full name."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address."
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^\\+?[1-9]\\d{1,14}$",
+            "description": "User's phone number (E.164 format)."
+          },
+          "address": {
+            "type": "string",
+            "description": "User's delivery address."
+          },
+          "paymentMethods": {
+            "type": "array",
+            "description": "User's saved payment methods.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["credit_card", "debit_card", "paypal", "uber_cash"],
+                  "description": "Type of payment method."
+                },
+                "lastFourDigits": {
+                  "type": "string",
+                  "description": "Last four digits of card number (for display).",
+                  "maxLength": 4,
+                  "minLength": 4,
+                  "pattern": "^\\d{4}$"
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          },
+          "role": {
+            "type": "string",
+            "enum": ["customer", "driver"],
+            "description": "User role - customer or driver"
+          },
+          "driverInfo": {
+            "type": "object",
+            "description": "Driver-specific information (if role is driver).",
+            "properties": {
+              "vehicleType": {
+                "type": "string",
+                "enum": ["car", "bike", "scooter"],
+                "description": "Type of vehicle the driver uses."
+              },
+              "licensePlate": {
+                "type": "string",
+                "description": "Vehicle's license plate number."
+              }
+            },
+            "required": [
+              "vehicleType"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "role"
+        ]
+      }
+    },
+    "restaurants": {
+      "type": "array",
+      "description": "List of restaurants.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique restaurant ID."
+          },
+          "name": {
+            "type": "string",
+            "description": "Restaurant's name."
+          },
+          "address": {
+            "type": "string",
+            "description": "Restaurant's address."
+          },
+          "cuisine": {
+            "type": "array",
+            "description": "Types of cuisine offered.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rating": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5,
+            "description": "Average customer rating."
+          },
+          "deliveryFee": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Delivery fee for the restaurant."
+          },
+          "estimatedDeliveryTime": {
+            "type": "string",
+            "description": "Estimated delivery time range (e.g., '25-35 mins')."
+          },
+          "menu": {
+            "type": "array",
+            "description": "Restaurant's menu.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique menu item ID."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the menu item."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the menu item."
+                },
+                "price": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Price of the menu item."
+                },
+                "imageUrl": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL of an image of the menu item."
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Category of the item (e.g., 'Appetizer', 'Main Course')."
+                },
+                "options": {
+                  "type": "array",
+                  "description": "Customizable options for the item (e.g., toppings, size).",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the option (e.g., 'Cheese')."
+                      },
+                      "price": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Additional price for the option."
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "price"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "address",
+          "menu"
+        ]
+      }
+    },
+    "orders": {
+      "type": "array",
+      "description": "List of orders.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique order ID."
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the user who placed the order."
+          },
+          "restaurantId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the restaurant the order is from."
+          },
+          "driverId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the driver assigned to the order (if any)."
+          },
+          "items": {
+            "type": "array",
+            "description": "List of items in the order.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "menuItemId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "ID of the menu item."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Quantity of the item ordered."
+                },
+                "options": {
+                  "type": "array",
+                  "description": "Selected options for the menu item",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "specialInstructions": {
+                  "type": "string",
+                  "description": "Any special instructions for the item."
+                }
+              },
+              "required": [
+                "menuItemId",
+                "quantity"
+              ]
+            }
+          },
+          "totalPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Total price of the order."
+          },
+          "deliveryAddress": {
+            "type": "string",
+            "description": "Delivery address for the order."
+          },
+          "orderTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of when the order was placed."
+          },
+          "estimatedDeliveryTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Estimated delivery timestamp."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "placed",
+              "preparing",
+              "out_for_delivery",
+              "delivered",
+              "canceled"
+            ],
+            "description": "Current status of the order."
+          },
+          "paymentMethod": {
+            "type": "object",
+            "description": "payment method that has been used for the order",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["credit_card", "debit_card", "paypal", "uber_cash"],
+                "description": "Type of payment method."
+              },
+              "lastFourDigits": {
+                "type": "string",
+                "description": "Last four digits of card number (for display).",
+                "maxLength": 4,
+                "minLength": 4,
+                "pattern": "^\\d{4}$"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "restaurantId",
+          "items",
+          "totalPrice",
+          "deliveryAddress",
+          "orderTime",
+          "status",
+          "paymentMethod"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "restaurants",
+    "orders"
+  ]
+}

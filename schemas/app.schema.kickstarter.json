@@ -1,0 +1,474 @@
+{
+  "type": "object",
+  "title": "Kickstarter Project",
+  "description": "Schema for a Kickstarter project and related data.",
+  "properties": {
+    "project": {
+      "type": "object",
+      "description": "Core details of the Kickstarter project.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the project.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the project.",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "blurb": {
+          "type": "string",
+          "description": "Short description of the project.",
+          "minLength": 1,
+          "maxLength": 135
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the project.",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "description": "Main category of the project.",
+          "enum": [
+            "Art",
+            "Comics",
+            "Crafts",
+            "Dance",
+            "Design",
+            "Fashion",
+            "Film & Video",
+            "Food",
+            "Games",
+            "Journalism",
+            "Music",
+            "Photography",
+            "Publishing",
+            "Technology",
+            "Theater"
+          ]
+        },
+        "subcategory": {
+          "type": "string",
+          "description": "Subcategory of the project (more specific).",
+          "examples": [
+            "Graphic Novels",
+            "Webcomics",
+            "Tabletop Games",
+            "Video Games",
+            "Documentary",
+            "Narrative Film",
+            "Indie Rock",
+            "Pop",
+            "Wearables",
+            "Gadgets"
+          ]
+        },
+        "location": {
+          "type": "object",
+          "description": "Location associated with the project (city, state/province, country).",
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string",
+              "description": "ISO 3166-1 alpha-2 country code (e.g., US, CA, GB).",
+              "pattern": "^[A-Z]{2}$"
+            }
+          },
+          "required": [
+            "city",
+            "country"
+          ]
+        },
+        "creator": {
+          "type": "object",
+          "description": "Information about the project creator.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Unique identifier of the creator.",
+              "readOnly": true
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the creator (user or organization)."
+            },
+            "profile_url": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the creator's profile on Kickstarter"
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ]
+        },
+        "funding_goal": {
+          "type": "number",
+          "description": "The funding goal (amount) of the project.",
+          "format": "float",
+          "minimum": 1
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code for the funding goal and pledges (e.g., USD, EUR, GBP).",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "pledged_amount": {
+          "type": "number",
+          "description": "The current amount of money pledged to the project.",
+          "format": "float",
+          "readOnly": true,
+          "minimum": 0
+        },
+        "backers_count": {
+          "type": "integer",
+          "description": "The number of backers who have pledged to the project.",
+          "readOnly": true,
+          "minimum": 0
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The deadline for reaching the funding goal."
+        },
+        "launched_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time the project was launched."
+        },
+        "state": {
+          "type": "string",
+          "description": "Current state of the project.",
+          "enum": [
+            "live",
+            "successful",
+            "failed",
+            "canceled",
+            "suspended"
+          ],
+          "readOnly": true
+        },
+        "photo": {
+          "type": "object",
+          "description": "Main project image.",
+          "properties": {
+            "full": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the full-sized image"
+            },
+            "med": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to a medium-sized image"
+            },
+            "small": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to a small-sized image"
+            }
+          },
+          "required": ["full"]
+        },
+        "video": {
+          "type": "object",
+          "description": "Project video (if available).",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the video (e.g., on Vimeo or YouTube)."
+            },
+            "thumbnail": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the video thumbnail image"
+            }
+          },
+          "required": ["url"]
+        },
+        "urls": {
+          "type": "object",
+          "description": "URLs associated with the project",
+          "properties": {
+            "web": {
+              "type": "object",
+              "properties": {
+                "project": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the project page on Kickstarter"
+                },
+                "rewards": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the project's rewards page"
+                }
+              },
+              "required": ["project"]
+            }
+          },
+          "required": ["web"]
+        }
+      },
+      "required": [
+        "name",
+        "blurb",
+        "description",
+        "category",
+        "location",
+        "creator",
+        "funding_goal",
+        "currency",
+        "deadline",
+        "launched_at",
+        "photo",
+        "urls"
+      ]
+    },
+    "rewards": {
+      "type": "array",
+      "description": "List of rewards offered by the project.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the reward.",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project this reward belongs to."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the reward.",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "description": "Minimum pledge amount required to receive this reward.",
+            "format": "float",
+            "minimum": 1
+          },
+          "estimated_delivery": {
+            "type": "string",
+            "format": "date",
+            "description": "Estimated delivery date for the reward (month and year)."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of backers that can claim this reward (if limited).",
+            "minimum": 1
+          },
+          "backers_count": {
+            "type": "integer",
+            "description": "Number of backers who have chosen this reward.",
+            "readOnly": true,
+            "minimum": 0
+          },
+          "shipping_type": {
+            "type": "string",
+            "description": "Type of shipping for the reward.",
+            "enum": ["anywhere", "limited", "digital", "none"]
+          },
+          "shipping_destinations": {
+            "type": "array",
+            "description": "If shipping_type is 'limited', the allowed shipping destinations (ISO 3166-1 alpha-2 country codes).",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            }
+          }
+        },
+        "required": [
+          "project_id",
+          "description",
+          "amount"
+        ]
+      }
+    },
+    "updates": {
+      "type": "array",
+      "description": "List of updates posted by the project creator.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the update.",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project this update belongs to."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the update.",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "body": {
+            "type": "string",
+            "description": "Content of the update.",
+            "minLength": 1
+          },
+          "author": {
+            "type": "object",
+            "description": "Author of the update (project creator).",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "User ID of the author.",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the author."
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the update was published."
+          },
+          "visible": {
+            "type": "boolean",
+            "description": "If true, the update is public, otherwise it's only visible to backers."
+          }
+        },
+        "required": [
+          "project_id",
+          "title",
+          "body",
+          "author",
+          "published_at"
+        ]
+      }
+    },
+    "comments": {
+      "type": "array",
+      "description": "List of comments on the project.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the comment.",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project this comment belongs to."
+          },
+          "body": {
+            "type": "string",
+            "description": "Content of the comment.",
+            "minLength": 1
+          },
+          "author": {
+            "type": "object",
+            "description": "Author of the comment.",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "User ID of the author.",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the author."
+              },
+              "is_backer": {
+                "type": "boolean",
+                "description": "Whether the author is a backer of the project"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the comment was created."
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "If true, the comment has been deleted."
+          }
+        },
+        "required": [
+          "project_id",
+          "body",
+          "author",
+          "created_at"
+        ]
+      }
+    },
+    "faqs": {
+      "type": "array",
+      "description": "List of frequently asked questions about the project.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the FAQ.",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project this FAQ belongs to."
+          },
+          "question": {
+            "type": "string",
+            "description": "The FAQ question.",
+            "minLength": 1
+          },
+          "answer": {
+            "type": "string",
+            "description": "The answer to the FAQ question.",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the FAQ was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the FAQ was last updated."
+          }
+        },
+        "required": [
+          "project_id",
+          "question",
+          "answer"
+        ]
+      }
+    }
+  },
+  "required": [
+    "project",
+    "rewards"
+  ]
+}

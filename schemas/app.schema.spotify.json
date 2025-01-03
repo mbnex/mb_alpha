@@ -1,0 +1,367 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spotify",
+  "description": "JSON Schema for Spotify's core objects and relationships.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "artists": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Artist"
+      }
+    },
+    "albums": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Album"
+      }
+    },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Track"
+      }
+    },
+    "playlists": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Playlist"
+      }
+    },
+    "genres": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "A music genre (e.g., 'Pop', 'Rock', 'Classical')."
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "display_name": {
+          "type": "string",
+          "description": "The name displayed on the user's profile."
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "country": {
+          "type": "string",
+          "description": "The country of the user, as set in the user's account profile.",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "playlists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Playlist"
+          },
+          "description": "Playlists created by or followed by the user."
+        },
+        "following": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "IDs of artists or users this user follows"
+          },
+          "description": "Artists or users this user follows"
+        },
+        "followers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "IDs of users following this user"
+          },
+          "description": "Users following this user."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "Artist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the artist."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the artist."
+        },
+        "genres": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of the genres the artist is associated with."
+        },
+        "popularity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular."
+        },
+        "followers": {
+          "type": "integer",
+          "description": "The total number of followers."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        },
+        "albums": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Album"
+          },
+          "description": "List of albums by the artist"
+        },
+        "related_artists": {
+          "type": "array",
+          "items":{
+            "$ref": "#/definitions/Artist"
+          },
+          "description": "List of artists related to this artist."
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "Album": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the album."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the album."
+        },
+        "artists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Artist"
+          },
+          "description": "The artists of the album."
+        },
+        "album_type": {
+          "type": "string",
+          "enum": [
+            "album",
+            "single",
+            "compilation"
+          ],
+          "description": "The type of the album: album, single, or compilation."
+        },
+        "release_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the album was first released."
+        },
+        "total_tracks": {
+          "type": "integer",
+          "description": "The number of tracks in the album."
+        },
+        "tracks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Track"
+          },
+          "description": "The tracks of the album."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        },
+        "genres": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of the genres the album is associated with."
+        },
+        "popularity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "The popularity of the album."
+        },
+        "label": {
+          "type": "string",
+          "description": "Label of the album"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "artists"
+      ]
+    },
+    "Track": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the track."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the track."
+        },
+        "artists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Artist"
+          },
+          "description": "The artists who performed the track."
+        },
+        "album": {
+          "$ref": "#/definitions/Album",
+          "description": "The album on which the track appears."
+        },
+        "duration_ms": {
+          "type": "integer",
+          "description": "The track length in milliseconds."
+        },
+        "explicit": {
+          "type": "boolean",
+          "description": "Whether or not the track has explicit lyrics (true = yes it does; false = no it does not OR unknown)."
+        },
+        "popularity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "The popularity of the track."
+        },
+        "preview_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "A link to a 30 second preview (MP3 format) of the track."
+        },
+        "track_number": {
+          "type": "integer",
+          "description": "Track number of this track in its album."
+        },
+        "is_playable": {
+          "type": "boolean",
+          "description": "Whether or not this track is playable in the market it was requested from."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "artists"
+      ]
+    },
+    "Playlist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the playlist."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the playlist."
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "description": "The playlist's description. Only returned for modified, verified playlists, otherwise null."
+        },
+        "owner": {
+          "$ref": "#/definitions/User",
+          "description": "The user who owns the playlist."
+        },
+        "public": {
+          "type": "boolean",
+          "nullable": true,
+          "description": "The playlist's public/private status: true the playlist is public, false the playlist is private, null the playlist status is not relevant."
+        },
+        "tracks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Track"
+          },
+          "description": "The tracks of the playlist."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        },
+        "followers": {
+          "type": "integer",
+          "description": "The total number of followers."
+        },
+        "collaborative":{
+          "type": "boolean",
+          "description": "Whether this playlist can be modified by other users."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "owner"
+      ]
+    },
+    "Image": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The source URL of the image."
+        },
+        "height": {
+          "type": "integer",
+          "nullable": true,
+          "description": "The image height in pixels."
+        },
+        "width": {
+          "type": "integer",
+          "nullable": true,
+          "description": "The image width in pixels."
+        }
+      },
+      "required": [
+        "url"
+      ]
+    }
+  }
+}

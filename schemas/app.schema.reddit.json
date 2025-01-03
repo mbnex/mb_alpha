@@ -1,0 +1,247 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reddit App Schema",
+  "description": "JSON Schema for a simplified Reddit-like application",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "subreddits": {
+      "type": "array",
+      "description": "List of subreddits",
+      "items": {
+        "$ref": "#/definitions/subreddit"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of posts",
+      "items": {
+        "$ref": "#/definitions/post"
+      }
+    },
+    "comments": {
+      "type": "array",
+      "description": "List of comments",
+      "items": {
+        "$ref": "#/definitions/comment"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "readOnly": true
+        },
+        "username": {
+          "type": "string",
+          "description": "User's username",
+          "minLength": 3,
+          "maxLength": 20
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (hashed)",
+          "minLength": 8,
+          "writeOnly": true
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Date and time the user was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "karma": {
+          "type": "integer",
+          "description": "User's total karma points",
+          "default": 0,
+          "readOnly": true
+        }
+      },
+      "required": [
+        "username",
+        "email",
+        "password"
+      ]
+    },
+    "subreddit": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the subreddit",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the subreddit (e.g., 'pics', 'funny')",
+          "pattern": "^[a-zA-Z0-9_]+$",
+          "minLength": 3,
+          "maxLength": 21
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the subreddit",
+          "maxLength": 500
+        },
+        "created_by": {
+          "type": "integer",
+          "description": "ID of the user who created the subreddit",
+          "$ref": "#/definitions/user/properties/id"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Date and time the subreddit was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "subscribers": {
+          "type": "integer",
+          "description": "Number of subscribers to the subreddit",
+          "default": 0,
+          "readOnly": true
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "created_by"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the post",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the post",
+          "maxLength": 300
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the post (text or URL)",
+          "oneOf": [
+            {"format": "url"},
+            {"maxLength": 10000}
+          ]
+        },
+        "author": {
+          "type": "integer",
+          "description": "ID of the user who created the post",
+          "$ref": "#/definitions/user/properties/id"
+        },
+        "subreddit_id": {
+          "type": "integer",
+          "description": "ID of the subreddit the post belongs to",
+          "$ref": "#/definitions/subreddit/properties/id"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Date and time the post was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "upvotes": {
+          "type": "integer",
+          "description": "Number of upvotes",
+          "default": 0,
+          "readOnly": true
+        },
+        "downvotes": {
+          "type": "integer",
+          "description": "Number of downvotes",
+          "default": 0,
+          "readOnly": true
+        },
+        "vote_score": {
+          "type": "integer",
+          "description": "Calculated score (upvotes - downvotes)",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "title",
+        "content",
+        "author",
+        "subreddit_id"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the comment",
+          "readOnly": true
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the comment",
+          "maxLength": 10000
+        },
+        "author": {
+          "type": "integer",
+          "description": "ID of the user who wrote the comment",
+          "$ref": "#/definitions/user/properties/id"
+        },
+        "post_id": {
+          "type": "integer",
+          "description": "ID of the post the comment belongs to",
+          "$ref": "#/definitions/post/properties/id"
+        },
+        "parent_comment_id": {
+          "type": ["integer", "null"],
+          "description": "ID of the parent comment (if this is a reply)",
+          "default": null,
+          "$ref": "#/definitions/comment/properties/id"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Date and time the comment was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "upvotes": {
+          "type": "integer",
+          "description": "Number of upvotes",
+          "default": 0,
+          "readOnly": true
+        },
+        "downvotes": {
+          "type": "integer",
+          "description": "Number of downvotes",
+          "default": 0,
+          "readOnly": true
+        },
+        "vote_score": {
+          "type": "integer",
+          "description": "Calculated score (upvotes - downvotes)",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "content",
+        "author",
+        "post_id"
+      ]
+    }
+  }
+}

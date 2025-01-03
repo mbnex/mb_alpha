@@ -1,0 +1,254 @@
+{
+  "type": "object",
+  "title": "Wikipedia Article",
+  "description": "Schema for a Wikipedia article, focusing on key structural and content elements. This is a simplified representation and does not encompass all the complexities of Wikipedia's internal data model.",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "The main title of the Wikipedia article.",
+      "example": "Artificial Intelligence"
+    },
+    "id": {
+      "type": "integer",
+      "description": "Unique identifier for the article (page ID on Wikipedia).",
+      "example": 12345
+    },
+    "revision": {
+      "type": "integer",
+      "description": "Current revision ID of the article.",
+      "example": 987654321
+    },
+    "language": {
+      "type": "string",
+      "description": "Language code of the article (e.g., 'en', 'es', 'fr').",
+      "example": "en"
+    },
+    "url": {
+      "type": "string",
+      "format": "URL",
+      "description": "The URL of the article on Wikipedia.",
+      "example": "https://en.wikipedia.org/wiki/Artificial_Intelligence"
+    },
+    "infobox": {
+      "type": "object",
+      "description": "Structured data typically found in the infobox section.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of infobox (e.g., 'person', 'organization', 'place')."
+        },
+        "fields": {
+          "type": "object",
+          "description": "Key-value pairs of data within the infobox.",
+          "additionalProperties": {
+            "type": ["string", "array"],
+            "items": { "type": "string" }
+          },
+          "example": {
+            "born": "1912-06-23",
+            "known_for": ["Turing machine", "Turing test"]
+          }
+        }
+      },
+      "required": [
+        "fields"
+      ]
+    },
+    "sections": {
+      "type": "array",
+      "description": "Sections of the article's content.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the section.",
+            "example": "History"
+          },
+          "level": {
+            "type": "integer",
+            "description": "Heading level of the section (1 for top-level, 2 for sub-section, etc.)."
+          },
+          "content": {
+            "type": "string",
+            "description": "Text content of the section (may contain wiki markup or basic HTML).",
+            "example": "The history of artificial intelligence began in antiquity..."
+          },
+          "subsections": {
+            "type": "array",
+            "description": "Nested subsections within this section.",
+            "items": {
+              "$ref": "#/properties/sections/items"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "level",
+          "content"
+        ]
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "Categories that the article belongs to.",
+      "items": {
+        "type": "string",
+        "example": "Artificial intelligence"
+      }
+    },
+    "images": {
+      "type": "array",
+      "description": "List of images used in the article.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "Filename of the image.",
+            "example": "Alan Turing.jpg"
+          },
+          "caption": {
+            "type": "string",
+            "description": "Caption for the image.",
+            "example": "Alan Turing in 1945"
+          },
+          "url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the image file (can be on Wikimedia Commons).",
+            "example": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      }
+    },
+    "links": {
+      "type": "object",
+      "description": "Links to other resources.",
+      "properties": {
+        "internal": {
+          "type": "array",
+          "description": "Links to other Wikipedia articles (within the same language).",
+          "items": {
+            "type": "string",
+            "example": "Machine learning"
+          }
+        },
+        "external": {
+          "type": "array",
+          "description": "Links to external websites.",
+          "items": {
+            "type": "string",
+            "format": "URL",
+            "example": "https://www.example.com/ai-resource"
+          }
+        },
+        "interlanguage": {
+          "type": "array",
+          "description": "Links to the same article in other languages.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "description": "Language code of the linked article.",
+                "example": "es"
+              },
+              "title": {
+                "type": "string",
+                "description": "Title of the article in that language.",
+                "example": "Inteligencia artificial"
+              },
+              "url": {
+                "type": "string",
+                "format": "URL",
+                "description": "The URL of the linked article.",
+                "example": "https://es.wikipedia.org/wiki/Inteligencia_artificial"
+              }
+            },
+            "required": [
+              "language",
+              "title"
+            ]
+          }
+        }
+      },
+      "required": [
+        "internal"
+      ]
+    },
+    "references": {
+      "type": "array",
+      "description": "List of references/citations used in the article.",
+      "items": {
+        "type": "object",
+        "description": "A reference can be anything from a book, journal article, website, etc.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique identifier for this reference (often generated by Wikipedia or provided).",
+            "example": "cite_note-1"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of reference (e.g., 'book', 'web', 'journal').",
+            "example": "web"
+          },
+          "content": {
+            "type": "string",
+            "description": "Formatted text of the reference (can contain citation templates or HTML).",
+            "example": "{{cite web |url=https://www.example.com |title=Example Website |author=John Doe |date=2023-10-27}}"
+          },
+          "details": {
+            "type": "object",
+            "description": "Detailed fields of the reference (if available from parsed citation templates).",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "URL"
+              },
+              "title": {
+                "type": "string"
+              },
+              "author": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "publisher": {
+                "type": "string"
+              },
+              "isbn": {
+                "type": "string"
+              },
+              "doi": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    },
+    "last_modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the last modification to the article.",
+      "example": "2023-10-27T10:00:00Z"
+    }
+  },
+  "required": [
+    "title",
+    "id",
+    "language",
+    "url",
+    "sections"
+  ]
+}

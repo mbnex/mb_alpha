@@ -1,0 +1,561 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Signal App Data Model",
+  "description": "A JSON Schema representing the core data structures of the Signal messaging app.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "Registered users in the system.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the user."
+          },
+          "phoneNumber": {
+            "type": "string",
+            "pattern": "^\\+[1-9]\\d{1,14}$",
+            "description": "E.164 formatted phone number."
+          },
+          "publicKey": {
+            "type": "string",
+            "description": "User's public encryption key."
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "User's private encryption key (should be stored securely and locally on device)."
+          },
+          "profile": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "User's display name."
+              },
+              "avatar": {
+                "type": "string",
+                "format": "URL",
+                "description": "URL to the user's profile picture."
+              },
+              "about": {
+                "type": "string",
+                "description": "A short bio or status message."
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "registrationDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the user registered."
+          },
+          "lastActive": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the user was last active."
+          },
+          "contacts": {
+            "type": "array",
+            "description": "List of the user's contacts who are also on Signal.",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "description": "userId of a contact."
+            }
+          }
+        },
+        "required": [
+          "userId",
+          "phoneNumber",
+          "publicKey",
+          "privateKey",
+          "profile"
+        ]
+      }
+    },
+    "conversations": {
+      "type": "array",
+      "description": "List of conversations (individual and group chats).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "conversationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the conversation."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "one-to-one",
+              "group"
+            ],
+            "description": "Type of conversation."
+          },
+          "participants": {
+            "type": "array",
+            "description": "List of user IDs participating in the conversation.",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "description": "userId of a participant."
+            },
+            "minItems": 2
+          },
+          "groupMetadata": {
+            "type": "object",
+            "description": "Metadata for group conversations.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the group."
+              },
+              "avatar": {
+                "type": "string",
+                "format": "URL",
+                "description": "URL to the group's profile picture."
+              },
+              "admins": {
+                "type": "array",
+                "description": "List of user IDs who are admins of the group.",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "required": [
+              "name",
+              "admins"
+            ],
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "group"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "groupMetadata"
+              ]
+            }
+          },
+          "messages": {
+            "type": "array",
+            "description": "List of messages in the conversation.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "messageId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the message."
+                },
+                "senderId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "userId of the message sender."
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time the message was sent."
+                },
+                "content": {
+                  "type": "object",
+                  "description": "Encrypted message content.",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "text",
+                        "attachment",
+                        "groupUpdate",
+                        "call",
+                        "disappearingMessageTimerUpdate",
+                        "viewOnce"
+                      ],
+                      "description": "Type of message content."
+                    },
+                    "ciphertext": {
+                      "type": "string",
+                      "description": "Base64 encoded encrypted message data."
+                    },
+                    "attachmentMetadata": {
+                      "type": "object",
+                      "description": "Metadata for attachments, only present if type is 'attachment'.",
+                      "properties": {
+                        "filename": {
+                          "type": "string"
+                        },
+                        "contentType": {
+                          "type": "string"
+                        },
+                        "size": {
+                          "type": "integer"
+                        },
+                        "key": {
+                          "type": "string",
+                          "description": "Encryption key for the attachment"
+                        }
+                      },
+                      "required": ["filename", "contentType", "size", "key"],
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "attachment"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "attachmentMetadata"
+                        ]
+                      }
+                    },
+                    "groupUpdateMetadata": {
+                      "type": "object",
+                      "description": "Metadata for group updates, like adding a user.",
+                      "properties": {
+                        "updatedBy": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "addedMembers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "format": "uuid"
+                          }
+                        },
+                        "removedMembers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "format": "uuid"
+                          }
+                        },
+                        "changedName": {
+                          "type": "string"
+                        },
+                        "changedAvatar": {
+                          "type": "string",
+                          "format": "URL"
+                        }
+                      },
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "groupUpdate"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "groupUpdateMetadata"
+                        ]
+                      }
+                    },
+                    "callMetadata": {
+                      "type": "object",
+                      "description": "Metadata for calls",
+                      "properties": {
+                        "callType": {
+                          "type": "string",
+                          "enum": ["audio", "video"]
+                        },
+                        "duration": {
+                          "type": "integer",
+                          "description": "Call duration in seconds"
+                        }
+                      },
+                      "required": ["callType"],
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "call"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "callMetadata"
+                        ]
+                      }
+                    },
+                    "disappearingMessageTimerMetadata": {
+                      "type": "object",
+                      "description": "Metadata for disappearing message timer updates",
+                      "properties": {
+                        "duration": {
+                          "type": "integer",
+                          "description": "Disappearing message duration in seconds. 0 means disabled."
+                        }
+                      },
+                      "required": ["duration"],
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "disappearingMessageTimerUpdate"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "disappearingMessageTimerMetadata"
+                        ]
+                      }
+                    },
+                    "viewOnceMetadata": {
+                      "type": "object",
+                      "description": "Metadata for view-once messages",
+                      "properties": {
+                        "viewed": {
+                          "type": "boolean",
+                          "description": "Indicates if the message has been viewed"
+                        }
+                      },
+                      "required": ["viewed"],
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "viewOnce"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "viewOnceMetadata"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "ciphertext"
+                  ]
+                },
+                "readReceipts": {
+                  "type": "array",
+                  "description": "List of read receipts for the message.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "readerId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": ["readerId", "timestamp"]
+                  }
+                },
+                "deliveryReceipts": {
+                  "type": "array",
+                  "description": "List of delivery receipts for the message.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "recipientId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": ["recipientId", "timestamp"]
+                  }
+                },
+                "reactions": {
+                  "type": "array",
+                  "description": "List of reactions to the message.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reactorId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "emoji": {
+                        "type": "string"
+                      },
+                      "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": ["reactorId", "emoji", "timestamp"]
+                  }
+                },
+                "isExpired": {
+                  "type": "boolean",
+                  "description": "Indicates if the message has expired (for disappearing messages)."
+                },
+                "isForwarded": {
+                  "type": "boolean",
+                  "description": "Indicates if the message was forwarded."
+                }
+              },
+              "required": [
+                "messageId",
+                "senderId",
+                "timestamp",
+                "content"
+              ]
+            }
+          }
+        },
+        "required": [
+          "conversationId",
+          "type",
+          "participants",
+          "messages"
+        ]
+      }
+    },
+    "blockedUsers": {
+      "type": "array",
+      "description": "List of blocked users.",
+      "items": {
+        "type": "string",
+        "format": "uuid",
+        "description": "userId of a blocked user."
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "User-specific settings.",
+      "properties": {
+        "notifications": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "sound": {
+              "type": "string",
+              "description": "Path to the notification sound file."
+            },
+            "vibrate": {
+              "type": "boolean"
+            },
+            "preview": {
+              "type": "string",
+              "enum": ["show", "name", "none"]
+            }
+          },
+          "required": ["enabled", "preview"]
+        },
+        "privacy": {
+          "type": "object",
+          "properties": {
+            "readReceipts": {
+              "type": "boolean"
+            },
+            "typingIndicators": {
+              "type": "boolean"
+            },
+            "lastSeen": {
+              "type": "string",
+              "enum": ["everyone", "contacts", "nobody"]
+            },
+            "profile": {
+              "type": "string",
+              "enum": ["everyone", "contacts"]
+            }
+          },
+          "required": [
+            "readReceipts",
+            "typingIndicators",
+            "lastSeen",
+            "profile"
+          ]
+        },
+        "security": {
+          "type": "object",
+          "properties": {
+            "screenLock": {
+              "type": "boolean"
+            },
+            "screenSecurity": {
+              "type": "boolean",
+              "description": "Prevent screenshots and screen recording."
+            },
+            "registrationLock": {
+              "type": "boolean",
+              "description": "Require a PIN to re-register the phone number."
+            },
+            "changeNumber": {
+              "type": "object",
+              "description": "Allows to change phone number associated with account"
+            }
+          },
+          "required": [
+            "screenLock",
+            "screenSecurity",
+            "registrationLock"
+          ]
+        },
+        "storage": {
+          "type": "object",
+          "properties": {
+            "mediaAutoDownload": {
+              "type": "object",
+              "properties": {
+                "wifi": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["photos", "audio", "videos", "documents"]
+                  }
+                },
+                "mobileData": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["photos", "audio", "videos", "documents"]
+                  }
+                },
+                "roaming": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["photos", "audio", "videos", "documents"]
+                  }
+                }
+              },
+              "required": ["wifi", "mobileData", "roaming"]
+            },
+            "keepMessages": {
+              "type": "string",
+              "enum": ["forever", "1 year", "30 days", "6 months"],
+              "description": "How long to keep messages on the device."
+            }
+          },
+          "required": ["mediaAutoDownload", "keepMessages"]
+        }
+      },
+      "required": [
+        "notifications",
+        "privacy",
+        "security",
+        "storage"
+      ]
+    }
+  },
+  "required": [
+    "users",
+    "conversations"
+  ]
+}

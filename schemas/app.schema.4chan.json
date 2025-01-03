@@ -1,0 +1,478 @@
+{
+  "type": "object",
+  "title": "4chan.org JSON Schema",
+  "description": "A JSON Schema representing the structure of data on 4chan.org",
+  "properties": {
+    "boards": {
+      "type": "array",
+      "description": "List of available boards",
+      "items": {
+        "$ref": "#/definitions/board"
+      }
+    },
+    "threads": {
+      "type": "array",
+      "description": "List of threads on a board (can also be within a board object)",
+      "items": {
+        "$ref": "#/definitions/thread"
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "description": "Represents the catalog view of a board",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "description": "The current catalog page number"
+        },
+        "threads": {
+          "type": "array",
+          "description": "List of threads in the catalog view",
+          "items": {
+            "$ref": "#/definitions/catalogThread"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "board": {
+      "type": "object",
+      "description": "Represents a single board",
+      "properties": {
+        "board": {
+          "type": "string",
+          "description": "The board's short name (e.g., 'b', 'g', 'v')",
+          "pattern": "^[a-z0-9]+$"
+        },
+        "title": {
+          "type": "string",
+          "description": "The board's full title (e.g., 'Random', 'Technology', 'Video Games')"
+        },
+        "ws_board": {
+          "type": "integer",
+          "description": "Indicates if the board is work-safe (0 = not work-safe, 1 = work-safe)"
+        },
+        "per_page": {
+          "type": "integer",
+          "description": "Number of threads per page"
+        },
+        "pages": {
+          "type": "integer",
+          "description": "Total number of pages"
+        },
+        "max_filesize": {
+          "type": "integer",
+          "description": "Maximum file size allowed (in bytes)"
+        },
+        "max_webm_filesize": {
+          "type": "integer",
+          "description": "Maximum WebM file size allowed (in bytes)"
+        },
+        "max_comment_chars": {
+          "type": "integer",
+          "description": "Maximum number of characters allowed in a comment"
+        },
+        "max_webm_duration": {
+          "type": "integer",
+          "description": "Maximum WebM duration (in seconds)"
+        },
+        "bump_limit": {
+          "type": "integer",
+          "description": "Maximum number of replies before a thread stops being bumped"
+        },
+        "image_limit": {
+          "type": "integer",
+          "description": "Maximum number of images allowed in a thread"
+        },
+        "meta_description": {
+          "type": "string",
+          "description": "A short description of the board's content"
+        },
+        "is_archived": {
+          "type": "integer",
+          "description": "Indicates if the board is archived (0 = not archived, 1 = archived)"
+        },
+        "spoilers": {
+          "type": "integer",
+          "description": "Indicates if the board has spoilers enabled (0 = disabled, 1 = enabled)"
+        },
+        "custom_spoilers": {
+          "type": "integer",
+          "description": "Number of custom spoiler images available on the board"
+        },
+        "cooldowns": {
+          "type": "object",
+          "description": "Cooldown times for posting on the board",
+          "properties": {
+            "threads": {
+              "type": "integer",
+              "description": "Cooldown time for creating new threads (in seconds)"
+            },
+            "replies": {
+              "type": "integer",
+              "description": "Cooldown time for making replies (in seconds)"
+            },
+            "images": {
+              "type": "integer",
+              "description": "Cooldown time for posting images (in seconds)"
+            }
+          }
+        },
+        "forced_anon": {
+          "type": "integer",
+          "description": "Whether posting name is forced off (1), optional (0) or mandatory (-1)."
+        }
+      },
+      "required": [
+        "board",
+        "title"
+      ]
+    },
+    "thread": {
+      "type": "object",
+      "description": "Represents a single thread, including OP and replies",
+      "properties": {
+        "posts": {
+          "type": "array",
+          "description": "List of posts in the thread (including OP)",
+          "items": {
+            "$ref": "#/definitions/post"
+          }
+        }
+      },
+      "required": [
+        "posts"
+      ]
+    },
+    "catalogThread": {
+      "type": "object",
+      "description": "Represents a thread in the catalog view",
+      "properties": {
+        "no": {
+          "type": "integer",
+          "description": "The OP's post number"
+        },
+        "last_replies": {
+          "type": "array",
+          "description": "A list of the last few replies in the thread (abbreviated)",
+          "items": {
+            "$ref": "#/definitions/post"
+          }
+        },
+        "omitted_posts": {
+          "type": "integer",
+          "description": "The number of omitted replies"
+        },
+        "omitted_images": {
+          "type": "integer",
+          "description": "The number of omitted images"
+        },
+        "sticky": {
+          "type": "integer",
+          "description": "Indicates if the thread is stickied (0 = not stickied, 1 = stickied)"
+        },
+        "closed": {
+          "type": "integer",
+          "description": "Indicates if the thread is closed (0 = not closed, 1 = closed)"
+        },
+        "replies": {
+          "type": "integer",
+          "description": "The number of replies in the thread"
+        },
+        "images": {
+          "type": "integer",
+          "description": "The number of images in the thread"
+        },
+        "bumplimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the bump limit (0 = no, 1 = yes)"
+        },
+        "imagelimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the image limit (0 = no, 1 = yes)"
+        },
+        "last_modified": {
+          "type": "integer",
+          "description": "Timestamp of the last modification to the thread"
+        },
+        "resto": {
+          "type": "integer",
+          "description": "Indicates the type of reply. Always 0 on the OP."
+        },
+        "now": {
+          "type": "string",
+          "description": "Human-readable string with post date and time"
+        },
+        "time": {
+          "type": "integer",
+          "description": "Unix timestamp of the post creation time"
+        },
+        "name": {
+          "type": "string",
+          "description": "The poster's name (or 'Anonymous')"
+        },
+        "trip": {
+          "type": "string",
+          "description": "The poster's tripcode (if any)"
+        },
+        "id": {
+          "type": "string",
+          "description": "Poster ID, only enabled on some boards"
+        },
+        "capcode": {
+          "type": "string",
+          "description": "Indicates poster's role (e.g., 'mod', 'admin')"
+        },
+        "country": {
+          "type": "string",
+          "description": "Poster's country code (if enabled)"
+        },
+        "country_name": {
+          "type": "string",
+          "description": "Poster's country name (if enabled)"
+        },
+        "sub": {
+          "type": "string",
+          "description": "The thread's subject"
+        },
+        "com": {
+          "type": "string",
+          "description": "The post's comment (may contain HTML)"
+        },
+        "tim": {
+          "type": "integer",
+          "description": "Timestamp used for the filename of the uploaded image"
+        },
+        "filename": {
+          "type": "string",
+          "description": "The original filename of the uploaded image"
+        },
+        "ext": {
+          "type": "string",
+          "description": "The file extension of the uploaded image"
+        },
+        "fsize": {
+          "type": "integer",
+          "description": "The file size of the uploaded image (in bytes)"
+        },
+        "md5": {
+          "type": "string",
+          "description": "The MD5 hash of the uploaded image"
+        },
+        "w": {
+          "type": "integer",
+          "description": "The width of the uploaded image"
+        },
+        "h": {
+          "type": "integer",
+          "description": "The height of the uploaded image"
+        },
+        "tn_w": {
+          "type": "integer",
+          "description": "The width of the thumbnail image"
+        },
+        "tn_h": {
+          "type": "integer",
+          "description": "The height of the thumbnail image"
+        },
+        "filedeleted": {
+          "type": "integer",
+          "description": "Indicates if the file was deleted (0 = no, 1 = yes)"
+        },
+        "spoiler": {
+          "type": "integer",
+          "description": "Indicates if the image is a spoiler (0 = no, 1 = yes)"
+        },
+        "custom_spoiler": {
+          "type": "integer",
+          "description": "ID of the custom spoiler image used"
+        },
+        "m_img": {
+          "type": "integer",
+          "description": "Indicates whether the image is a static image (0) or a gif (1)."
+        },
+        "replies": {
+          "type": "integer",
+          "description": "Number of replies"
+        },
+        "images": {
+          "type": "integer",
+          "description": "Number of images"
+        },
+        "bumplimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the bump limit (0 = no, 1 = yes)"
+        },
+        "imagelimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the image limit (0 = no, 1 = yes)"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Thread tag. Only available on some boards."
+        },
+        "semantic_url": {
+          "type": "string",
+          "description": "URL-friendly version of the thread subject."
+        }
+      },
+      "required": [
+        "no"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "description": "Represents a single post (can be OP or reply)",
+      "properties": {
+        "no": {
+          "type": "integer",
+          "description": "The post number"
+        },
+        "resto": {
+          "type": "integer",
+          "description": "The post number of the thread OP (0 if this is the OP)"
+        },
+        "sticky": {
+          "type": "integer",
+          "description": "Indicates if the thread is stickied (0 = not stickied, 1 = stickied)"
+        },
+        "closed": {
+          "type": "integer",
+          "description": "Indicates if the thread is closed (0 = not closed, 1 = closed)"
+        },
+        "now": {
+          "type": "string",
+          "description": "Human-readable string with post date and time"
+        },
+        "time": {
+          "type": "integer",
+          "description": "Unix timestamp of the post creation time"
+        },
+        "name": {
+          "type": "string",
+          "description": "The poster's name (or 'Anonymous')"
+        },
+        "trip": {
+          "type": "string",
+          "description": "The poster's tripcode (if any)"
+        },
+        "id": {
+          "type": "string",
+          "description": "Poster ID, only enabled on some boards"
+        },
+        "capcode": {
+          "type": "string",
+          "description": "Indicates poster's role (e.g., 'mod', 'admin')"
+        },
+        "country": {
+          "type": "string",
+          "description": "Poster's country code (if enabled)"
+        },
+        "country_name": {
+          "type": "string",
+          "description": "Poster's country name (if enabled)"
+        },
+        "sub": {
+          "type": "string",
+          "description": "The thread's subject (only on OP)"
+        },
+        "com": {
+          "type": "string",
+          "description": "The post's comment (may contain HTML)"
+        },
+        "tim": {
+          "type": "integer",
+          "description": "Timestamp used for the filename of the uploaded image"
+        },
+        "filename": {
+          "type": "string",
+          "description": "The original filename of the uploaded image"
+        },
+        "ext": {
+          "type": "string",
+          "description": "The file extension of the uploaded image"
+        },
+        "fsize": {
+          "type": "integer",
+          "description": "The file size of the uploaded image (in bytes)"
+        },
+        "md5": {
+          "type": "string",
+          "description": "The MD5 hash of the uploaded image"
+        },
+        "w": {
+          "type": "integer",
+          "description": "The width of the uploaded image"
+        },
+        "h": {
+          "type": "integer",
+          "description": "The height of the uploaded image"
+        },
+        "tn_w": {
+          "type": "integer",
+          "description": "The width of the thumbnail image"
+        },
+        "tn_h": {
+          "type": "integer",
+          "description": "The height of the thumbnail image"
+        },
+        "filedeleted": {
+          "type": "integer",
+          "description": "Indicates if the file was deleted (0 = no, 1 = yes)"
+        },
+        "spoiler": {
+          "type": "integer",
+          "description": "Indicates if the image is a spoiler (0 = no, 1 = yes)"
+        },
+        "custom_spoiler": {
+          "type": "integer",
+          "description": "ID of the custom spoiler image used"
+        },
+        "replies": {
+          "type": "integer",
+          "description": "Number of replies, only present on OP in board listing"
+        },
+        "images": {
+          "type": "integer",
+          "description": "Number of images, only present on OP in board listing"
+        },
+        "bumplimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the bump limit (0 = no, 1 = yes), only present on OP in board listing"
+        },
+        "imagelimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the image limit (0 = no, 1 = yes), only present on OP in board listing"
+        },
+        "last_modified": {
+          "type": "integer",
+          "description": "Timestamp of the last modification to the thread, only present on OP in board listing"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Thread tag. Only available on some boards and only present on OP in board listing."
+        },
+        "semantic_url": {
+          "type": "string",
+          "description": "URL-friendly version of the thread subject, only present on OP in board listing."
+        },
+        "since4pass": {
+          "type": "integer",
+          "description": "The year when 4chan pass was bought. Only shown to mods and staff."
+        },
+        "unique_ips": {
+          "type": "integer",
+          "description": "Number of unique IPs that have posted in the thread. Only shown to mods and staff."
+        },
+        "m_img": {
+          "type": "integer",
+          "description": "Indicates whether the image is a static image (0) or a gif (1)."
+        }
+      },
+      "required": [
+        "no"
+      ]
+    }
+  }
+}

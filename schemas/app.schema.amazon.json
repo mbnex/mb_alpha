@@ -1,0 +1,796 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Amazon Shopping",
+  "description": "JSON Schema for Amazon Shopping resources and interactions.",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "object",
+      "description": "Represents a user on Amazon.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (should be hashed in real systems)."
+        },
+        "addresses": {
+          "type": "array",
+          "description": "List of user's saved addresses.",
+          "items": {
+            "$ref": "#/definitions/address"
+          }
+        },
+        "paymentMethods": {
+          "type": "array",
+          "description": "List of user's saved payment methods.",
+          "items": {
+            "$ref": "#/definitions/paymentMethod"
+          }
+        },
+        "wishlists": {
+          "type": "array",
+          "description": "List of user's wishlists",
+          "items": {
+            "$ref": "#/definitions/wishlist"
+          }
+        },
+        "shoppingCart": {
+          "$ref": "#/definitions/shoppingCart",
+          "description": "User's current shopping cart."
+        },
+        "orderHistory": {
+          "type": "array",
+          "description": "List of user's past orders",
+          "items": {
+            "$ref": "#/definitions/order"
+          }
+        },
+        "isPrimeMember": {
+          "type": "boolean",
+          "description": "Indicates if the user is an Amazon Prime member."
+        }
+      },
+      "required": [
+        "userId",
+        "email",
+        "password"
+      ]
+    },
+    "product": {
+      "type": "object",
+      "description": "Represents a product on Amazon.",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the product."
+        },
+        "title": {
+          "type": "string",
+          "description": "Product title."
+        },
+        "description": {
+          "type": "string",
+          "description": "Product description."
+        },
+        "category": {
+          "type": "string",
+          "description": "Product category."
+        },
+        "subcategory": {
+          "type": "string",
+          "description": "Product subcategory."
+        },
+        "brand": {
+          "type": "string",
+          "description": "Product brand."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Product price."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency of the price (e.g., USD, EUR)."
+        },
+        "images": {
+          "type": "array",
+          "description": "List of product image URLs.",
+          "items": {
+            "type": "string",
+            "format": "URL"
+          }
+        },
+        "stockQuantity": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of units in stock."
+        },
+        "seller": {
+          "$ref": "#/definitions/seller"
+        },
+        "ratings": {
+          "$ref": "#/definitions/ratings",
+          "description": "Product ratings information."
+        },
+        "reviews": {
+          "type": "array",
+          "description": "List of product reviews.",
+          "items": {
+            "$ref": "#/definitions/review"
+          }
+        },
+        "shippingOptions": {
+          "type": "array",
+          "description": "List of available shipping options.",
+          "items": {
+            "$ref": "#/definitions/shippingOption"
+          }
+        },
+        "features": {
+          "type": "array",
+          "description": "List of product features (e.g., color, size).",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "availability": {
+          "type": "string",
+          "enum": [
+            "In Stock",
+            "Out of Stock",
+            "Pre-order",
+            "Backordered"
+          ],
+          "description": "Product availability status."
+        }
+      },
+      "required": [
+        "productId",
+        "title",
+        "price",
+        "currency"
+      ]
+    },
+    "seller": {
+      "type": "object",
+      "description": "Represents a seller on Amazon.",
+      "properties": {
+        "sellerId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the seller."
+        },
+        "sellerName": {
+          "type": "string",
+          "description": "Seller's name."
+        },
+        "sellerRating": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Average rating of the seller."
+        },
+        "sellerRatingCount": {
+          "type": "integer",
+          "description": "Total number of ratings for the seller"
+        }
+      },
+      "required": [
+        "sellerId",
+        "sellerName"
+      ]
+    },
+    "order": {
+      "type": "object",
+      "description": "Represents an order placed on Amazon.",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the order."
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who placed the order."
+        },
+        "orderDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the order was placed."
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items in the order.",
+          "items": {
+            "$ref": "#/definitions/orderItem"
+          }
+        },
+        "shippingAddress": {
+          "$ref": "#/definitions/address",
+          "description": "Shipping address for the order."
+        },
+        "paymentMethod": {
+          "$ref": "#/definitions/paymentMethod",
+          "description": "Payment method used for the order."
+        },
+        "totalAmount": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Total amount of the order."
+        },
+        "orderStatus": {
+          "type": "string",
+          "enum": [
+            "Processing",
+            "Shipped",
+            "Delivered",
+            "Cancelled",
+            "Returned"
+          ],
+          "description": "Current status of the order."
+        },
+        "shippingDetails": {
+          "$ref": "#/definitions/shippingDetails"
+        }
+      },
+      "required": [
+        "orderId",
+        "userId",
+        "orderDate",
+        "items",
+        "shippingAddress",
+        "paymentMethod",
+        "totalAmount",
+        "orderStatus"
+      ]
+    },
+    "search": {
+      "type": "object",
+      "description": "Represents a search query and results on Amazon.",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query string."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category to filter search results (optional)."
+        },
+        "filters": {
+          "type": "object",
+          "description": "Additional filters for search results (e.g., price range, brand).",
+          "properties": {
+            "minPrice": {
+              "type": "number"
+            },
+            "maxPrice": {
+              "type": "number"
+            },
+            "brand": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "rating": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          },
+          "additionalProperties": true
+        },
+        "sort": {
+          "type": "string",
+          "enum": [
+            "relevance",
+            "price_asc",
+            "price_desc",
+            "newest",
+            "rating"
+          ],
+          "description": "Sorting order for search results."
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Page number of results."
+        },
+        "results": {
+          "type": "array",
+          "description": "List of search results (products).",
+          "items": {
+            "$ref": "#/definitions/product"
+          }
+        },
+        "totalResults": {
+          "type": "integer",
+          "description": "Total number of search results found."
+        }
+      },
+      "required": [
+        "query",
+        "results",
+        "totalResults"
+      ]
+    },
+    "recommendation": {
+      "type": "object",
+      "description": "Represents a set of product recommendations.",
+      "properties": {
+        "recommendationId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the recommendation set."
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user for whom the recommendations are generated (optional)."
+        },
+        "basedOn": {
+          "type": "string",
+          "enum": [
+            "browsing_history",
+            "purchase_history",
+            "similar_items",
+            "trending"
+          ],
+          "description": "Basis for generating the recommendations."
+        },
+        "products": {
+          "type": "array",
+          "description": "List of recommended products.",
+          "items": {
+            "$ref": "#/definitions/product"
+          }
+        }
+      },
+      "required": [
+        "recommendationId",
+        "products"
+      ]
+    },
+    "promotion": {
+      "type": "object",
+      "description": "Represents promotional offers or deals.",
+      "properties": {
+        "promotionId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the promotion."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the promotion."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the promotion."
+        },
+        "discountType": {
+          "type": "string",
+          "enum": [
+            "percentage",
+            "fixed_amount",
+            "buy_x_get_y"
+          ],
+          "description": "Type of discount offered."
+        },
+        "discountValue": {
+          "type": "number",
+          "description": "Value of the discount (percentage or amount)."
+        },
+        "applicableProducts": {
+          "type": "array",
+          "description": "List of product IDs to which the promotion applies (optional).",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the promotion."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the promotion."
+        }
+      },
+      "required": [
+        "promotionId",
+        "title",
+        "discountType",
+        "startDate",
+        "endDate"
+      ]
+    }
+  },
+  "definitions": {
+    "address": {
+      "type": "object",
+      "properties": {
+        "addressId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the address."
+        },
+        "street": {
+          "type": "string",
+          "description": "Street address."
+        },
+        "city": {
+          "type": "string",
+          "description": "City."
+        },
+        "state": {
+          "type": "string",
+          "description": "State or province."
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "Postal or ZIP code."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Phone number associated with the address."
+        },
+        "isDefault": {
+          "type": "boolean",
+          "description": "Indicates if this is the default address."
+        }
+      },
+      "required": [
+        "street",
+        "city",
+        "state",
+        "zipCode",
+        "country"
+      ]
+    },
+    "paymentMethod": {
+      "type": "object",
+      "properties": {
+        "paymentMethodId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the payment method."
+        },
+        "cardType": {
+          "type": "string",
+          "enum": [
+            "credit",
+            "debit",
+            "gift card"
+          ],
+          "description": "Type of payment method."
+        },
+        "cardNumber": {
+          "type": "string",
+          "description": "Card number (last 4 digits for display)."
+        },
+        "expiryMonth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Expiration month."
+        },
+        "expiryYear": {
+          "type": "integer",
+          "description": "Expiration year."
+        },
+        "billingAddress": {
+          "$ref": "#/definitions/address"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "description": "Indicates if this is the default payment method."
+        }
+      },
+      "required": [
+        "paymentMethodId",
+        "cardType"
+      ]
+    },
+    "orderItem": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the product."
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Quantity of the product ordered."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Price per unit at the time of order."
+        },
+        "seller": {
+          "$ref": "#/definitions/seller"
+        }
+      },
+      "required": [
+        "productId",
+        "quantity",
+        "price"
+      ]
+    },
+    "ratings": {
+      "type": "object",
+      "properties": {
+        "averageRating": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Average rating of the product."
+        },
+        "ratingCount": {
+          "type": "integer",
+          "description": "Total number of ratings for the product."
+        },
+        "ratingDistribution": {
+          "type": "object",
+          "description": "Distribution of ratings (e.g., number of 5-star, 4-star ratings).",
+          "properties": {
+            "1": {
+              "type": "integer"
+            },
+            "2": {
+              "type": "integer"
+            },
+            "3": {
+              "type": "integer"
+            },
+            "4": {
+              "type": "integer"
+            },
+            "5": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "averageRating",
+        "ratingCount"
+      ]
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "reviewId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the review."
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who wrote the review."
+        },
+        "rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Rating given in the review."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the review."
+        },
+        "reviewText": {
+          "type": "string",
+          "description": "Content of the review."
+        },
+        "reviewDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the review was submitted."
+        },
+        "helpfulVotes": {
+          "type": "integer",
+          "description": "Number of users who found the review helpful."
+        },
+        "totalVotes": {
+          "type": "integer",
+          "description": "Total number of votes on the review."
+        },
+        "verifiedPurchase": {
+          "type": "boolean",
+          "description": "Indicates if the reviewer purchased the product on Amazon"
+        }
+      },
+      "required": [
+        "reviewId",
+        "userId",
+        "rating",
+        "reviewText",
+        "reviewDate"
+      ]
+    },
+    "shippingOption": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the shipping option (e.g., Standard, Expedited)."
+        },
+        "deliveryTime": {
+          "type": "string",
+          "description": "Estimated delivery time."
+        },
+        "cost": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Cost of the shipping option."
+        }
+      },
+      "required": [
+        "name",
+        "deliveryTime",
+        "cost"
+      ]
+    },
+    "shippingDetails": {
+      "type": "object",
+      "properties": {
+        "carrier": {
+          "type": "string",
+          "description": "Name of the shipping carrier."
+        },
+        "trackingNumber": {
+          "type": "string",
+          "description": "Tracking number for the shipment."
+        },
+        "estimatedDeliveryDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Estimated delivery date."
+        },
+        "shippingStatus": {
+          "type": "string",
+          "enum": [
+            "Preparing for Shipment",
+            "Shipped",
+            "Out for Delivery",
+            "Delivered",
+            "Delayed"
+          ],
+          "description": "Current status of the shipment."
+        }
+      },
+      "required": [
+        "carrier",
+        "trackingNumber"
+      ]
+    },
+    "shoppingCart": {
+      "type": "object",
+      "properties": {
+        "cartId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the cart."
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who owns the cart."
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items in the cart.",
+          "items": {
+            "$ref": "#/definitions/cartItem"
+          }
+        },
+        "subtotal": {
+          "type": "number",
+          "format": "float",
+          "minimum": 0,
+          "description": "Subtotal of the items in the cart (before tax and shipping)."
+        }
+      },
+      "required": [
+        "cartId",
+        "items",
+        "subtotal"
+      ]
+    },
+    "cartItem": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the product in the cart."
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Quantity of the product in the cart."
+        },
+        "seller": {
+          "$ref": "#/definitions/seller"
+        }
+      },
+      "required": [
+        "productId",
+        "quantity"
+      ]
+    },
+    "wishlist": {
+      "type": "object",
+      "properties": {
+        "wishlistId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the wishlist"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the wishlist"
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Indicates whether the wishlist is public or private"
+        },
+        "items": {
+          "type": "array",
+          "description": "List of products in the wishlist",
+          "items": {
+            "$ref": "#/definitions/product"
+          }
+        }
+      },
+      "required": [
+        "wishlistId",
+        "name",
+        "items"
+      ]
+    }
+  }
+}

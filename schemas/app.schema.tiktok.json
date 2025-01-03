@@ -1,0 +1,390 @@
+{
+    "title": "TikTok App Schema",
+    "description": "A JSON Schema representing the core data structures of the TikTok app.",
+    "type": "object",
+    "properties": {
+    "users": {
+        "type": "array",
+            "description": "List of registered users.",
+            "items": {
+            "$ref": "#/definitions/User"
+        }
+    },
+    "videos": {
+        "type": "array",
+            "description": "List of videos uploaded to the platform.",
+            "items": {
+            "$ref": "#/definitions/Video"
+        }
+    },
+    "comments": {
+        "type": "array",
+            "description": "List of comments made on videos.",
+            "items": {
+            "$ref": "#/definitions/Comment"
+        }
+    },
+    "likes": {
+        "type": "array",
+            "description": "List of likes given to videos.",
+            "items": {
+            "$ref": "#/definitions/Like"
+        }
+    },
+    "hashtags": {
+        "type": "array",
+            "description": "List of hashtags used in the app.",
+            "items": {
+            "$ref": "#/definitions/Hashtag"
+        }
+    },
+    "sounds": {
+        "type": "array",
+            "description": "List of sounds (music/audio) available in the app.",
+            "items": {
+            "$ref": "#/definitions/Sound"
+        }
+    },
+    "messages": {
+        "type": "array",
+            "description": "List of direct messages between users",
+            "items": {
+            "$ref": "#/definitions/Message"
+        }
+    },
+    "notifications": {
+        "type": "array",
+            "description": "List of user notifications.",
+            "items": {
+            "$ref": "#/definitions/Notification"
+        }
+    }
+},
+    "definitions": {
+    "User": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the user."
+            },
+            "username": {
+                "type": "string",
+                    "description": "User's unique username."
+            },
+            "full_name": {
+                "type": "string",
+                    "description": "User's full name (optional)."
+            },
+            "profile_picture": {
+                "type": "string",
+                    "format": "URL",
+                    "description": "URL to the user's profile picture."
+            },
+            "bio": {
+                "type": "string",
+                    "description": "User's bio (optional)."
+            },
+            "followers": {
+                "type": "array",
+                    "description": "List of user IDs following this user.",
+                    "items": {
+                    "type": "string",
+                        "format": "uuid"
+                }
+            },
+            "following": {
+                "type": "array",
+                    "description": "List of user IDs this user is following.",
+                    "items": {
+                    "type": "string",
+                        "format": "uuid"
+                }
+            },
+            "is_private": {
+                "type": "boolean",
+                    "description": "Indicates if the user's profile is private."
+            }
+        },
+        "required": [
+            "id",
+            "username"
+        ]
+    },
+    "Video": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the video."
+            },
+            "user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who uploaded the video."
+            },
+            "video_url": {
+                "type": "string",
+                    "format": "URL",
+                    "description": "URL to the video file."
+            },
+            "description": {
+                "type": "string",
+                    "description": "Description of the video (optional)."
+            },
+            "sound_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the sound used in the video (optional)."
+            },
+            "hashtags": {
+                "type": "array",
+                    "description": "List of hashtag IDs associated with the video.",
+                    "items": {
+                    "type": "string",
+                        "format": "uuid"
+                }
+            },
+            "duration": {
+                "type": "number",
+                    "format": "float",
+                    "description": "Duration of the video in seconds."
+            },
+            "created_at": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when the video was created."
+            },
+            "location": {
+                "type": "object",
+                    "description": "Location information, if provided.",
+                    "properties": {
+                    "latitude": {
+                        "type": "number",
+                            "format": "float"
+                    },
+                    "longitude": {
+                        "type": "number",
+                            "format": "float"
+                    }
+                }
+            }
+        },
+        "required": [
+            "id",
+            "user_id",
+            "video_url"
+        ]
+    },
+    "Comment": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the comment."
+            },
+            "video_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the video the comment is on."
+            },
+            "user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who made the comment."
+            },
+            "text": {
+                "type": "string",
+                    "description": "Content of the comment."
+            },
+            "created_at": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when the comment was created."
+            }
+        },
+        "required": [
+            "id",
+            "video_id",
+            "user_id",
+            "text"
+        ]
+    },
+    "Like": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the like."
+            },
+            "video_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the video that was liked."
+            },
+            "user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who gave the like."
+            },
+            "created_at": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when the like was given."
+            }
+        },
+        "required": [
+            "id",
+            "video_id",
+            "user_id"
+        ]
+    },
+    "Hashtag": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the hashtag."
+            },
+            "name": {
+                "type": "string",
+                    "description": "Name of the hashtag (e.g., \"funny\", \"dance\")."
+            }
+        },
+        "required": [
+            "id",
+            "name"
+        ]
+    },
+    "Sound": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the sound."
+            },
+            "title": {
+                "type": "string",
+                    "description": "Title of the sound."
+            },
+            "artist": {
+                "type": "string",
+                    "description": "Artist of the sound (if applicable)."
+            },
+            "sound_url": {
+                "type": "string",
+                    "format": "URL",
+                    "description": "URL to the sound file."
+            },
+            "duration": {
+                "type": "number",
+                    "format": "float",
+                    "description": "Duration of the sound in seconds."
+            }
+        },
+        "required": [
+            "id",
+            "title",
+            "sound_url"
+        ]
+    },
+    "Message": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the message."
+            },
+            "sender_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who sent the message"
+            },
+            "recipient_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who will receive the message"
+            },
+            "content": {
+                "type": "string",
+                    "description": "Content of the message"
+            },
+            "timestamp": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp of when the message was sent"
+            }
+        },
+        "required": [
+            "id",
+            "sender_id",
+            "recipient_id",
+            "content",
+            "timestamp"
+        ]
+    },
+    "Notification": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the notification."
+            },
+            "user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who will receive the notification."
+            },
+            "type": {
+                "type": "string",
+                    "enum": [
+                    "like",
+                    "comment",
+                    "follow",
+                    "mention"
+                ],
+                    "description": "Type of notification."
+            },
+            "content": {
+                "type": "string",
+                    "description": "Description of the notification."
+            },
+            "is_read": {
+                "type": "boolean",
+                    "description": "Indicates if the notification has been read."
+            },
+            "created_at": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when the notification was created."
+            },
+            "related_video_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "The id of the video related to the notification (if applicable)."
+            },
+            "related_user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "The id of the user related to the notification (if applicable)."
+            }
+        },
+        "required": [
+            "id",
+            "user_id",
+            "type",
+            "content",
+            "created_at"
+        ]
+    }
+}
+}
+

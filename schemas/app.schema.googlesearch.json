@@ -1,0 +1,339 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Google Search Response",
+  "description": "A simplified JSON Schema representation of a Google Search response. This schema focuses on the core elements and common data structures, not covering every single attribute or edge case of the actual Google Search API. It aims to illustrate the structure and type of information returned.",
+  "type": "object",
+  "properties": {
+    "searchMetadata": {
+      "type": "object",
+      "description": "Metadata about the search query and execution.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the search."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the search (e.g., 'Success', 'Partial Success')."
+        },
+        "jsonEndpoint": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the full JSON response (if applicable)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the search was executed."
+        },
+        "processedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the search was processed."
+        },
+        "totalTimeTaken": {
+          "type": "number",
+          "description": "Time taken to process the search, in seconds."
+        },
+        "engineUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the search engine used."
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "createdAt",
+        "processedAt"
+      ]
+    },
+    "searchParameters": {
+      "type": "object",
+      "description": "Parameters used for the search query.",
+      "properties": {
+        "q": {
+          "type": "string",
+          "description": "The search query string."
+        },
+        "location": {
+          "type": "string",
+          "description": "Geographic location for the search."
+        },
+        "hl": {
+          "type": "string",
+          "description": "Interface language (e.g., 'en', 'es')."
+        },
+        "gl": {
+          "type": "string",
+          "description": "Google country domain (e.g., 'us', 'uk')."
+        },
+        "googleDomain": {
+          "type": "string",
+          "description": "Google domain used for the search."
+        }
+      },
+      "required": [
+        "q"
+      ]
+    },
+    "searchInformation": {
+      "type": "object",
+      "description": "Information about the search results.",
+      "properties": {
+        "organicResultsState": {
+          "type": "string",
+          "description": "The state of the organic results (e.g., 'Results For', 'Showing Results For')."
+        },
+        "queryDisplayed": {
+          "type": "string",
+          "description": "The query as displayed by Google, possibly modified."
+        },
+        "totalResults": {
+          "type": "string",
+          "description": "Estimated total number of results (formatted string)."
+        },
+        "timeTaken": {
+          "type": "string",
+          "description": "Time taken to execute the search, as a string (e.g., '0.54 seconds')."
+        },
+        "spellingFix": {
+          "type": "object",
+          "description": "Spelling correction suggested by Google, if any.",
+          "properties": {
+            "original": {
+              "type": "string",
+              "description": "The original, potentially misspelled query."
+            },
+            "corrected": {
+              "type": "string",
+              "description": "The corrected query."
+            }
+          }
+        }
+      }
+    },
+    "organicResults": {
+      "type": "array",
+      "description": "List of organic search results.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "integer",
+            "description": "Position of the result in the list."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the result."
+          },
+          "link": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the result."
+          },
+          "displayedLink": {
+            "type": "string",
+            "description": "Display version of the link, possibly truncated."
+          },
+          "snippet": {
+            "type": "string",
+            "description": "Snippet of text from the result page."
+          },
+          "aboutThisResult": {
+            "type": "object",
+            "description": "Information on why this result is included in the search.",
+            "properties": {
+              "source": {
+                "type": "object",
+                "description": "Information about the source of the result",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the website."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A description of the source of the result."
+                  },
+                  "security": {
+                    "type": "string",
+                    "description": "Whether the website is deemed secure (HTTPS)."
+                  },
+                  "sourceInfoUrl": {
+                    "type": "string",
+                    "format": "URL",
+                    "description": "A URL containing further information about the source."
+                  }
+                }
+              },
+              "keywords": {
+                "type": "array",
+                "description": "List of keywords matched in the result.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "languages": {
+                "type": "array",
+                "description": "List of languages used on the result page.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "regions": {
+                "type": "array",
+                "description": "List of regions the result page is relevant to.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "topics": {
+                "type": "array",
+                "description": "List of topics related to the result page.",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["source"]
+          },
+          "richSnippet": {
+            "type": "object",
+            "description": "Structured data associated with the result, if available.",
+            "properties": {
+              "top": {
+                "type": "object",
+                "description": "Structured data that shows up at the top of the search result.",
+                "properties": {
+                  "extensions": {
+                    "type": "array",
+                    "description": "Extensions or additional data fields for the rich snippet.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "detectedType": {
+                    "type": "string",
+                    "description": "A description of the type of structured data found."
+                  }
+                }
+              },
+              "bottom": {
+                "type": "object",
+                "description": "Structured data that shows up at the bottom of the search result.",
+                "properties": {
+                  "extensions": {
+                    "type": "array",
+                    "description": "Extensions or additional data fields for the rich snippet.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "detectedType": {
+                    "type": "string",
+                    "description": "A description of the type of structured data found."
+                  }
+                }
+              }
+            }
+          },
+          "date": {
+            "type": "string",
+            "description": "Date associated with the result, if available."
+          },
+          "sitelinks": {
+            "type": "array",
+            "description": "Links to specific sections within the same website.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Title of the sitelink."
+                },
+                "link": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL of the sitelink."
+                },
+                "snippet": {
+                  "type": "string",
+                  "description": "Snippet of text for the sitelink."
+                }
+              },
+              "required": [
+                "title",
+                "link"
+              ]
+            }
+          }
+        },
+        "required": [
+          "position",
+          "title",
+          "link"
+        ]
+      }
+    },
+    "relatedSearches": {
+      "type": "array",
+      "description": "List of related search queries.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The related search query."
+          },
+          "link": {
+            "type": "string",
+            "format": "URL",
+            "description": "Link to the search results for the related query."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    "relatedQuestions": {
+      "type": "array",
+      "description": "List of related questions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The related question."
+          },
+          "answer": {
+            "type": "string",
+            "description": "A brief answer to the question."
+          },
+          "source": {
+            "type": "object",
+            "description": "The source of the answer.",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "The title of the source."
+              },
+              "link": {
+                "type": "string",
+                "format": "URL",
+                "description": "A URL to the source."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "searchMetadata",
+    "searchParameters",
+    "searchInformation",
+    "organicResults"
+  ]
+}

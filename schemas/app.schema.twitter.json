@@ -1,0 +1,525 @@
+{
+  "type": "object",
+  "title": "Twitter",
+  "description": "JSON Schema for Twitter data model (simplified)",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Twitter users",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "tweets": {
+      "type": "array",
+      "description": "List of Tweets",
+      "items": {
+        "$ref": "#/definitions/Tweet"
+      }
+    },
+    "trends": {
+      "type": "array",
+      "description": "List of trending topics",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the trending topic"
+          },
+          "tweet_volume": {
+            "type": "integer",
+            "description": "Approximate number of tweets related to the trend"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "direct_messages": {
+      "type": "array",
+      "description": "List of direct messages",
+      "items": {
+        "$ref": "#/definitions/DirectMessage"
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "readOnly": true
+        },
+        "id_str": {
+          "type": "string",
+          "description": "String representation of the unique identifier",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "The user's display name",
+          "maxLength": 50
+        },
+        "screen_name": {
+          "type": "string",
+          "description": "The user's Twitter handle (username)",
+          "maxLength": 15,
+          "pattern": "^[a-zA-Z0-9_]+$"
+        },
+        "location": {
+          "type": "string",
+          "description": "The user's location (as entered by the user)",
+          "maxLength": 30
+        },
+        "description": {
+          "type": "string",
+          "description": "The user's profile description (bio)",
+          "maxLength": 160
+        },
+        "url": {
+          "type": "string",
+          "description": "URL associated with the user's profile",
+          "format": "url"
+        },
+        "protected": {
+          "type": "boolean",
+          "description": "Indicates if the user's tweets are protected (private)"
+        },
+        "followers_count": {
+          "type": "integer",
+          "description": "Number of followers",
+          "readOnly": true
+        },
+        "friends_count": {
+          "type": "integer",
+          "description": "Number of users this user is following",
+          "readOnly": true
+        },
+        "listed_count": {
+          "type": "integer",
+          "description": "Number of public lists the user is a member of",
+          "readOnly": true
+        },
+        "created_at": {
+          "type": "string",
+          "description": "UTC time when the user was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "favourites_count": {
+          "type": "integer",
+          "description": "Number of tweets this user has liked",
+          "readOnly": true
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Indicates if the user's account is verified"
+        },
+        "statuses_count": {
+          "type": "integer",
+          "description": "Number of tweets (including retweets) posted by the user",
+          "readOnly": true
+        },
+        "profile_image_url_https": {
+          "type": "string",
+          "description": "URL of the user's profile image (HTTPS)",
+          "format": "url"
+        },
+        "following": {
+          "type": "array",
+          "description": "IDs of users this user is following",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "followers": {
+          "type": "array",
+          "description": "IDs of users following this user",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "id_str",
+        "name",
+        "screen_name"
+      ]
+    },
+    "Tweet": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "description": "UTC time when the tweet was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the tweet",
+          "readOnly": true
+        },
+        "id_str": {
+          "type": "string",
+          "description": "String representation of the unique identifier",
+          "readOnly": true
+        },
+        "text": {
+          "type": "string",
+          "description": "The actual UTF-8 text of the tweet",
+          "maxLength": 280
+        },
+        "source": {
+          "type": "string",
+          "description": "Utility used to post the tweet (e.g., 'Twitter for iPhone')",
+          "readOnly": true
+        },
+        "truncated": {
+          "type": "boolean",
+          "description": "Indicates if the text was truncated",
+          "readOnly": true
+        },
+        "in_reply_to_status_id": {
+          "type": "integer",
+          "description": "ID of the tweet this tweet is in reply to (if applicable)"
+        },
+        "in_reply_to_user_id": {
+          "type": "integer",
+          "description": "ID of the user this tweet is in reply to (if applicable)"
+        },
+        "user_id": {
+          "type": "integer",
+          "description": "ID of the user who posted the tweet",
+          "$ref": "#/definitions/User/properties/id"
+        },
+        "coordinates": {
+          "type": "object",
+          "description": "Geographic coordinates associated with the tweet",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "Point"
+              ]
+            },
+            "coordinates": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "float"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "type",
+            "coordinates"
+          ]
+        },
+        "place": {
+          "type": "object",
+          "description": "Information about the place tagged in the tweet",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string",
+              "format": "url"
+            },
+            "place_type": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "full_name": {
+              "type": "string"
+            },
+            "country_code": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          }
+        },
+        "retweet_count": {
+          "type": "integer",
+          "description": "Number of times the tweet has been retweeted",
+          "readOnly": true
+        },
+        "favorite_count": {
+          "type": "integer",
+          "description": "Number of times the tweet has been liked",
+          "readOnly": true
+        },
+        "entities": {
+          "type": "object",
+          "description": "Entities extracted from the tweet text (hashtags, URLs, user mentions, etc.)",
+          "properties": {
+            "hashtags": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "urls": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "expanded_url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "display_url": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "user_mentions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "screen_name": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "id_str": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "media": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "id_str": {
+                    "type": "string"
+                  },
+                  "media_url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "media_url_https": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "display_url": {
+                    "type": "string"
+                  },
+                  "expanded_url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["photo", "video", "animated_gif"]
+                  },
+                  "sizes": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "w": {
+                          "type": "integer"
+                        },
+                        "h": {
+                          "type": "integer"
+                        },
+                        "resize": {
+                          "type": "string",
+                          "enum": ["crop", "fit"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "retweeted": {
+          "type": "boolean",
+          "description": "Indicates if the authenticated user has retweeted this tweet",
+          "readOnly": true
+        },
+        "favorited": {
+          "type": "boolean",
+          "description": "Indicates if the authenticated user has liked this tweet",
+          "readOnly": true
+        },
+        "retweeted_status": {
+          "type": "object",
+          "description": "If this is a retweet, this will contain the original Tweet object",
+          "$ref": "#/definitions/Tweet"
+        }
+      },
+      "required": [
+        "id",
+        "id_str",
+        "text",
+        "user_id"
+      ]
+    },
+    "DirectMessage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the direct message",
+          "readOnly": true
+        },
+        "id_str": {
+          "type": "string",
+          "description": "String representation of the unique identifier",
+          "readOnly": true
+        },
+        "text": {
+          "type": "string",
+          "description": "The text of the direct message",
+          "maxLength": 10000
+        },
+        "sender_id": {
+          "type": "integer",
+          "description": "ID of the user who sent the message"
+        },
+        "recipient_id": {
+          "type": "integer",
+          "description": "ID of the user who received the message"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "UTC time when the message was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "entities": {
+          "type": "object",
+          "description": "Entities extracted from the message text (URLs, user mentions, etc.)",
+          "properties": {
+            "urls": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "expanded_url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "display_url": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "user_mentions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "screen_name": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "id_str": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "id_str",
+        "text",
+        "sender_id",
+        "recipient_id"
+      ]
+    }
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "type": "object",
+  "title": "PayPal App",
+  "description": "JSON Schema for a simplified PayPal application",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of registered users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique user identifier (UUID)"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (should be hashed in a real system)"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name"
+          },
+          "balance": {
+            "type": "number",
+            "format": "float",
+            "description": "User's account balance",
+            "minimum": 0
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Indicates if the user's account is verified"
+          },
+          "addresses": {
+            "type": "array",
+            "description": "List of user's addresses",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string",
+                  "description": "Street address"
+                },
+                "city": {
+                  "type": "string",
+                  "description": "City"
+                },
+                "state": {
+                  "type": "string",
+                  "description": "State/Province"
+                },
+                "zipCode": {
+                  "type": "string",
+                  "description": "Zip/Postal code"
+                },
+                "country": {
+                  "type": "string",
+                  "description": "Country code (e.g., US, CA)"
+                }
+              },
+              "required": [
+                "street",
+                "city",
+                "zipCode",
+                "country"
+              ]
+            }
+          },
+          "paymentMethods": {
+            "type": "array",
+            "description": "List of user's linked payment methods",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "credit_card",
+                    "bank_account",
+                    "paypal_balance"
+                  ],
+                  "description": "Type of payment method"
+                },
+                "cardNumber": {
+                  "type": "string",
+                  "description": "Credit card number (masked in a real system)"
+                },
+                "expiryDate": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Credit card expiry date (MM/YY format)"
+                },
+                "cvv": {
+                  "type": "string",
+                  "description": "Credit card security code (CVV)"
+                },
+                "bankAccountNumber": {
+                  "type": "string",
+                  "description": "Bank account number"
+                },
+                "routingNumber": {
+                  "type": "string",
+                  "description": "Bank routing number"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "oneOf": [
+                {
+                  "required": [
+                    "cardNumber",
+                    "expiryDate",
+                    "cvv"
+                  ]
+                },
+                {
+                  "required": [
+                    "bankAccountNumber",
+                    "routingNumber"
+                  ]
+                },
+                {
+                  "properties": {
+                    "type": {
+                      "const": "paypal_balance"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "password",
+          "balance"
+        ]
+      }
+    },
+    "transactions": {
+      "type": "array",
+      "description": "List of transactions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique transaction identifier (UUID)"
+          },
+          "senderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the sender"
+          },
+          "receiverId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the receiver"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "Transaction amount",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code (e.g., USD, EUR)",
+            "default": "USD"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Transaction timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "completed",
+              "failed",
+              "refunded"
+            ],
+            "description": "Transaction status"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional transaction description"
+          }
+        },
+        "required": [
+          "id",
+          "senderId",
+          "receiverId",
+          "amount",
+          "currency",
+          "timestamp",
+          "status"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "transactions"
+  ]
+}

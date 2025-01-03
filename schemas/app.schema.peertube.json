@@ -1,0 +1,1288 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PeerTube Instance Metadata",
+  "description": "Schema for a PeerTube instance's metadata, including information about videos, users, channels, and other related entities.",
+  "type": "object",
+  "properties": {
+    "instance": {
+      "type": "object",
+      "description": "General information about the PeerTube instance.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the PeerTube instance."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "A short description of the instance."
+        },
+        "description": {
+          "type": "string",
+          "description": "A longer description of the instance."
+        },
+        "terms": {
+          "type": "string",
+          "description": "A URL to the terms of service of the instance."
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of PeerTube the instance is running."
+        },
+        "software": {
+          "type": "object",
+          "description": "Software information",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of software - should always be peertube",
+              "const": "peertube"
+            },
+            "version": {
+              "type": "string",
+              "description": "Version of peertube"
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ]
+        },
+        "isNSFW": {
+          "type": "boolean",
+          "description": "Whether the instance allows NSFW content."
+        },
+        "configuration": {
+          "type": "object",
+          "description": "Configuration settings of the instance.",
+          "properties": {
+            "videos": {
+              "type": "object",
+              "description": "Video-related configurations.",
+              "properties": {
+                "maxFileSize": {
+                  "type": "integer",
+                  "description": "Maximum file size for uploads (in bytes)."
+                },
+                "maxResolutions": {
+                  "type": "object",
+                  "description": "Maximum allowed video resolutions.",
+                  "properties": {
+                    "p144": {
+                      "type": "boolean"
+                    },
+                    "p240": {
+                      "type": "boolean"
+                    },
+                    "p360": {
+                      "type": "boolean"
+                    },
+                    "p480": {
+                      "type": "boolean"
+                    },
+                    "p720": {
+                      "type": "boolean"
+                    },
+                    "p1080": {
+                      "type": "boolean"
+                    },
+                    "p1440": {
+                      "type": "boolean"
+                    },
+                    "p2160": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            },
+            "signup": {
+              "type": "object",
+              "description": "Signup configuration",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "requiresEmailVerification": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "user": {
+              "type": "object",
+              "description": "User related configuration",
+              "properties": {
+                "videoQuota": {
+                  "type": "integer",
+                  "description": "Quota limit for users",
+                  "format": "int64"
+                },
+                "videoQuotaDaily": {
+                  "type": "integer",
+                  "description": "Daily quota limit for users",
+                  "format": "int64"
+                }
+              }
+            },
+            "search": {
+              "type": "object",
+              "description": "Search related configurations",
+              "properties": {
+                "isIndexesEnabled": {
+                  "type": "boolean"
+                },
+                "remoteUri": {
+                  "type": "string",
+                  "format": "url"
+                }
+              }
+            }
+          }
+        },
+        "stats": {
+          "type": "object",
+          "description": "Statistics about the instance.",
+          "properties": {
+            "totalVideos": {
+              "type": "integer",
+              "description": "The total number of videos on the instance."
+            },
+            "totalVideoViews": {
+              "type": "integer",
+              "description": "The total number of video views on the instance."
+            },
+            "totalUsers": {
+              "type": "integer",
+              "description": "The total number of users on the instance."
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "software"
+      ]
+    },
+    "videos": {
+      "type": "array",
+      "description": "A list of videos on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The unique identifier of the video."
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The UUID of the video."
+          },
+          "shortUUID": {
+            "type": "string",
+            "description": "A shorter version of the UUID",
+            "maxLength": 8
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The URL of the video on the instance."
+          },
+          "name": {
+            "type": "string",
+            "description": "The title of the video."
+          },
+          "category": {
+            "type": "object",
+            "description": "Video category",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "licence": {
+            "type": "object",
+            "description": "Video licence",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "language": {
+            "type": "object",
+            "description": "Video language",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the video."
+          },
+          "duration": {
+            "type": "integer",
+            "description": "The duration of the video in seconds."
+          },
+          "isLive": {
+            "type": "boolean"
+          },
+          "isLocal": {
+            "type": "boolean",
+            "description": "Whether the video is hosted locally on the instance."
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the video was published."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of last update"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation date"
+          },
+          "views": {
+            "type": "integer",
+            "description": "The number of views the video has received."
+          },
+          "likes": {
+            "type": "integer",
+            "description": "The number of likes the video has received"
+          },
+          "dislikes": {
+            "type": "integer",
+            "description": "The number of dislikes the video has received"
+          },
+          "thumbnailPath": {
+            "type": "string",
+            "description": "The path to the video's thumbnail image."
+          },
+          "previewPath": {
+            "type": "string",
+            "description": "Path to video preview"
+          },
+          "embedPath": {
+            "type": "string",
+            "description": "Path to embed the video"
+          },
+          "isNSFW": {
+            "type": "boolean",
+            "description": "Whether the video is marked as NSFW."
+          },
+          "isPrivate": {
+            "type": "boolean",
+            "description": "Whether the video is private"
+          },
+          "tags": {
+            "type": "array",
+            "description": "Video tags",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "tag": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "tag"
+              ]
+            }
+          },
+          "channel": {
+            "type": "object",
+            "description": "The channel that the video belongs to.",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "The unique identifier of the channel."
+              },
+              "url": {
+                "type": "string",
+                "format": "url",
+                "description": "The URL of the channel."
+              },
+              "name": {
+                "type": "string",
+                "description": "The name of the channel."
+              },
+              "description": {
+                "type": "string",
+                "description": "Channel description"
+              },
+              "support": {
+                "type": "string",
+                "description": "Channel support text"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              },
+              "ownerAccount": {
+                "type": "object",
+                "description": "Channel owner information",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "host": {
+                    "type": "string"
+                  },
+                  "avatars": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/avatar"
+                    }
+                  },
+                  "avatar": {
+                    "$ref": "#/definitions/avatar"
+                  },
+                  "banner": {
+                    "$ref": "#/definitions/avatar"
+                  }
+                },
+                "required": [
+                  "id",
+                  "url",
+                  "name",
+                  "host"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "name",
+              "ownerAccount"
+            ]
+          },
+          "files": {
+            "type": "array",
+            "description": "Files associated with the video.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "File id"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "The filename of the video file."
+                },
+                "fileUrl": {
+                  "type": "string",
+                  "format": "url",
+                  "description": "URL of the file"
+                },
+                "magnetUri": {
+                  "type": "string",
+                  "description": "Magnet URI for the file"
+                },
+                "metadata": {
+                  "type": "object",
+                  "description": "Metadata information",
+                  "properties": {
+                    "fps": {
+                      "type": "integer"
+                    },
+                    "resolution": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "label": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "size": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "torrentUrl": {
+                  "type": "string",
+                  "format": "url"
+                }
+              },
+              "required": [
+                "id",
+                "filename",
+                "fileUrl"
+              ]
+            }
+          },
+          "streamingPlaylists": {
+            "type": "array",
+            "description": "Streaming playlists (HLS for example)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "integer"
+                },
+                "playlistUrl": {
+                  "type": "string",
+                  "format": "url"
+                },
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "fileUrl": {
+                        "type": "string",
+                        "format": "url"
+                      },
+                      "resolution": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "size": {
+                        "type": "integer",
+                        "format": "int64"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "fileUrl",
+                      "resolution"
+                    ]
+                  }
+                },
+                "segmentsSha256Url": {
+                  "type": "string",
+                  "format": "url"
+                }
+              },
+              "required": [
+                "id",
+                "type",
+                "playlistUrl"
+              ]
+            }
+          },
+          "account": {
+            "type": "object",
+            "description": "Video uploader information",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "followingCount": {
+                "type": "integer"
+              },
+              "followersCount": {
+                "type": "integer"
+              },
+              "avatars": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/avatar"
+                }
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "name",
+              "host"
+            ]
+          },
+          "blacklisted": {
+            "type": "boolean",
+            "description": "Whether the video is blacklisted"
+          },
+          "blacklistedReason": {
+            "type": "string",
+            "description": "Reason for blacklisting"
+          },
+          "waitTranscoding": {
+            "type": "boolean"
+          },
+          "state": {
+            "type": "object",
+            "description": "Video state",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "trackerUrls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "url"
+            }
+          },
+          "commentsEnabled": {
+            "type": "boolean"
+          },
+          "downloadEnabled": {
+            "type": "boolean"
+          },
+          "support": {
+            "type": "string"
+          },
+          "originallyPublishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "privacy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "enum": [
+                  1,
+                  2,
+                  3,
+                  4
+                ]
+              },
+              "label": {
+                "type": "string",
+                "enum": [
+                  "Public",
+                  "Unlisted",
+                  "Private",
+                  "Internal"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "uuid",
+          "url",
+          "name",
+          "isLocal",
+          "channel",
+          "account"
+        ]
+      }
+    },
+    "users": {
+      "type": "array",
+      "description": "A list of users on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The unique identifier of the user."
+          },
+          "name": {
+            "type": "string",
+            "description": "The username of the user."
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The display name of the user"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          },
+          "host": {
+            "type": "string"
+          },
+          "avatar": {
+            "$ref": "#/definitions/avatar"
+          },
+          "banner": {
+            "$ref": "#/definitions/avatar"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "followersCount": {
+            "type": "integer"
+          },
+          "followingCount": {
+            "type": "integer"
+          },
+          "videoQuota": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "videoQuotaDaily": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "role": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "host"
+        ]
+      }
+    },
+    "channels": {
+      "type": "array",
+      "description": "A list of channels on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The unique identifier of the channel."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the channel."
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The URL of the channel."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the channel."
+          },
+          "support": {
+            "type": "string"
+          },
+          "isLocal": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerAccount": {
+            "type": "object",
+            "description": "Channel owner information",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "avatars": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/avatar"
+                }
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "name",
+              "host"
+            ]
+          },
+          "avatar": {
+            "$ref": "#/definitions/avatar"
+          },
+          "banner": {
+            "$ref": "#/definitions/avatar"
+          },
+          "followersCount": {
+            "type": "integer"
+          },
+          "followingCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "isLocal",
+          "ownerAccount"
+        ]
+      }
+    },
+    "videoPlaylists": {
+      "type": "array",
+      "description": "Video playlists",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "thumbnailPath": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "privacy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "enum": [
+                  1,
+                  2,
+                  3,
+                  4
+                ]
+              },
+              "label": {
+                "type": "string",
+                "enum": [
+                  "Public",
+                  "Unlisted",
+                  "Private",
+                  "Internal"
+                ]
+              }
+            }
+          },
+          "ownerAccount": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "host",
+              "url"
+            ]
+          },
+          "videoChannel": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "url"
+            ]
+          },
+          "isLocal": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "uuid",
+          "name",
+          "isLocal"
+        ]
+      }
+    },
+    "videoComments": {
+      "type": "array",
+      "description": "Video comments",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "host",
+              "url"
+            ]
+          },
+          "video": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "shortUUID": {
+                "type": "string",
+                "maxLength": 8
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              }
+            },
+            "required": [
+              "id",
+              "uuid",
+              "url"
+            ]
+          },
+          "totalReplies": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "likes": {
+            "type": "integer"
+          },
+          "dislikes": {
+            "type": "integer"
+          },
+          "isApproved": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "account",
+          "video"
+        ]
+      }
+    },
+    "plugins": {
+      "type": "array",
+      "description": "A list of plugins installed on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the plugin."
+          },
+          "version": {
+            "type": "string",
+            "description": "The version of the plugin."
+          },
+          "homepage": {
+            "type": "string",
+            "format": "url",
+            "description": "URL to plugin homepage"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "version",
+          "enabled"
+        ]
+      }
+    },
+    "themes": {
+      "type": "array",
+      "description": "A list of themes installed on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the theme."
+          },
+          "version": {
+            "type": "string",
+            "description": "The version of the theme."
+          },
+          "homepage": {
+            "type": "string",
+            "format": "url"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "version",
+          "enabled"
+        ]
+      }
+    },
+    "videoImports": {
+      "type": "array",
+      "description": "Video imports",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "video": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "shortUUID": {
+                "type": "string",
+                "maxLength": 8
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "targetUrl": {
+            "type": "string",
+            "format": "url"
+          },
+          "error": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "progress": {
+            "type": "integer"
+          },
+          "failures": {
+            "type": "integer"
+          },
+          "videoChannel": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "url"
+            ]
+          },
+          "magnetUri": {
+            "type": "string"
+          },
+          "torrentName": {
+            "type": "string"
+          },
+          "videoId": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "state"
+        ]
+      }
+    },
+    "videoRedundancies": {
+      "type": "array",
+      "description": "Video redundancies",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "video": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "shortUUID": {
+                "type": "string",
+                "maxLength": 8
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "type": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          },
+          "videoId": {
+            "type": "integer"
+          },
+          "fileUrl": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "required": [
+          "id",
+          "video",
+          "type",
+          "createdAt"
+        ]
+      }
+    }
+  },
+  "required": [
+    "instance"
+  ],
+  "definitions": {
+    "avatar": {
+      "type": "object",
+      "description": "Avatar information",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "path": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "url"
+        }
+      },
+      "required": [
+        "id",
+        "filename",
+        "path",
+        "url"
+      ]
+    }
+  }
+}

@@ -1,0 +1,884 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Google Docs Document",
+  "description": "JSON Schema for a simplified representation of a Google Docs document.",
+  "type": "object",
+  "properties": {
+    "documentId": {
+      "type": "string",
+      "description": "Unique identifier for the document.",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the document."
+    },
+    "body": {
+      "type": "object",
+      "description": "Main content of the document.",
+      "properties": {
+        "content": {
+          "type": "array",
+          "description": "An array of structural elements that make up the document.",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/paragraph" },
+              { "$ref": "#/definitions/table" },
+              { "$ref": "#/definitions/image" },
+              { "$ref": "#/definitions/horizontalRule" },
+              { "$ref": "#/definitions/pageBreak" },
+              { "$ref": "#/definitions/list" }
+            ]
+          }
+        }
+      },
+      "required": [
+        "content"
+      ]
+    },
+    "revisionId": {
+      "type": "string",
+      "description": "Identifier representing the current revision of the document.",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "suggestionsViewMode": {
+      "type": "string",
+      "description": "The mode in which suggestions are viewed (e.g., SUGGESTIONS_INLINE, SUGGESTIONS_DISABLED).",
+      "enum": ["SUGGESTIONS_INLINE", "SUGGESTIONS_DISABLED", "PREVIEW_WITHOUT_SUGGESTIONS"]
+    },
+    "inlineObjects": {
+      "type": "object",
+      "description": "Collection of inline objects (e.g., images, embedded objects) referenced within the document.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "inlineObjectProperties": {
+            "type": "object",
+            "properties": {
+              "embeddedObject": {
+                "type": "object",
+                "$ref": "#/definitions/embeddedObject"
+              }
+            }
+          }
+        }
+      }
+    },
+    "namedStyles": {
+      "type": "object",
+      "description": "A collection of named styles that can be applied to content.",
+      "properties": {
+        "styles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/namedStyle"
+          }
+        }
+      }
+    },
+    "lists": {
+      "type": "object",
+      "description": "A collection of lists used in the document, keyed by list ID.",
+      "additionalProperties": {
+        "$ref": "#/definitions/listDefinition"
+      }
+    }
+  },
+  "required": [
+    "body"
+  ],
+  "definitions": {
+    "paragraph": {
+      "type": "object",
+      "description": "A paragraph element.",
+      "properties": {
+        "paragraphStyle": {
+          "$ref": "#/definitions/paragraphStyle"
+        },
+        "elements": {
+          "type": "array",
+          "description": "An array of content elements within the paragraph.",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/textRun" },
+              { "$ref": "#/definitions/inlineObjectElement" },
+              { "$ref": "#/definitions/footnoteReference" },
+              { "$ref": "#/definitions/equation" }
+            ]
+          }
+        },
+        "bullet": {
+          "type": "object",
+          "description": "Bullet properties if the paragraph is part of a list.",
+          "properties": {
+            "listId": {
+              "type": "string",
+              "description": "The ID of the list this paragraph belongs to."
+            },
+            "nestingLevel": {
+              "type": "integer",
+              "description": "The nesting level of the bullet (0-based)."
+            }
+          }
+        }
+      },
+      "required": [
+        "elements"
+      ]
+    },
+    "textRun": {
+      "type": "object",
+      "description": "A run of text with consistent styling.",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The text content."
+        },
+        "textStyle": {
+          "$ref": "#/definitions/textStyle"
+        }
+      },
+      "required": [
+        "content"
+      ]
+    },
+    "inlineObjectElement": {
+      "type": "object",
+      "description": "Represents an inline object within the document content, such as an image or an embedded drawing.",
+      "properties": {
+        "inlineObjectId": {
+          "type": "string",
+          "description": "The ID that uniquely identifies this inline object within the document."
+        },
+        "textStyle": {
+          "$ref": "#/definitions/textStyle"
+        }
+      },
+      "required": [
+        "inlineObjectId"
+      ]
+    },
+    "footnoteReference": {
+      "type": "object",
+      "description": "Represents a reference to a footnote.",
+      "properties": {
+        "footnoteId": {
+          "type": "string",
+          "description": "The ID of the footnote to which this reference points."
+        },
+        "footnoteNumber": {
+          "type": "string",
+          "description": "The formatted number of the footnote, used for display purposes."
+        },
+        "textStyle": {
+          "$ref": "#/definitions/textStyle"
+        }
+      },
+      "required": [
+        "footnoteId",
+        "footnoteNumber"
+      ]
+    },
+    "equation": {
+      "type": "object",
+      "description": "Represents an inline equation.",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The equation content, potentially using a specific format like LaTeX."
+        }
+      }
+    },
+    "textStyle": {
+      "type": "object",
+      "description": "Styling properties for text.",
+      "properties": {
+        "bold": {
+          "type": "boolean",
+          "description": "Whether the text is bold."
+        },
+        "italic": {
+          "type": "boolean",
+          "description": "Whether the text is italic."
+        },
+        "underline": {
+          "type": "boolean",
+          "description": "Whether the text is underlined."
+        },
+        "strikethrough": {
+          "type": "boolean",
+          "description": "Whether the text is struck through."
+        },
+        "smallCaps": {
+          "type": "boolean",
+          "description": "Whether the text is in small caps."
+        },
+        "fontSize": {
+          "$ref": "#/definitions/dimension"
+        },
+        "weightedFontFamily": {
+          "type": "object",
+          "properties": {
+            "fontFamily": {
+              "type": "string",
+              "description": "The font family, e.g., \"Arial\" or \"Times New Roman\"."
+            },
+            "weight": {
+              "type": "integer",
+              "description": "The font weight. This is a numerical value in the range [100, 900], with 400 being normal and 700 being bold."
+            }
+          }
+        },
+        "backgroundColor": {
+          "$ref": "#/definitions/optionalColor"
+        },
+        "foregroundColor": {
+          "$ref": "#/definitions/optionalColor"
+        },
+        "link": {
+          "type": "object",
+          "description": "Represents a hyperlink.",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The URL the link points to.",
+              "format": "URL"
+            }
+          }
+        },
+        "baselineOffset": {
+          "type": "string",
+          "enum": ["NONE", "SUPERSCRIPT", "SUBSCRIPT"]
+        }
+      }
+    },
+    "paragraphStyle": {
+      "type": "object",
+      "description": "Styling properties for a paragraph.",
+      "properties": {
+        "namedStyleType": {
+          "type": "string",
+          "enum": [
+            "NORMAL_TEXT",
+            "TITLE",
+            "SUBTITLE",
+            "HEADING_1",
+            "HEADING_2",
+            "HEADING_3",
+            "HEADING_4",
+            "HEADING_5",
+            "HEADING_6"
+          ]
+        },
+        "alignment": {
+          "type": "string",
+          "enum": [
+            "START",
+            "CENTER",
+            "END",
+            "JUSTIFIED"
+          ]
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "LEFT_TO_RIGHT",
+            "RIGHT_TO_LEFT"
+          ]
+        },
+        "lineSpacing": {
+          "type": "number",
+          "description": "The amount of space between lines, as a multiple of the default line height. Value of 1.0 represents single spacing, 1.15 represents 15% extra space, 2.0 represents double spacing."
+        },
+        "spaceAbove": {
+          "$ref": "#/definitions/dimension"
+        },
+        "spaceBelow": {
+          "$ref": "#/definitions/dimension"
+        },
+        "borderBetween": {
+          "$ref": "#/definitions/paragraphBorder"
+        },
+        "borderTop": {
+          "$ref": "#/definitions/paragraphBorder"
+        },
+        "borderBottom": {
+          "$ref": "#/definitions/paragraphBorder"
+        },
+        "borderLeft": {
+          "$ref": "#/definitions/paragraphBorder"
+        },
+        "borderRight": {
+          "$ref": "#/definitions/paragraphBorder"
+        },
+        "indentFirstLine": {
+          "$ref": "#/definitions/dimension"
+        },
+        "indentStart": {
+          "$ref": "#/definitions/dimension"
+        },
+        "indentEnd": {
+          "$ref": "#/definitions/dimension"
+        },
+        "spacingMode": {
+          "type": "string",
+          "enum": [
+            "NEVER_COLLAPSE",
+            "COLLAPSE_LISTS"
+          ]
+        },
+        "keepLinesTogether": {
+          "type": "boolean"
+        },
+        "keepWithNext": {
+          "type": "boolean"
+        },
+        "avoidWidowAndOrphan": {
+          "type": "boolean"
+        },
+        "shading": {
+          "type": "object",
+          "properties": {
+            "backgroundColor": {
+              "$ref": "#/definitions/optionalColor"
+            }
+          }
+        }
+      }
+    },
+    "paragraphBorder": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "$ref": "#/definitions/optionalColor"
+        },
+        "width": {
+          "$ref": "#/definitions/dimension"
+        },
+        "padding": {
+          "$ref": "#/definitions/dimension"
+        },
+        "dashStyle": {
+          "type": "string",
+          "enum": [
+            "SOLID",
+            "DOT",
+            "DASH"
+          ]
+        }
+      }
+    },
+    "dimension": {
+      "type": "object",
+      "description": "Represents a dimension, such as a font size or spacing.",
+      "properties": {
+        "magnitude": {
+          "type": "number",
+          "description": "The numerical value of the dimension."
+        },
+        "unit": {
+          "type": "string",
+          "description": "The unit of the dimension (e.g., PT for points).",
+          "enum": ["PT"]
+        }
+      },
+      "required": ["magnitude", "unit"]
+    },
+    "optionalColor": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "object",
+          "oneOf": [
+            { "$ref": "#/definitions/rgbColor" },
+            { "$ref": "#/definitions/themeColor" }
+          ]
+        }
+      }
+    },
+    "rgbColor": {
+      "type": "object",
+      "properties": {
+        "red": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "green": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "blue": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "themeColor": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "DARK1",
+            "LIGHT1",
+            "DARK2",
+            "LIGHT2",
+            "ACCENT1",
+            "ACCENT2",
+            "ACCENT3",
+            "ACCENT4",
+            "ACCENT5",
+            "ACCENT6",
+            "LINK"
+          ]
+        }
+      }
+    },
+    "table": {
+      "type": "object",
+      "description": "A table element.",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "description": "An array of table rows.",
+          "items": {
+            "$ref": "#/definitions/tableRow"
+          }
+        },
+        "columns": {
+          "type": "integer",
+          "description": "The number of columns in the table."
+        },
+        "tableStyle": {
+          "type": "object",
+          "description": "Styles applied to the entire table.",
+          "properties": {
+            "tableColumnProperties": {
+              "type": "array",
+              "description": "Properties for each column in the table.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "$ref": "#/definitions/dimension"
+                  },
+                  "widthType": {
+                    "type": "string",
+                    "enum": ["EVENLY_DISTRIBUTED", "FIXED_WIDTH"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "rows",
+        "columns"
+      ]
+    },
+    "tableRow": {
+      "type": "object",
+      "description": "A row in a table.",
+      "properties": {
+        "cells": {
+          "type": "array",
+          "description": "An array of table cells in the row.",
+          "items": {
+            "$ref": "#/definitions/tableCell"
+          }
+        },
+        "tableRowStyle": {
+          "type": "object",
+          "description": "Styles applied to the table row.",
+          "properties": {
+            "minRowHeight": {
+              "$ref": "#/definitions/dimension"
+            }
+          }
+        }
+      },
+      "required": [
+        "cells"
+      ]
+    },
+    "tableCell": {
+      "type": "object",
+      "description": "A cell within a table.",
+      "properties": {
+        "content": {
+          "type": "array",
+          "description": "Content within the cell (similar to body content).",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/paragraph" },
+              { "$ref": "#/definitions/table" },
+              { "$ref": "#/definitions/list" }
+            ]
+          }
+        },
+        "rowSpan": {
+          "type": "integer",
+          "description": "Number of rows this cell spans."
+        },
+        "columnSpan": {
+          "type": "integer",
+          "description": "Number of columns this cell spans."
+        },
+        "tableCellStyle": {
+          "type": "object",
+          "description": "Styles applied to the table cell.",
+          "properties": {
+            "backgroundColor": {
+              "$ref": "#/definitions/optionalColor"
+            },
+            "borderLeft": {
+              "$ref": "#/definitions/tableCellBorder"
+            },
+            "borderRight": {
+              "$ref": "#/definitions/tableCellBorder"
+            },
+            "borderTop": {
+              "$ref": "#/definitions/tableCellBorder"
+            },
+            "borderBottom": {
+              "$ref": "#/definitions/tableCellBorder"
+            },
+            "paddingLeft": {
+              "$ref": "#/definitions/dimension"
+            },
+            "paddingRight": {
+              "$ref": "#/definitions/dimension"
+            },
+            "paddingTop": {
+              "$ref": "#/definitions/dimension"
+            },
+            "paddingBottom": {
+              "$ref": "#/definitions/dimension"
+            },
+            "contentAlignment": {
+              "type": "string",
+              "enum": [
+                "CONTENT_ALIGNMENT_UNSPECIFIED",
+                "TOP",
+                "MIDDLE",
+                "BOTTOM"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "content"
+      ]
+    },
+    "tableCellBorder": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "$ref": "#/definitions/optionalColor"
+        },
+        "width": {
+          "$ref": "#/definitions/dimension"
+        },
+        "dashStyle": {
+          "type": "string",
+          "enum": [
+            "SOLID",
+            "DOT",
+            "DASH"
+          ]
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "description": "An image element.",
+      "properties": {
+        "contentUri": {
+          "type": "string",
+          "description": "URI of the image.",
+          "format": "URL"
+        },
+        "properties": {
+          "$ref": "#/definitions/imageProperties"
+        }
+      },
+      "required": [
+        "contentUri"
+      ]
+    },
+    "imageProperties": {
+      "type": "object",
+      "properties": {
+        "sourceUri": {
+          "type": "string",
+          "description": "The source URI of the image. This can differ from the `contentUri` if the image was fetched from a source URI but stored elsewhere.",
+          "format": "URL"
+        },
+        "brightness": {
+          "type": "number",
+          "description": "The brightness setting for the image, in the range [-1.0, 1.0].",
+          "minimum": -1,
+          "maximum": 1
+        },
+        "contrast": {
+          "type": "number",
+          "description": "The contrast setting for the image, in the range [-1.0, 1.0].",
+          "minimum": -1,
+          "maximum": 1
+        },
+        "transparency": {
+          "type": "number",
+          "description": "The transparency setting for the image, in the range [0.0, 1.0].",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "cropProperties": {
+          "type": "object",
+          "properties": {
+            "angle": {
+              "type": "number",
+              "description": "The clockwise rotation angle of the crop rectangle around its center, in radians."
+            },
+            "offsetLeft": {
+              "type": "number",
+              "description": "The offset specifies how far inwards the left edge of the crop rectangle is from the left edge of the original content as a fraction of the original content's width."
+            },
+            "offsetRight": {
+              "type": "number"
+            },
+            "offsetTop": {
+              "type": "number"
+            },
+            "offsetBottom": {
+              "type": "number"
+            }
+          }
+        },
+        "imageEffectRecolor": {
+          "type": "object",
+          "properties": {
+            "recolorStops": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "$ref": "#/definitions/optionalColor"
+                  },
+                  "alpha": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "horizontalRule": {
+      "type": "object",
+      "description": "A horizontal rule element."
+    },
+    "pageBreak": {
+      "type": "object",
+      "description": "A page break element."
+    },
+    "embeddedObject": {
+      "type": "object",
+      "description": "Represents an embedded object in the document, which could be an image, a drawing, or another type of object.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the embedded object."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the embedded object."
+        },
+        "embeddedObjectBorder": {
+          "type": "object",
+          "description": "The border of the embedded object.",
+          "$ref": "#/definitions/embeddedObjectBorder"
+        },
+        "size": {
+          "type": "object",
+          "description": "The size of the embedded object.",
+          "$ref": "#/definitions/size"
+        },
+        "marginTop": {
+          "$ref": "#/definitions/dimension"
+        },
+        "marginBottom": {
+          "$ref": "#/definitions/dimension"
+        },
+        "marginLeft": {
+          "$ref": "#/definitions/dimension"
+        },
+        "marginRight": {
+          "$ref": "#/definitions/dimension"
+        },
+        "imageProperties": {
+          "type": "object",
+          "description": "The properties of the image if the embedded object is an image.",
+          "$ref": "#/definitions/imageProperties"
+        },
+        "linkedContentReference": {
+          "type": "object",
+          "description": "A reference to the external linked content, if the embedded object is linked content.",
+          "properties": {
+            "spreadsheetId": {
+              "type": "string",
+              "description": "The ID of the linked spreadsheet, if the linked content is from Google Sheets."
+            }
+          }
+        }
+      }
+    },
+    "embeddedObjectBorder": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "$ref": "#/definitions/optionalColor"
+        },
+        "width": {
+          "$ref": "#/definitions/dimension"
+        },
+        "dashStyle": {
+          "type": "string",
+          "enum": [
+            "SOLID",
+            "DOT",
+            "DASH"
+          ]
+        },
+        "propertyState": {
+          "type": "string",
+          "enum": [
+            "RENDERED",
+            "NOT_RENDERED"
+          ]
+        }
+      }
+    },
+    "size": {
+      "type": "object",
+      "properties": {
+        "height": {
+          "$ref": "#/definitions/dimension"
+        },
+        "width": {
+          "$ref": "#/definitions/dimension"
+        }
+      }
+    },
+    "namedStyle": {
+      "type": "object",
+      "properties": {
+        "namedStyleType": {
+          "type": "string",
+          "enum": [
+            "NORMAL_TEXT",
+            "TITLE",
+            "SUBTITLE",
+            "HEADING_1",
+            "HEADING_2",
+            "HEADING_3",
+            "HEADING_4",
+            "HEADING_5",
+            "HEADING_6"
+          ]
+        },
+        "textStyle": {
+          "$ref": "#/definitions/textStyle"
+        },
+        "paragraphStyle": {
+          "$ref": "#/definitions/paragraphStyle"
+        }
+      },
+      "required": [
+        "namedStyleType"
+      ]
+    },
+    "list": {
+      "type": "object",
+      "properties": {
+        "listId": {
+          "type": "string"
+        },
+        "listProperties": {
+          "$ref": "#/definitions/listProperties"
+        }
+      },
+      "required": [
+        "listId",
+        "listProperties"
+      ]
+    },
+    "listProperties": {
+      "type": "object",
+      "properties": {
+        "nestingLevels": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/definitions/nestingLevel"
+          }
+        }
+      },
+      "required": [
+        "nestingLevels"
+      ]
+    },
+    "nestingLevel": {
+      "type": "object",
+      "properties": {
+        "glyphType": {
+          "type": "string",
+          "enum": [
+            "DECIMAL",
+            "ZERO_DECIMAL",
+            "UPPER_ALPHA",
+            "ALPHA",
+            "UPPER_ROMAN",
+            "ROMAN",
+            "GLYPH_TYPE_UNSPECIFIED"
+          ]
+        },
+        "glyphFormat": {
+          "type": "string"
+        },
+        "glyphSymbol": {
+          "type": "string"
+        },
+        "startNumber": {
+          "type": "integer"
+        },
+        "indentFirstLine": {
+          "$ref": "#/definitions/dimension"
+        },
+        "indentStart": {
+          "$ref": "#/definitions/dimension"
+        },
+        "textStyle": {
+          "$ref": "#/definitions/textStyle"
+        }
+      }
+    },
+    "listDefinition": {
+      "type": "object",
+      "properties": {
+        "listProperties": {
+          "$ref": "#/definitions/listProperties"
+        }
+      },
+      "required": [
+        "listProperties"
+      ]
+    }
+  }
+}

@@ -1,0 +1,410 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Apple Podcasts",
+  "description": "JSON Schema for Apple Podcasts data, encompassing podcasts, episodes, categories, and related entities.",
+  "type": "object",
+  "properties": {
+    "podcasts": {
+      "type": "array",
+      "description": "A list of podcasts.",
+      "items": {
+        "$ref": "#/definitions/podcast"
+      }
+    },
+    "episodes": {
+      "type": "array",
+      "description": "A list of podcast episodes.",
+      "items": {
+        "$ref": "#/definitions/episode"
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "A list of podcast categories.",
+      "items": {
+        "$ref": "#/definitions/category"
+      }
+    },
+    "authors": {
+      "type": "array",
+      "description": "A list of podcast authors/creators.",
+      "items": {
+        "$ref": "#/definitions/author"
+      }
+    },
+    "topCharts": {
+      "type": "object",
+      "description": "Data related to top podcast charts.",
+      "properties": {
+        "podcasts": {
+          "type": "array",
+          "description": "List of top podcasts.",
+          "items": {
+            "$ref": "#/definitions/podcastChartEntry"
+          }
+        },
+        "episodes": {
+          "type": "array",
+          "description": "List of top episodes.",
+          "items": {
+            "$ref": "#/definitions/episodeChartEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "podcast": {
+      "type": "object",
+      "description": "Represents a podcast.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the podcast (e.g., feed ID or Apple Podcasts ID)."
+        },
+        "collectionId": {
+          "type": "integer",
+          "description": "Apple Podcasts collection ID."
+        },
+        "trackId": {
+          "type": "integer",
+          "description": "Apple Podcasts track ID."
+        },
+        "artistId": {
+          "type": "integer",
+          "description": "Apple Podcasts artist ID."
+        },
+        "artistName": {
+          "type": "string",
+          "description": "Name of the podcast artist/creator."
+        },
+        "collectionName": {
+          "type": "string",
+          "description": "Name of the podcast."
+        },
+        "trackName": {
+          "type": "string",
+          "description": "Alias for collectionName"
+        },
+        "feedUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast's RSS feed."
+        },
+        "artworkUrl30": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast artwork (30x30 pixels)."
+        },
+        "artworkUrl60": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast artwork (60x60 pixels)."
+        },
+        "artworkUrl100": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast artwork (100x100 pixels)."
+        },
+        "artworkUrl600": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast artwork (600x600 pixels)."
+        },
+        "primaryGenreName": {
+          "type": "string",
+          "description": "Primary genre of the podcast."
+        },
+        "genres": {
+          "type": "array",
+          "description": "List of genres associated with the podcast.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "genreIds": {
+          "type": "array",
+          "description": "List of genre IDs",
+          "items": {
+            "type": "string"
+          }
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Release date of the podcast."
+        },
+        "trackCount": {
+          "type": "integer",
+          "description": "Number of episodes in the podcast."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country of origin (ISO 3166-1 alpha-3 code)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the podcast."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "Short description of the podcast."
+        },
+        "copyright": {
+          "type": "string",
+          "description": "Copyright information."
+        },
+        "contentAdvisoryRating": {
+          "type": "string",
+          "description": "Content advisory rating (e.g., 'Clean', 'Explicit')."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Kind of content",
+          "enum": ["podcast"]
+        },
+        "wrapperType": {
+          "type": "string",
+          "description": "Type of wrapper",
+          "enum": ["track", "artist"]
+        },
+        "episodes": {
+          "type": "array",
+          "description": "List of episodes associated with this podcast.",
+          "items": {
+            "$ref": "#/definitions/episode"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "collectionName",
+        "feedUrl"
+      ],
+      "additionalProperties": false
+    },
+    "episode": {
+      "type": "object",
+      "description": "Represents a podcast episode.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the episode (e.g., GUID)."
+        },
+        "podcastId": {
+          "type": "integer",
+          "description": "ID of the podcast this episode belongs to."
+        },
+        "trackId": {
+          "type": "integer",
+          "description": "Apple Podcasts track ID."
+        },
+        "artistId": {
+          "type": "integer",
+          "description": "Apple Podcasts artist ID."
+        },
+        "collectionId": {
+          "type": "integer",
+          "description": "Apple Podcasts collection ID."
+        },
+        "trackName": {
+          "type": "string",
+          "description": "Title of the episode."
+        },
+        "collectionName": {
+          "type": "string",
+          "description": "Name of the podcast the episode belongs to."
+        },
+        "artistName": {
+          "type": "string",
+          "description": "Name of the podcast artist/creator."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the episode."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "Short description of the episode."
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Release date of the episode."
+        },
+        "closedCaptioning": {
+          "type": "string",
+          "description": "Closed captioning status",
+          "enum": ["none", "CC"]
+        },
+        "trackTimeMillis": {
+          "type": "integer",
+          "description": "Duration of the episode in milliseconds."
+        },
+        "episodeFileExtension": {
+          "type": "string",
+          "description": "File extension of episode media."
+        },
+        "episodeUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode's media file."
+        },
+        "episodeGuid": {
+          "type": "string",
+          "description": "GUID of the episode"
+        },
+        "artworkUrl30": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode artwork (30x30 pixels)."
+        },
+        "artworkUrl60": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode artwork (60x60 pixels)."
+        },
+        "artworkUrl160": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode artwork (160x160 pixels)."
+        },
+        "artworkUrl600": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode artwork (600x600 pixels)."
+        },
+        "previewUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode preview file."
+        },
+        "contentAdvisoryRating": {
+          "type": "string",
+          "description": "Content advisory rating (e.g., 'Clean', 'Explicit')."
+        },
+        "genres": {
+          "type": "array",
+          "description": "List of genres",
+          "items": {
+            "type": "string"
+          }
+        },
+        "genreIds": {
+          "type": "array",
+          "description": "List of genre IDs",
+          "items": {
+            "type": "string"
+          }
+        },
+        "kind": {
+          "type": "string",
+          "description": "Kind of content",
+          "enum": ["podcast-episode"]
+        },
+        "wrapperType": {
+          "type": "string",
+          "description": "Type of wrapper",
+          "enum": ["track", "podcastEpisode"]
+        }
+      },
+      "required": [
+        "id",
+        "podcastId",
+        "trackName",
+        "episodeUrl"
+      ],
+      "additionalProperties": false
+    },
+    "category": {
+      "type": "object",
+      "description": "Represents a podcast category.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the category."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the category."
+        },
+        "subcategories": {
+          "type": "array",
+          "description": "List of subcategories.",
+          "items": {
+            "$ref": "#/definitions/category"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "author": {
+      "type": "object",
+      "description": "Represents a podcast author or creator.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the author (e.g., Apple Podcasts artist ID)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the author."
+        },
+        "podcasts": {
+          "type": "array",
+          "description": "List of podcasts by this author.",
+          "items": {
+            "$ref": "#/definitions/podcast"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "podcastChartEntry": {
+      "type": "object",
+      "description": "Represents a podcast entry in a chart.",
+      "properties": {
+        "podcast": {
+          "$ref": "#/definitions/podcast"
+        },
+        "rank": {
+          "type": "integer",
+          "description": "Ranking of the podcast in the chart."
+        }
+      },
+      "required": [
+        "podcast",
+        "rank"
+      ],
+      "additionalProperties": false
+    },
+    "episodeChartEntry": {
+      "type": "object",
+      "description": "Represents a podcast episode entry in a chart.",
+      "properties": {
+        "episode": {
+          "$ref": "#/definitions/episode"
+        },
+        "rank": {
+          "type": "integer",
+          "description": "Ranking of the episode in the chart."
+        }
+      },
+      "required": [
+        "episode",
+        "rank"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

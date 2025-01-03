@@ -1,0 +1,249 @@
+{
+  "type": "object",
+  "title": "FaceTime App Schema",
+  "description": "JSON Schema representing the core data structures and functionality of a FaceTime-like application.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of registered users.",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "calls": {
+      "type": "array",
+      "description": "List of active and past calls.",
+      "items": {
+        "$ref": "#/definitions/Call"
+      }
+    },
+    "contacts": {
+      "type": "array",
+      "description": "List of user contacts, potentially pulled from device contacts.",
+      "items": {
+        "$ref": "#/definitions/Contact"
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "User-specific settings.",
+      "properties": {
+        "notifications": {
+          "type": "boolean",
+          "description": "Enable or disable call notifications.",
+          "default": true
+        },
+        "dataUsage": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "low",
+            "high"
+          ],
+          "description": "Data usage settings for calls.",
+          "default": "auto"
+        },
+        "blockedContacts": {
+          "type": "array",
+          "description": "List of blocked contact identifiers.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "defaultCamera": {
+          "type": "string",
+          "enum": ["front", "rear"],
+          "description": "Default camera to use when starting a call",
+          "default": "front"
+        },
+        "defaultMic": {
+          "type": "boolean",
+          "description": "Default state for microphone (enabled/disabled) at start of call.",
+          "default": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "users",
+    "calls",
+    "contacts"
+  ],
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "format": "e164",
+          "description": "User's phone number (E.164 format)."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "profilePictureUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "available",
+            "away",
+            "busy",
+            "offline"
+          ],
+          "description": "Current availability status of the user.",
+          "default": "offline"
+        }
+      },
+      "required": [
+        "userId",
+        "phoneNumber"
+      ]
+    },
+    "Call": {
+      "type": "object",
+      "properties": {
+        "callId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the call."
+        },
+        "participants": {
+          "type": "array",
+          "description": "List of participants in the call.",
+          "items": {
+            "$ref": "#/definitions/Participant"
+          },
+          "minItems": 2
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the call started."
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the call ended."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ringing",
+            "inProgress",
+            "ended",
+            "missed",
+            "declined",
+            "failed"
+          ],
+          "description": "Current status of the call."
+        },
+        "callType": {
+          "type": "string",
+          "enum": [
+            "audio",
+            "video"
+          ],
+          "description": "Type of the call."
+        }
+      },
+      "required": [
+        "callId",
+        "participants",
+        "startTime",
+        "status",
+        "callType"
+      ]
+    },
+    "Participant": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Identifier of the user participating in the call."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "invited",
+            "joined",
+            "left",
+            "declined"
+          ],
+          "description": "Status of the participant in the call."
+        },
+        "joinedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Time when participant joined the call."
+        },
+        "leftAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Time when participant left the call."
+        }
+      },
+      "required": [
+        "userId",
+        "status"
+      ]
+    },
+    "Contact": {
+      "type": "object",
+      "properties": {
+        "contactId": {
+          "type": "string",
+          "description": "Unique identifier for the contact (can be from device contacts)."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the contact."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "format": "e164",
+          "description": "Contact's phone number (E.164 format)."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact's email address"
+        },
+        "isFaceTimeUser": {
+          "type": "boolean",
+          "description": "Indicates whether this contact is also a registered FaceTime user."
+        },
+        "profilePictureUrl": {
+          "type": "string",
+          "format": "url",
+          "description": "URL to the contact's profile picture (if available)."
+        }
+      },
+      "required": [
+        "contactId",
+        "displayName",
+        "phoneNumber"
+      ]
+    }
+  }
+}

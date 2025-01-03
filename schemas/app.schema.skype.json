@@ -1,0 +1,255 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skype Application",
+  "description": "JSON Schema for a simplified representation of the Skype application.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users in the Skype network.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the user."
+          },
+          "username": {
+            "type": "string",
+            "description": "User's Skype username.",
+            "minLength": 6,
+            "maxLength": 32,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9\\.,\\-_]{5,31}$"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "User's display name (can be different from username).",
+            "maxLength": 255
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address (used for account recovery, etc.)."
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "User's phone number (optional).",
+            "pattern": "^\\+[1-9]\\d{1,14}$"
+          },
+          "status": {
+            "type": "string",
+            "description": "User's current online status.",
+            "enum": ["Online", "Away", "Do Not Disturb", "Invisible", "Offline"]
+          },
+          "profilePicture": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the user's profile picture (optional)."
+          },
+          "contacts": {
+            "type": "array",
+            "description": "List of user IDs representing the user's contacts.",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "blockedUsers": {
+            "type": "array",
+            "description": "List of user IDs that this user has blocked.",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "displayName",
+          "email"
+        ]
+      }
+    },
+    "conversations": {
+      "type": "array",
+      "description": "List of conversations.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the conversation."
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of conversation (e.g., 'one-to-one', 'group').",
+            "enum": ["one-to-one", "group"]
+          },
+          "participants": {
+            "type": "array",
+            "description": "List of user IDs participating in the conversation.",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 2
+          },
+          "messages": {
+            "type": "array",
+            "description": "List of messages in the conversation.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the message."
+                },
+                "senderId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "User ID of the message sender."
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of when the message was sent."
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Content of the message (text, media URL, etc.).",
+                  "maxLength": 10000
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The type of content in the message",
+                  "enum": ["text", "image", "video", "audio", "file", "contact", "location"]
+                },
+                "readBy": {
+                  "type": "array",
+                  "description": "List of user IDs who have read the message.",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "senderId",
+                "timestamp",
+                "content",
+                "type"
+              ]
+            }
+          },
+          "lastActivity": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of the last activity in the conversation."
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "participants",
+          "messages"
+        ]
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "List of groups",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the group"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the group",
+            "maxLength": 255
+          },
+          "members": {
+            "type": "array",
+            "description": "List of user IDs that are members of this group",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "admins": {
+            "type": "array",
+            "description": "List of user IDs that are admins in this group",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": ["id", "name", "members", "admins"]
+      }
+    },
+    "calls": {
+      "type": "array",
+      "description": "Log of calls made or received.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the call."
+          },
+          "participants": {
+            "type": "array",
+            "description": "List of user IDs participating in the call.",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of when the call started."
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of when the call ended."
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of call (e.g., 'audio', 'video').",
+            "enum": ["audio", "video"]
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the call (e.g., 'missed', 'answered', 'declined').",
+            "enum": ["missed", "answered", "declined", "outgoing", "incoming"]
+          }
+        },
+        "required": [
+          "id",
+          "participants",
+          "startTime",
+          "type",
+          "status"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "conversations",
+    "groups",
+    "calls"
+  ]
+}

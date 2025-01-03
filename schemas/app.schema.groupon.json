@@ -1,0 +1,83 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "password": "hashed_password",
+      "address": {
+        "street": "123 Main St",
+        "city": "Anytown",
+        "state": "CA",
+        "zipCode": "90210",
+        "country": "USA"
+      },
+      "phoneNumber": "555-123-4567",
+      "paymentMethods": [
+        {
+          "type": "credit_card",
+          "token": "cc_token_123",
+          "isDefault": true
+        }
+      ]
+    }
+  ],
+  "deals": [
+    {
+      "id": 101,
+      "merchantId": 5,
+      "title": "50% Off at The Pizza Place",
+      "description": "Enjoy a delicious pizza at half the price!",
+      "originalPrice": 20.0,
+      "discountedPrice": 10.0,
+      "startDate": "2024-03-15T10:00:00Z",
+      "endDate": "2024-03-31T23:59:59Z",
+      "quantityAvailable": 100,
+      "quantitySold": 25,
+      "images": [
+        "https://example.com/images/pizza1.jpg",
+        "https://example.com/images/pizza2.jpg"
+      ],
+      "categories": [1, 2],
+      "location": {
+        "latitude": 34.0522,
+        "longitude": -118.2437
+      },
+      "redemptionInstructions": "Present this voucher at the restaurant.",
+      "termsAndConditions": "Valid for dine-in only. Cannot be combined with other offers."
+    }
+  ],
+  "merchants": [
+    {
+      "id": 5,
+      "name": "The Pizza Place",
+      "description": "Best pizza in town!",
+      "address": {
+        "street": "456 Oak Ave",
+        "city": "Anytown",
+        "state": "CA",
+        "zipCode": "90210",
+        "country": "USA"
+      },
+      "phoneNumber": "555-987-6543",
+      "website": "https://www.thepizzaplace.com",
+      "logo": "https://example.com/logos/pizza_place.png"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Food & Drink",
+      "description": "Deals on restaurants, cafes, and bars.",
+      "icon": "https://example.com/icons/food.png"
+    },
+    {
+      "id": 2,
+      "name": "Pizza",
+      "description": "Deals for pizza places.",
+      "icon": "https://example.com/icons/pizza_slice.png"
+    }
+  ],
+  "orders": [],
+  "reviews": []
+}

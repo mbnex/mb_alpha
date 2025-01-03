@@ -1,0 +1,492 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MySpace",
+  "description": "JSON Schema for a simplified MySpace data model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of MySpace users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "List of MySpace groups",
+      "items": {
+        "$ref": "#/definitions/group"
+      }
+    },
+    "forums": {
+      "type": "array",
+      "description": "List of MySpace forums",
+      "items": {
+        "$ref": "#/definitions/forum"
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "List of MySpace events",
+      "items": {
+        "$ref": "#/definitions/event"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "MySpace user profile",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "readOnly": true
+        },
+        "username": {
+          "type": "string",
+          "description": "User's chosen username",
+          "minLength": 3,
+          "maxLength": 20
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "description": "Hashed password for security (not stored in plain text)",
+          "minLength": 8
+        },
+        "profile": {
+          "type": "object",
+          "description": "User's profile information",
+          "properties": {
+            "displayName": {
+              "type": "string",
+              "description": "Name displayed on the profile"
+            },
+            "headline": {
+              "type": "string",
+              "description": "Short tagline or status"
+            },
+            "aboutMe": {
+              "type": "string",
+              "description": "Longer description about the user"
+            },
+            "interests": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "music": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "movies": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "books": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "profilePictureUrl": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the user's profile picture"
+            },
+            "customCss": {
+              "type": "string",
+              "description": "User-defined CSS for profile customization"
+            },
+            "top8": {
+              "type": "array",
+              "description": "User's Top 8 friends",
+              "items": {
+                "type": "integer",
+                "description": "userId of a friend"
+              },
+              "maxItems": 8,
+              "uniqueItems": true
+            },
+            "bulletins": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/bulletin"
+              }
+            }
+          }
+        },
+        "friends": {
+          "type": "array",
+          "description": "List of user's friends (userIds)",
+          "items": {
+            "type": "integer",
+            "description": "userId of a friend"
+          },
+          "uniqueItems": true
+        },
+        "friendRequests": {
+          "type": "array",
+          "description": "Pending friend requests",
+          "items": {
+            "type": "integer",
+            "description": "userId of the user who sent the request"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "Comments left on the users profile",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "description": "Groups the user is a member of",
+          "items": {
+            "type": "integer",
+            "description": "groupId of the group"
+          }
+        },
+        "photos": {
+          "type": "array",
+          "description": "List of photos uploaded by the user",
+          "items": {
+            "$ref": "#/definitions/photo"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "User's current online status (e.g., Online, Offline, Away)",
+          "enum": ["Online", "Offline", "Away", "Do Not Disturb"]
+        },
+        "lastLogin": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the user's last login"
+        }
+      },
+      "required": [
+        "userId",
+        "username",
+        "email",
+        "password"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "description": "MySpace group",
+      "properties": {
+        "groupId": {
+          "type": "integer",
+          "description": "Unique identifier for the group",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the group"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the group"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the group (e.g., Music, Movies, Books)"
+        },
+        "creatorId": {
+          "type": "integer",
+          "description": "userId of the group creator"
+        },
+        "members": {
+          "type": "array",
+          "description": "List of group members (userIds)",
+          "items": {
+            "type": "integer"
+          },
+          "uniqueItems": true
+        },
+        "forum": {
+          "$ref": "#/definitions/forum",
+          "description": "The forum related to this group"
+        }
+      },
+      "required": [
+        "groupId",
+        "name",
+        "description",
+        "creatorId",
+        "members"
+      ]
+    },
+    "forum": {
+      "type": "object",
+      "description": "MySpace forum",
+      "properties": {
+        "forumId": {
+          "type": "integer",
+          "description": "Unique identifier for the forum",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the forum"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the forum"
+        },
+        "threads": {
+          "type": "array",
+          "description": "List of threads in the forum",
+          "items": {
+            "$ref": "#/definitions/thread"
+          }
+        }
+      },
+      "required": [
+        "forumId",
+        "name",
+        "description",
+        "threads"
+      ]
+    },
+    "thread": {
+      "type": "object",
+      "description": "Thread within a forum",
+      "properties": {
+        "threadId": {
+          "type": "integer",
+          "description": "Unique identifier for the thread",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the thread"
+        },
+        "creatorId": {
+          "type": "integer",
+          "description": "userId of the thread creator"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of thread creation"
+        },
+        "posts": {
+          "type": "array",
+          "description": "List of posts in the thread",
+          "items": {
+            "$ref": "#/definitions/post"
+          }
+        }
+      },
+      "required": [
+        "threadId",
+        "title",
+        "creatorId",
+        "createdAt",
+        "posts"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "description": "Post within a thread",
+      "properties": {
+        "postId": {
+          "type": "integer",
+          "description": "Unique identifier for the post",
+          "readOnly": true
+        },
+        "authorId": {
+          "type": "integer",
+          "description": "userId of the post author"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the post"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of post creation"
+        }
+      },
+      "required": [
+        "postId",
+        "authorId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "event": {
+      "type": "object",
+      "description": "MySpace event",
+      "properties": {
+        "eventId": {
+          "type": "integer",
+          "description": "Unique identifier for the event",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the event"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event"
+        },
+        "location": {
+          "type": "string",
+          "description": "Location of the event"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start date and time of the event"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End date and time of the event"
+        },
+        "creatorId": {
+          "type": "integer",
+          "description": "userId of the event creator"
+        },
+        "attendees": {
+          "type": "array",
+          "description": "List of users attending the event (userIds)",
+          "items": {
+            "type": "integer"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "eventId",
+        "title",
+        "description",
+        "location",
+        "startDate",
+        "endDate",
+        "creatorId",
+        "attendees"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "description": "A comment on a user's profile",
+      "properties": {
+        "commentId": {
+          "type": "integer",
+          "description": "Unique identifier for the comment.",
+          "readOnly": true
+        },
+        "authorId": {
+          "type": "integer",
+          "description": "User ID of the author of the comment"
+        },
+        "content": {
+          "type": "string",
+          "description": "The text content of the comment"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the comment was posted"
+        }
+      },
+      "required": [
+        "commentId",
+        "authorId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "photo": {
+      "type": "object",
+      "description": "A photo object",
+      "properties": {
+        "photoId": {
+          "type": "integer",
+          "description": "Unique identifier of the photo",
+          "readOnly": true
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the photo"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Caption or description of the photo"
+        },
+        "uploadedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the photo was uploaded"
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the photo",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      },
+      "required": [
+        "photoId",
+        "url",
+        "uploadedAt"
+      ]
+    },
+    "bulletin": {
+      "type": "object",
+      "description": "Represents a bulletin posted by a user",
+      "properties": {
+        "bulletinId": {
+          "type": "integer",
+          "description": "Unique ID of the bulletin",
+          "readOnly": true
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject of the bulletin"
+        },
+        "body": {
+          "type": "string",
+          "description": "Body content of the bulletin"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the bulletin was created"
+        },
+        "authorId": {
+          "type": "integer",
+          "description": "ID of the user who created the bulletin"
+        }
+      },
+      "required": [
+        "bulletinId",
+        "subject",
+        "body",
+        "createdAt",
+        "authorId"
+      ]
+    }
+  }
+}

@@ -1,0 +1,295 @@
+{
+  "title": "Apple Messages Schema",
+  "description": "A JSON Schema representing the data model of Apple Messages.",
+  "type": "object",
+  "properties": {
+    "conversations": {
+      "type": "array",
+      "description": "List of conversations",
+      "items": {
+        "$ref": "#/definitions/conversation"
+      }
+    },
+    "contacts": {
+      "type": "array",
+      "description": "List of contacts (optional, as Messages may not store a full contact list)",
+      "items": {
+        "$ref": "#/definitions/contact"
+      }
+    }
+  },
+  "definitions": {
+    "conversation": {
+      "type": "object",
+      "description": "A conversation thread",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Unique identifier for the conversation (e.g., a UUID)",
+          "format": "uuid"
+        },
+        "participants": {
+          "type": "array",
+          "description": "List of participants in the conversation",
+          "items": {
+            "$ref": "#/definitions/participant"
+          },
+          "minItems": 1
+        },
+        "messages": {
+          "type": "array",
+          "description": "List of messages in the conversation",
+          "items": {
+            "$ref": "#/definitions/message"
+          }
+        },
+        "isGroupChat": {
+          "type": "boolean",
+          "description": "Indicates if the conversation is a group chat"
+        },
+        "service":{
+          "type": "string",
+          "description": "Service used in this conversation. iMessage, SMS or MMS",
+          "enum": ["iMessage", "SMS", "MMS"]
+        },
+        "lastMessagePreview": {
+          "type": "string",
+          "description": "Preview of the last message text (optional)",
+          "maxLength": 255
+        },
+        "lastMessageTimestamp": {
+          "type": "string",
+          "description": "Timestamp of the last message (optional)",
+          "format": "date-time"
+        },
+        "unreadMessageCount": {
+          "type": "integer",
+          "description": "Number of unread messages in the conversation (optional)",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "guid",
+        "participants",
+        "messages",
+        "isGroupChat"
+      ]
+    },
+    "participant": {
+      "type": "object",
+      "description": "A participant in a conversation",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the participant (e.g., phone number, email address)",
+          "example": "+15551234567"
+        },
+        "handle": {
+          "type": "string",
+          "description": "Display name or handle for the participant (optional)",
+          "example": "John Doe"
+        },
+        "contactId": {
+          "type": "string",
+          "description": "Reference to a contact (if available, optional)",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "message": {
+      "type": "object",
+      "description": "A message within a conversation",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Unique identifier for the message (e.g., a UUID)",
+          "format": "uuid"
+        },
+        "sender": {
+          "$ref": "#/definitions/participant",
+          "description": "The sender of the message"
+        },
+        "date": {
+          "type": "string",
+          "description": "Timestamp of the message",
+          "format": "date-time"
+        },
+        "text": {
+          "type": "string",
+          "description": "The text content of the message"
+        },
+        "attachments": {
+          "type": "array",
+          "description": "List of attachments (optional)",
+          "items": {
+            "$ref": "#/definitions/attachment"
+          }
+        },
+        "isRead": {
+          "type": "boolean",
+          "description": "Indicates if the message has been read"
+        },
+        "isFromMe": {
+          "type": "boolean",
+          "description": "Indicates if the message was sent by the current user"
+        },
+        "subject": {
+          "type": "string",
+          "description": "The subject line of the message (optional, used in group chats or email-style messages)"
+        },
+        "messageParts": {
+          "type": "array",
+          "description": "An array describing parts of the message, e.g., for tapbacks or reactions.",
+          "items":{
+            "$ref": "#/definitions/messagePart"
+          }
+        },
+        "threadOriginatorGuid": {
+          "type": "string",
+          "description": "The GUID of the original message when creating a thread in a conversation. Null in any other case.",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "guid",
+        "sender",
+        "date",
+        "isFromMe"
+      ]
+    },
+    "attachment": {
+      "type": "object",
+      "description": "An attachment to a message",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "description": "Unique identifier for the attachment (e.g., a UUID)",
+          "format": "uuid"
+        },
+        "filename": {
+          "type": "string",
+          "description": "Name of the file"
+        },
+        "contentType": {
+          "type": "string",
+          "description": "MIME type of the attachment",
+          "example": "image/jpeg"
+        },
+        "fileSize": {
+          "type": "integer",
+          "description": "Size of the attachment in bytes"
+        },
+        "transferState": {
+          "type": "string",
+          "enum": ["not started", "started", "paused", "finished", "error"],
+          "description": "The transfer state of the attachment."
+        },
+        "uti": {
+          "type": "string",
+          "description": "Uniform Type Identifier representing the type of file of this attachment."
+        },
+        "transferName": {
+          "type": "string",
+          "description": "The name of the file to be transferred or being transferred."
+        },
+        "isSticker": {
+          "type": "boolean",
+          "description": "Boolean value indicating whether the attachment is a sticker."
+        },
+        "isOutgoing": {
+          "type": "boolean",
+          "description": "Boolean value indicating whether the attachment is outgoing."
+        },
+        "hideAttachment": {
+          "type": "boolean",
+          "description": "Boolean value indicating whether to hide the attachment. For example, when the attachment is an audio message."
+        },
+        "originalGuid": {
+          "type": "string",
+          "description": "The original guid for this attachment. For example, when the attachment is a tapback or a reaction."
+        },
+        "localUrl":{
+          "type": "string",
+          "description": "Local path where the attachment is saved",
+          "format": "uri"
+        },
+        "cloudUrl":{
+          "type": "string",
+          "description": "iCloud url where the attachment is saved (if available)",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "guid",
+        "filename",
+        "contentType"
+      ]
+    },
+    "contact": {
+      "type": "object",
+      "description": "A contact",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the contact (e.g., a UUID)",
+          "format": "uuid"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name of the contact"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name of the contact"
+        },
+        "nickname": {
+          "type": "string",
+          "description": "Nickname of the contact"
+        },
+        "phoneNumbers": {
+          "type": "array",
+          "description": "List of phone numbers associated with the contact",
+          "items": {
+            "type": "string",
+            "example": "+15551234567"
+          }
+        },
+        "emailAddresses": {
+          "type": "array",
+          "description": "List of email addresses associated with the contact",
+          "items": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "messagePart":{
+      "type": "object",
+      "description": "A message part or summary item in a message. Used for tapbacks or reactions.",
+      "properties": {
+        "partIndex": {
+          "type": "integer",
+          "description": "The index of this part in the message parts array."
+        },
+        "summaryType":{
+          "type": "integer",
+          "description": "Integer value that identifies the type of reaction or tapback. See Message Summary Types."
+        },
+        "sender": {
+          "$ref": "#/definitions/participant",
+          "description": "The sender of the tapback or reaction"
+        }
+      },
+      "required": [
+        "partIndex"
+      ]
+    }
+  }
+}

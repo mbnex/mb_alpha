@@ -1,0 +1,404 @@
+{
+  "type": "object",
+  "title": "Binance API Schema",
+  "description": "A comprehensive JSON Schema representing the Binance API, covering common endpoints and data structures. Note: This schema is a simplified representation and might not include every single endpoint or field. For complete and up-to-date information, refer to the official Binance API documentation.",
+  "properties": {
+    "exchangeInfo": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/exchangeInfo",
+      "properties": {
+        "timezone": { "type": "string", "example": "UTC" },
+        "serverTime": { "type": "integer", "format": "int64", "description": "Timestamp in milliseconds" },
+        "rateLimits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rateLimitType": { "type": "string", "enum": ["REQUEST_WEIGHT", "ORDERS", "RAW_REQUESTS"] },
+              "interval": { "type": "string", "enum": ["SECOND", "MINUTE", "DAY"] },
+              "intervalNum": { "type": "integer" },
+              "limit": { "type": "integer" }
+            },
+            "required": ["rateLimitType", "interval", "intervalNum", "limit"]
+          }
+        },
+        "exchangeFilters": { "type": "array", "items": { "type": "object" } },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": { "type": "string", "example": "BTCUSDT" },
+              "status": { "type": "string", "enum": ["PRE_TRADING", "TRADING", "POST_TRADING", "END_OF_DAY", "HALT", "AUCTION_MATCH", "BREAK"] },
+              "baseAsset": { "type": "string", "example": "BTC" },
+              "baseAssetPrecision": { "type": "integer" },
+              "quoteAsset": { "type": "string", "example": "USDT" },
+              "quotePrecision": { "type": "integer" },
+              "quoteAssetPrecision": { "type": "integer" },
+              "baseCommissionPrecision": { "type": "integer" },
+              "quoteCommissionPrecision": { "type": "integer" },
+              "orderTypes": {
+                "type": "array",
+                "items": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] }
+              },
+              "icebergAllowed": { "type": "boolean" },
+              "ocoAllowed": { "type": "boolean" },
+              "quoteOrderQtyMarketAllowed": { "type": "boolean" },
+              "allowTrailingStop": { "type": "boolean" },
+              "cancelReplaceAllowed": { "type": "boolean" },
+              "isSpotTradingAllowed": { "type": "boolean" },
+              "isMarginTradingAllowed": { "type": "boolean" },
+              "filters": { "type": "array", "items": { "type": "object" } },
+              "permissions": { "type": "array", "items": { "type": "string", "enum": ["SPOT", "MARGIN", "LEVERAGED", "TRD_GRP_002", "TRD_GRP_003", "TRD_GRP_004", "TRD_GRP_005"] } }
+            },
+            "required": [
+              "symbol",
+              "status",
+              "baseAsset",
+              "baseAssetPrecision",
+              "quoteAsset",
+              "quotePrecision",
+              "quoteAssetPrecision",
+              "baseCommissionPrecision",
+              "quoteCommissionPrecision",
+              "orderTypes",
+              "icebergAllowed",
+              "ocoAllowed",
+              "quoteOrderQtyMarketAllowed",
+              "allowTrailingStop",
+              "cancelReplaceAllowed",
+              "isSpotTradingAllowed",
+              "isMarginTradingAllowed",
+              "filters",
+              "permissions"
+            ]
+          }
+        }
+      },
+      "required": [
+        "timezone",
+        "serverTime",
+        "rateLimits",
+        "exchangeFilters",
+        "symbols"
+      ]
+    },
+    "orderBook": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/depth",
+      "properties": {
+        "lastUpdateId": { "type": "integer", "format": "int64" },
+        "bids": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              { "type": "string", "format": "decimal", "description": "Price" },
+              { "type": "string", "format": "decimal", "description": "Quantity" }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "asks": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              { "type": "string", "format": "decimal", "description": "Price" },
+              { "type": "string", "format": "decimal", "description": "Quantity" }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      },
+      "required": [
+        "lastUpdateId",
+        "bids",
+        "asks"
+      ]
+    },
+    "recentTrades": {
+      "type": "array",
+      "description": "Endpoint: /api/v3/trades",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "price": { "type": "string", "format": "decimal" },
+          "qty": { "type": "string", "format": "decimal" },
+          "quoteQty": { "type": "string", "format": "decimal" },
+          "time": { "type": "integer", "format": "int64", "description": "Timestamp in milliseconds" },
+          "isBuyerMaker": { "type": "boolean" },
+          "isBestMatch": { "type": "boolean" }
+        },
+        "required": [
+          "id",
+          "price",
+          "qty",
+          "quoteQty",
+          "time",
+          "isBuyerMaker",
+          "isBestMatch"
+        ]
+      }
+    },
+    "historicalTrades": {
+      "type": "array",
+      "description": "Endpoint: /api/v3/historicalTrades",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "price": { "type": "string", "format": "decimal" },
+          "qty": { "type": "string", "format": "decimal" },
+          "quoteQty": { "type": "string", "format": "decimal" },
+          "time": { "type": "integer", "format": "int64", "description": "Timestamp in milliseconds" },
+          "isBuyerMaker": { "type": "boolean" },
+          "isBestMatch": { "type": "boolean" }
+        },
+        "required": [
+          "id",
+          "price",
+          "qty",
+          "quoteQty",
+          "time",
+          "isBuyerMaker",
+          "isBestMatch"
+        ]
+      }
+    },
+    "accountInformation": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/account",
+      "properties": {
+        "makerCommission": { "type": "integer" },
+        "takerCommission": { "type": "integer" },
+        "buyerCommission": { "type": "integer" },
+        "sellerCommission": { "type": "integer" },
+        "canTrade": { "type": "boolean" },
+        "canWithdraw": { "type": "boolean" },
+        "canDeposit": { "type": "boolean" },
+        "brokered": { "type": "boolean" },
+        "updateTime": { "type": "integer", "format": "int64" },
+        "accountType": { "type": "string", "enum": ["SPOT", "MARGIN", "FUTURES", "LEVERAGED", "TRD_GRP_002", "TRD_GRP_003", "TRD_GRP_004", "TRD_GRP_005"] },
+        "balances": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "asset": { "type": "string", "example": "BTC" },
+              "free": { "type": "string", "format": "decimal" },
+              "locked": { "type": "string", "format": "decimal" }
+            },
+            "required": [
+              "asset",
+              "free",
+              "locked"
+            ]
+          }
+        },
+        "permissions": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "makerCommission",
+        "takerCommission",
+        "buyerCommission",
+        "sellerCommission",
+        "canTrade",
+        "canWithdraw",
+        "canDeposit",
+        "brokered",
+        "updateTime",
+        "accountType",
+        "balances",
+        "permissions"
+      ]
+    },
+    "newOrder": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/order",
+      "properties": {
+        "symbol": { "type": "string" },
+        "orderId": { "type": "integer", "format": "int64" },
+        "orderListId": { "type": "integer", "format": "int64" },
+        "clientOrderId": { "type": "string" },
+        "transactTime": { "type": "integer", "format": "int64" },
+        "price": { "type": "string", "format": "decimal" },
+        "origQty": { "type": "string", "format": "decimal" },
+        "executedQty": { "type": "string", "format": "decimal" },
+        "cummulativeQuoteQty": { "type": "string", "format": "decimal" },
+        "status": { "type": "string", "enum": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELED", "PENDING_CANCEL", "REJECTED", "EXPIRED"] },
+        "timeInForce": { "type": "string", "enum": ["GTC", "IOC", "FOK"] },
+        "type": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] },
+        "side": { "type": "string", "enum": ["BUY", "SELL"] },
+        "fills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "price": { "type": "string", "format": "decimal" },
+              "qty": { "type": "string", "format": "decimal" },
+              "commission": { "type": "string", "format": "decimal" },
+              "commissionAsset": { "type": "string" }
+            },
+            "required": [
+              "price",
+              "qty",
+              "commission",
+              "commissionAsset"
+            ]
+          }
+        }
+      },
+      "required": [
+        "symbol",
+        "orderId",
+        "orderListId",
+        "clientOrderId",
+        "transactTime"
+      ]
+    },
+    "cancelOrder": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/order",
+      "properties": {
+        "symbol": { "type": "string" },
+        "origClientOrderId": { "type": "string" },
+        "orderId": { "type": "integer", "format": "int64" },
+        "orderListId": { "type": "integer", "format": "int64" },
+        "clientOrderId": { "type": "string" },
+        "price": { "type": "string", "format": "decimal" },
+        "origQty": { "type": "string", "format": "decimal" },
+        "executedQty": { "type": "string", "format": "decimal" },
+        "cummulativeQuoteQty": { "type": "string", "format": "decimal" },
+        "status": { "type": "string", "enum": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELED", "PENDING_CANCEL", "REJECTED", "EXPIRED"] },
+        "timeInForce": { "type": "string", "enum": ["GTC", "IOC", "FOK"] },
+        "type": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] },
+        "side": { "type": "string", "enum": ["BUY", "SELL"] }
+      },
+      "required": [
+        "symbol",
+        "origClientOrderId",
+        "orderId",
+        "orderListId",
+        "clientOrderId",
+        "price",
+        "origQty",
+        "executedQty",
+        "cummulativeQuoteQty",
+        "status",
+        "timeInForce",
+        "type",
+        "side"
+      ]
+    },
+    "openOrders": {
+      "type": "array",
+      "description": "Endpoint: /api/v3/openOrders",
+      "items": {
+        "type": "object",
+        "properties": {
+          "symbol": { "type": "string" },
+          "orderId": { "type": "integer", "format": "int64" },
+          "orderListId": { "type": "integer", "format": "int64" },
+          "clientOrderId": { "type": "string" },
+          "price": { "type": "string", "format": "decimal" },
+          "origQty": { "type": "string", "format": "decimal" },
+          "executedQty": { "type": "string", "format": "decimal" },
+          "cummulativeQuoteQty": { "type": "string", "format": "decimal" },
+          "status": { "type": "string", "enum": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELED", "PENDING_CANCEL", "REJECTED", "EXPIRED"] },
+          "timeInForce": { "type": "string", "enum": ["GTC", "IOC", "FOK"] },
+          "type": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] },
+          "side": { "type": "string", "enum": ["BUY", "SELL"] },
+          "stopPrice": { "type": "string", "format": "decimal" },
+          "icebergQty": { "type": "string", "format": "decimal" },
+          "time": { "type": "integer", "format": "int64" },
+          "updateTime": { "type": "integer", "format": "int64" },
+          "isWorking": { "type": "boolean" },
+          "origQuoteOrderQty": { "type": "string", "format": "decimal" }
+        },
+        "required": [
+          "symbol",
+          "orderId",
+          "orderListId",
+          "clientOrderId",
+          "price",
+          "origQty",
+          "executedQty",
+          "cummulativeQuoteQty",
+          "status",
+          "timeInForce",
+          "type",
+          "side",
+          "stopPrice",
+          "icebergQty",
+          "time",
+          "updateTime",
+          "isWorking",
+          "origQuoteOrderQty"
+        ]
+      }
+    },
+    "allOrders": {
+      "type": "array",
+      "description": "Endpoint: /api/v3/allOrders",
+      "items": {
+        "type": "object",
+        "properties": {
+          "symbol": { "type": "string" },
+          "orderId": { "type": "integer", "format": "int64" },
+          "orderListId": { "type": "integer", "format": "int64" },
+          "clientOrderId": { "type": "string" },
+          "price": { "type": "string", "format": "decimal" },
+          "origQty": { "type": "string", "format": "decimal" },
+          "executedQty": { "type": "string", "format": "decimal" },
+          "cummulativeQuoteQty": { "type": "string", "format": "decimal" },
+          "status": { "type": "string", "enum": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELED", "PENDING_CANCEL", "REJECTED", "EXPIRED"] },
+          "timeInForce": { "type": "string", "enum": ["GTC", "IOC", "FOK"] },
+          "type": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] },
+          "side": { "type": "string", "enum": ["BUY", "SELL"] },
+          "stopPrice": { "type": "string", "format": "decimal" },
+          "icebergQty": { "type": "string", "format": "decimal" },
+          "time": { "type": "integer", "format": "int64" },
+          "updateTime": { "type": "integer", "format": "int64" },
+          "isWorking": { "type": "boolean" },
+          "origQuoteOrderQty": { "type": "string", "format": "decimal" }
+        },
+        "required": [
+          "symbol",
+          "orderId",
+          "orderListId",
+          "clientOrderId",
+          "price",
+          "origQty",
+          "executedQty",
+          "cummulativeQuoteQty",
+          "status",
+          "timeInForce",
+          "type",
+          "side",
+          "stopPrice",
+          "icebergQty",
+          "time",
+          "updateTime",
+          "isWorking",
+          "origQuoteOrderQty"
+        ]
+      }
+    },
+    "error": {
+      "type": "object",
+      "description": "Error response from the Binance API",
+      "properties": {
+        "code": { "type": "integer", "description": "Error code" },
+        "msg": { "type": "string", "description": "Error message" }
+      },
+      "required": [
+        "code",
+        "msg"
+      ]
+    }
+  }
+}

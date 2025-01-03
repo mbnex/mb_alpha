@@ -1,0 +1,504 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bitfinex API Schema",
+  "description": "A JSON Schema describing the data structures used in the Bitfinex API (v2). This schema covers common request and response objects. It does not include every single endpoint and parameter but aims to provide a good overview and structure for many frequent uses.",
+  "type": "object",
+  "definitions": {
+    "orderStatus": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "EXECUTED",
+        "PARTIALLY FILLED",
+        "CANCELED"
+      ]
+    },
+    "orderType": {
+      "type": "string",
+      "enum": [
+        "MARKET",
+        "EXCHANGE MARKET",
+        "LIMIT",
+        "EXCHANGE LIMIT",
+        "STOP",
+        "EXCHANGE STOP",
+        "TRAILING STOP",
+        "EXCHANGE TRAILING STOP",
+        "FOK",
+        "EXCHANGE FOK",
+        "STOP LIMIT",
+        "EXCHANGE STOP LIMIT"
+      ]
+    },
+    "tickerSymbol": {
+      "type": "string",
+      "pattern": "^t[A-Z0-9]+:[A-Z0-9]+$|^t[A-Z0-9]+$|^f[A-Z0-9]+$"
+    },
+    "fundingSymbol": {
+      "type": "string",
+      "pattern": "^f[A-Z0-9]+$"
+    },
+    "tradingPairSymbol": {
+      "type": "string",
+      "pattern": "^t[A-Z0-9]+:[A-Z0-9]+$|^t[A-Z0-9]+$"
+    },
+    "walletType": {
+      "type": "string",
+      "enum": [
+        "exchange",
+        "margin",
+        "funding"
+      ]
+    },
+    "numberArray": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "stringOrNumber": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "number" }
+      ]
+    },
+    "ticker": {
+      "type": "array",
+      "items": [
+        { "$ref": "#/definitions/tickerSymbol" },
+        { "$ref": "#/definitions/numberArray" }
+      ],
+      "description": "Ticker data. [SYMBOL, BID, BID_SIZE, ASK, ASK_SIZE, DAILY_CHANGE, DAILY_CHANGE_RELATIVE, LAST_PRICE, VOLUME, HIGH, LOW]",
+      "minItems": 11,
+      "maxItems": 11
+    },
+    "bookEntry": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 4,
+      "description": "Order book entry. [PRICE, COUNT, AMOUNT] or [PERIOD, RATE, AMOUNT] for funding books"
+    },
+    "orderBook": {
+      "type": "object",
+      "properties": {
+        "bids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/bookEntry"
+          }
+        },
+        "asks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/bookEntry"
+          }
+        }
+      },
+      "required": ["bids", "asks"]
+    },
+    "trade": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Trade ID" },
+        { "type": "integer", "description": "MTS (millisecond timestamp)" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Price" },
+        { "type": "number", "optional": true, "description": "Rate (for funding trades)"},
+        { "type": "integer", "optional": true, "description": "Period (for funding trades)"}
+      ],
+      "minItems": 4,
+      "maxItems": 6,
+      "description": "Public trade data. [ID, MTS, AMOUNT, PRICE] or [ID, MTS, AMOUNT, PRICE, RATE, PERIOD] for funding trades"
+    },
+    "candle": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 6,
+      "maxItems": 6,
+      "description": "Candle data. [MTS, OPEN, CLOSE, HIGH, LOW, VOLUME]"
+    },
+    "wallet": {
+      "type": "array",
+      "items": [
+        { "$ref": "#/definitions/walletType" },
+        { "type": "string", "description": "Currency" },
+        { "type": "number", "description": "Balance" },
+        { "type": "number", "description": "Unsettled Interest" },
+        { "type": "number", "description": "Balance Available", "optional": true },
+        { "type": "string", "description": "Last change description", "optional": true},
+        { "type": "object", "optional": true, "description": "Meta information"}
+
+      ],
+      "minItems": 4,
+      "maxItems": 7,
+      "description": "Wallet information. [WALLET_TYPE, CURRENCY, BALANCE, UNSETTLED_INTEREST, BALANCE_AVAILABLE, LAST_CHANGE, META]"
+    },
+    "order": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Order ID" },
+        { "type": "integer", "description": "Group ID (optional)" },
+        { "type": "integer", "description": "Client Order ID (optional)" },
+        { "$ref": "#/definitions/tickerSymbol" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Amount Original" },
+        { "$ref": "#/definitions/orderType" },
+        { "type": "string", "description": "Previous Order Type" },
+        { "type": "integer", "optional": true, "description": "MTS TIF"},
+        { "type": "integer", "optional": true, "description": "Flags" },
+        { "$ref": "#/definitions/orderStatus" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Price" },
+        { "type": "number", "description": "Price Average" },
+        { "type": "number", "description": "Price Trailing" },
+        { "type": "number", "description": "Price Auxiliary Limit" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "integer", "description": "Hidden (0 or 1)" },
+        { "type": "integer", "description": "Place ID if Place ID was assigned" },
+        { "type": "integer", "optional": true, "description": "GRCL required (0 or 1)"},
+        { "type": "number", "optional": true, "description": "Leverage"},
+        { "type": "string", "optional": true, "description": "Order meta information"},
+        { "type": "integer", "optional": true, "description": "Reduce Only (0 or 1)"},
+        { "type": "integer", "optional": true, "description": "Post Only (0 or 1)"},
+        { "type": "integer", "optional": true, "description": "OCO (0 or 1)"},
+        { "type": "integer", "optional": true, "description": "OCO Cancel Amount"},
+        { "type": "integer", "optional": true, "description": "Time In Force: 0 = GTC, 1 = IOC, 2 = FOK, 3 = PO, 4 = EXPIRED"},
+        { "type": "string", "optional": true, "description": "VT"},
+        { "type": "string", "optional": true, "description": "VT_Reason"}
+      ],
+      "minItems": 26,
+      "maxItems": 35,
+      "description": "Order details. Refer to the documentation for detailed field descriptions."
+    },
+    "position": {
+      "type": "array",
+      "items": [
+        { "$ref": "#/definitions/tradingPairSymbol" },
+        { "type": "string", "description": "Status" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Base Price" },
+        { "type": "number", "description": "Margin Funding" },
+        { "type": "number", "description": "Margin Funding Type" },
+        { "type": "number", "description": "PL" },
+        { "type": "number", "description": "PL (%)" },
+        { "type": "number", "description": "Price Liquidation" },
+        { "type": "number", "description": "Leverage" },
+        { "type": "null" },
+        { "type": "integer", "description": "Position ID" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "type": "null" },
+        { "type": "number", "description": "Collateral" },
+        { "type": "number", "description": "Collateral Minimum" },
+        { "type": "object", "description": "Meta", "optional": true }
+      ],
+      "minItems": 18,
+      "maxItems": 19,
+      "description": "Position details. Refer to the documentation for detailed field descriptions."
+    },
+    "fundingOffer": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Offer ID" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "$ref": "#/definitions/fundingSymbol" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Amount Original" },
+        { "type": "string", "description": "Offer Type" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "integer", "description": "Flags" },
+        { "type": "string", "description": "Status" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate" },
+        { "type": "integer", "description": "Period" },
+        { "type": "integer", "description": "Notify (0 or 1)" },
+        { "type": "integer", "description": "Hidden (0 or 1)" },
+        { "type": "null" },
+        { "type": "number", "description": "Renew (0 or 1)" },
+        { "type": "number", "description": "Rate Real" }
+      ],
+      "minItems": 21,
+      "maxItems": 21,
+      "description": "Funding Offer details. Refer to the documentation for detailed field descriptions."
+    },
+    "fundingCredit": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Credit ID" },
+        { "$ref": "#/definitions/fundingSymbol" },
+        { "type": "string", "description": "Side" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "type": "number", "description": "Amount" },
+        { "type": "integer", "description": "Flags" },
+        { "type": "string", "description": "Status" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate" },
+        { "type": "integer", "description": "Period" },
+        { "type": "integer", "description": "MTS Opened" },
+        { "type": "integer", "description": "MTS Last Payout" },
+        { "type": "integer", "description": "Notify (0 or 1)" },
+        { "type": "integer", "description": "Hidden (0 or 1)" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate Real" },
+        { "type": "number", "description": "No Close (0 or 1)" },
+        { "type": "object", "description": "Position Pair", "optional": true }
+      ],
+      "minItems": 20,
+      "maxItems": 21,
+      "description": "Funding Credit details. Refer to the documentation for detailed field descriptions."
+    },
+    "fundingLoan": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Loan ID" },
+        { "$ref": "#/definitions/fundingSymbol" },
+        { "type": "string", "description": "Side" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "type": "number", "description": "Amount" },
+        { "type": "integer", "description": "Flags" },
+        { "type": "string", "description": "Status" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate" },
+        { "type": "integer", "description": "Period" },
+        { "type": "integer", "description": "MTS Opened" },
+        { "type": "integer", "description": "MTS Last Payout" },
+        { "type": "integer", "description": "Notify (0 or 1)" },
+        { "type": "integer", "description": "Hidden (0 or 1)" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate Real" },
+        { "type": "number", "description": "No Close (0 or 1)" }
+      ],
+      "minItems": 20,
+      "maxItems": 20,
+      "description": "Funding Loan details. Refer to the documentation for detailed field descriptions."
+    },
+    "fundingTrade": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Trade ID" },
+        { "$ref": "#/definitions/fundingSymbol" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "Offer ID" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Rate" },
+        { "type": "integer", "description": "Period" },
+        { "type": "integer", "description": "Maker (0 or 1)" }
+      ],
+      "minItems": 8,
+      "maxItems": 8,
+      "description": "Funding Trade details. Refer to the documentation for detailed field descriptions."
+    },
+    "notification": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "MTS" },
+        { "type": "string", "description": "Type" },
+        { "type": "integer", "description": "Message ID" },
+        { "type": "null" },
+        {
+          "oneOf": [
+            { "$ref": "#/definitions/order" },
+            { "$ref": "#/definitions/position" },
+            { "$ref": "#/definitions/fundingOffer" },
+            { "$ref": "#/definitions/fundingCredit" },
+            { "$ref": "#/definitions/fundingLoan" },
+            { "$ref": "#/definitions/wallet" },
+            { "type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 1 }
+          ],
+          "description": "Data associated with the notification"
+        },
+        { "type": "integer", "description": "Code" },
+        { "type": "integer", "description": "Status (0 or 1)" },
+        { "type": "string", "description": "Text" }
+      ],
+      "minItems": 8,
+      "maxItems": 8,
+      "description": "Notification details. Refer to the documentation for detailed field descriptions."
+    },
+    "authResponse": {
+      "type": "array",
+      "items": [
+        { "type": "string", "description": "Status (OK or ERROR)" },
+        { "type": "integer", "description": "MTS" },
+        { "type": "string", "description": "Type (AUTH)" },
+        { "type": "null" },
+        { "type": "integer", "description": "Code" },
+        { "type": "string", "description": "Message" },
+        { "type": "object", "description": "Auth_Payload" }
+      ],
+      "minItems": 7,
+      "maxItems": 7,
+      "description": "Authentication response from the server."
+    },
+    "websocketEvent": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string"
+        },
+        "channel": {
+          "type": "string",
+          "optional": true
+        },
+        "chanId": {
+          "type": "integer",
+          "optional": true
+        },
+        "symbol": {
+          "$ref": "#/definitions/tickerSymbol",
+          "optional": true
+        },
+        "prec": {
+          "type": "string",
+          "optional": true
+        },
+        "freq": {
+          "type": "string",
+          "optional": true
+        },
+        "key": {
+          "type": "string",
+          "optional": true
+        },
+        "len": {
+          "type": "string",
+          "optional": true
+        },
+        "pair": {
+          "type": "string",
+          "optional": true
+        },
+        "code": {
+          "type": "integer",
+          "optional": true
+        },
+        "msg": {
+          "type": "string",
+          "optional": true
+        },
+        "status": {
+          "type": "string",
+          "optional": true
+        },
+        "userId": {
+          "type": "integer",
+          "optional": true
+        },
+        "subId": {
+          "type": "string",
+          "optional": true
+        },
+        "version": {
+          "type": "integer",
+          "optional": true
+        },
+        "platform": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "integer" }
+          },
+          "required": ["status"],
+          "optional": true
+        },
+        "apiKey": {
+          "type": "string",
+          "optional": true
+        },
+        "eventTime": {
+          "type": "integer",
+          "optional": true
+        },
+        "soc": {
+          "type": "integer",
+          "optional": true
+        },
+        "wallet_type": {
+          "$ref": "#/definitions/walletType",
+          "optional": true
+        },
+        "order_id": {
+          "type": "integer",
+          "optional": true
+        },
+        "order_type": {
+          "$ref": "#/definitions/orderType",
+          "optional": true
+        },
+        "order_cid": {
+          "type": "integer",
+          "optional": true
+        }
+      },
+      "required": [
+        "event"
+      ]
+    }
+  },
+  "properties": {
+    "websocket": {
+      "type": "array",
+      "description": "WebSocket message format. The first element is always the channel ID.",
+      "items": [
+        {
+          "type": "integer",
+          "description": "Channel ID"
+        },
+        {
+          "oneOf": [
+            { "$ref": "#/definitions/ticker" },
+            { "$ref": "#/definitions/orderBook" },
+            { "$ref": "#/definitions/trade" },
+            { "$ref": "#/definitions/candle" },
+            { "$ref": "#/definitions/wallet" },
+            { "$ref": "#/definitions/order" },
+            { "$ref": "#/definitions/position" },
+            { "$ref": "#/definitions/fundingOffer" },
+            { "$ref": "#/definitions/fundingCredit" },
+            { "$ref": "#/definitions/fundingLoan" },
+            { "$ref": "#/definitions/fundingTrade" },
+            { "$ref": "#/definitions/notification" },
+            { "$ref": "#/definitions/authResponse" },
+            { "type": "string", "description": "Snapshot/Heartbeat/Update message type indicator (hb, ws, os, ps, etc.)" },
+            { "type": "array", "items": { "oneOf": [
+              { "$ref": "#/definitions/orderBook" },
+              { "$ref": "#/definitions/trade" },
+              { "$ref": "#/definitions/candle" },
+              { "$ref": "#/definitions/wallet" },
+              { "$ref": "#/definitions/order" },
+              { "$ref": "#/definitions/position" },
+              { "$ref": "#/definitions/fundingOffer" },
+              { "$ref": "#/definitions/fundingCredit" },
+              { "$ref": "#/definitions/fundingLoan" },
+              { "$ref": "#/definitions/fundingTrade" }
+            ]}}
+          ]
+        }
+      ],
+      "minItems": 2
+    },
+    "websocketEvent": {
+      "$ref": "#/definitions/websocketEvent"
+    }
+  }
+}

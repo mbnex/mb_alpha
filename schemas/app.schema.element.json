@@ -1,0 +1,408 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Element/Matrix App",
+  "description": "JSON Schema for the core features and data structures of the Element/Matrix application.",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "object",
+      "description": "Represents a user in the Matrix ecosystem.",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "description": "The unique Matrix user ID (MXID).",
+          "pattern": "^@[^:]+:[^:]+$",
+          "example": "@alice:example.com"
+        },
+        "display_name": {
+          "type": "string",
+          "description": "The user's display name (may not be unique)."
+        },
+        "avatar_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL of the user's avatar image."
+        },
+        "devices": {
+          "type": "array",
+          "description": "A list of the user's devices.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "device_id": {
+                "type": "string",
+                "description": "Unique identifier for the device"
+              },
+              "display_name": {
+                "type": "string",
+                "description": "Human-readable name for the device"
+              }
+            },
+            "required": [
+              "device_id"
+            ]
+          }
+        }
+      },
+      "required": [
+        "user_id"
+      ]
+    },
+    "room": {
+      "type": "object",
+      "description": "Represents a chat room in Matrix.",
+      "properties": {
+        "room_id": {
+          "type": "string",
+          "description": "The unique Matrix room ID.",
+          "pattern": "^![^:]+:[^:]+$",
+          "example": "!abcdefg:example.com"
+        },
+        "name": {
+          "type": "string",
+          "description": "The human-readable name of the room (may not be unique)."
+        },
+        "topic": {
+          "type": "string",
+          "description": "The room's topic or description."
+        },
+        "avatar_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL of the room's avatar image."
+        },
+        "is_direct": {
+          "type": "boolean",
+          "description": "Indicates whether the room is a direct (1:1) chat."
+        },
+        "members": {
+          "type": "array",
+          "description": "List of user IDs that are members of the room.",
+          "items": {
+            "$ref": "#/properties/user/properties/user_id"
+          }
+        },
+        "power_levels": {
+          "type": "object",
+          "description": "Defines user power levels within the room.",
+          "properties": {
+            "users": {
+              "type": "object",
+              "description": "Mapping of user IDs to their power levels.",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "events": {
+              "type": "object",
+              "description": "Default power level required to send specific event types.",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "state_default": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Default power level to send state events"
+            },
+            "events_default": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Default power level to send message events"
+            },
+            "users_default": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Default power level for users joining the room"
+            },
+            "invite": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Power level required to invite users"
+            },
+            "kick": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Power level required to kick users"
+            },
+            "ban": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Power level required to ban users"
+            },
+            "redact": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Power level required to redact events"
+            }
+          }
+        }
+      },
+      "required": [
+        "room_id"
+      ]
+    },
+    "event": {
+      "type": "object",
+      "description": "Represents an event (message, state change, etc.) in a Matrix room.",
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "description": "The unique ID of the event."
+        },
+        "sender": {
+          "$ref": "#/properties/user/properties/user_id",
+          "description": "The user ID of the event sender."
+        },
+        "origin_server_ts": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp (milliseconds since epoch) when the event was sent by the origin server."
+        },
+        "room_id": {
+          "$ref": "#/properties/room/properties/room_id",
+          "description": "The room ID where the event occurred."
+        },
+        "type": {
+          "type": "string",
+          "description": "The event type (e.g., m.room.message, m.room.name, etc.).",
+          "enum": [
+            "m.room.message",
+            "m.room.name",
+            "m.room.topic",
+            "m.room.member",
+            "m.room.create",
+            "m.room.join_rules",
+            "m.room.power_levels",
+            "m.room.redaction",
+            "m.room.avatar",
+            "m.room.encryption",
+            "m.room.canonical_alias",
+            "m.sticker",
+            "m.reaction"
+          ]
+        },
+        "content": {
+          "type": "object",
+          "description": "The event content, which varies depending on the event type."
+        },
+        "unsigned": {
+          "type": "object",
+          "description": "Unsigned data relating to the event such as age"
+        },
+        "redacts": {
+          "type": "string",
+          "description": "For redaction events, the ID of the event being redacted"
+        },
+        "state_key": {
+          "type": "string",
+          "description": "State key, if this is a state event."
+        }
+      },
+      "required": [
+        "event_id",
+        "sender",
+        "origin_server_ts",
+        "room_id",
+        "type",
+        "content"
+      ],
+      "oneOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "m.room.message"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "type": "object",
+                "properties": {
+                  "msgtype": {
+                    "type": "string",
+                    "description": "The message type (e.g., m.text, m.image, m.file, etc.).",
+                    "enum": [
+                      "m.text",
+                      "m.emote",
+                      "m.notice",
+                      "m.image",
+                      "m.file",
+                      "m.audio",
+                      "m.location",
+                      "m.video"
+                    ]
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "The body of the message (text content)."
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "URL",
+                    "description": "URL of the media (for image, file, audio, video types)."
+                  },
+                  "info": {
+                    "type": "object",
+                    "description": "Additional information about the media (size, mimetype, etc.)."
+                  }
+                },
+                "required": [
+                  "msgtype",
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "m.room.member"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "type": "object",
+                "properties": {
+                  "membership": {
+                    "type": "string",
+                    "enum": [
+                      "invite",
+                      "join",
+                      "leave",
+                      "ban",
+                      "knock"
+                    ],
+                    "description": "The membership state of the user."
+                  },
+                  "displayname": {
+                    "type": "string",
+                    "description": "The user's display name at the time of the event."
+                  },
+                  "avatar_url": {
+                    "type": "string",
+                    "format": "URL",
+                    "description": "The user's avatar URL at the time of the event."
+                  }
+                },
+                "required": [
+                  "membership"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "m.room.name",
+                  "m.room.topic",
+                  "m.room.avatar",
+                  "m.room.create",
+                  "m.room.join_rules",
+                  "m.room.power_levels",
+                  "m.room.encryption",
+                  "m.room.canonical_alias"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "state_key": {
+                "type": "string",
+                "description": "A unique key to identify the state. Often empty for m.room.create",
+                "maxLength": 255
+              }
+            },
+            "required": [
+              "state_key"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "m.reaction"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "type": "object",
+                "properties": {
+                  "m.relates_to": {
+                    "type": "object",
+                    "properties": {
+                      "rel_type": {
+                        "type": "string",
+                        "const": "m.annotation"
+                      },
+                      "event_id": {
+                        "type": "string"
+                      },
+                      "key": {
+                        "type": "string",
+                        "description": "The reaction (e.g. an emoji)"
+                      }
+                    },
+                    "required": [
+                      "rel_type",
+                      "event_id",
+                      "key"
+                    ]
+                  }
+                },
+                "required": [
+                  "m.relates_to"
+                ]
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      ]
+    },
+    "space": {
+      "type": "object",
+      "description": "Represents a space, which is a hierarchical collection of rooms and subspaces.",
+      "properties": {
+        "room_id": {
+          "$ref": "#/properties/room/properties/room_id",
+          "description": "The room ID that represents the space."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the space."
+        },
+        "children": {
+          "type": "array",
+          "description": "List of room IDs and space IDs that are children of this space.",
+          "items": {
+            "type": "string",
+            "description": "Room ID or space ID",
+            "pattern": "^[#|!][^:]+:[^:]+$"
+          }
+        }
+      },
+      "required": [
+        "room_id"
+      ]
+    }
+  },
+  "required": []
+}

@@ -1,0 +1,395 @@
+{
+  "title": "YouTube Schema",
+  "description": "A JSON Schema representing core YouTube entities and their relationships.",
+  "type": "object",
+  "properties": {
+    "videos": {
+      "type": "array",
+      "description": "A list of YouTube videos.",
+      "items": {
+        "$ref": "#/definitions/video"
+      }
+    },
+    "channels": {
+      "type": "array",
+      "description": "A list of YouTube channels.",
+      "items": {
+        "$ref": "#/definitions/channel"
+      }
+    },
+    "playlists": {
+      "type": "array",
+      "description": "A list of YouTube playlists.",
+      "items": {
+        "$ref": "#/definitions/playlist"
+      }
+    },
+    "users": {
+      "type": "array",
+      "description": "A list of YouTube users (viewers, not necessarily creators).",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "comments": {
+      "type": "array",
+      "description": "A list of YouTube comments.",
+      "items": {
+        "$ref": "#/definitions/comment"
+      }
+    }
+  },
+  "definitions": {
+    "video": {
+      "type": "object",
+      "description": "Represents a YouTube video.",
+      "properties": {
+        "videoId": {
+          "type": "string",
+          "description": "Unique identifier for the video.",
+          "example": "dQw4w9WgXcQ"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the video.",
+          "example": "Rick Astley - Never Gonna Give You Up (Official Music Video)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the video.",
+          "example": "The official video for “Never Gonna Give You Up” by Rick Astley"
+        },
+        "channelId": {
+          "type": "string",
+          "description": "ID of the channel that uploaded the video.",
+          "example": "UCuAXFkgsw1L7xaCfnd5JJOw"
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the video was published.",
+          "example": "2009-10-25T06:57:33Z"
+        },
+        "thumbnails": {
+          "type": "object",
+          "description": "Different sizes of thumbnails for the video.",
+          "properties": {
+            "default": { "$ref": "#/definitions/thumbnail" },
+            "medium": { "$ref": "#/definitions/thumbnail" },
+            "high": { "$ref": "#/definitions/thumbnail" },
+            "standard": { "$ref": "#/definitions/thumbnail" },
+            "maxres": { "$ref": "#/definitions/thumbnail" }
+          },
+          "additionalProperties": false
+        },
+        "duration": {
+          "type": "string",
+          "description": "Duration of the video in ISO 8601 format.",
+          "example": "PT3M33S"
+        },
+        "viewCount": {
+          "type": "integer",
+          "description": "Number of views the video has received.",
+          "example": 1400000000
+        },
+        "likeCount": {
+          "type": "integer",
+          "description": "Number of likes the video has received.",
+          "example": 15000000
+        },
+        "dislikeCount": {
+          "type": "integer",
+          "description": "Number of dislikes the video has received. (Note: No longer publicly available via the API)",
+          "example": 200000
+        },
+        "commentCount": {
+          "type": "integer",
+          "description": "Number of comments on the video.",
+          "example": 600000
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags associated with the video.",
+          "items": {
+            "type": "string",
+            "example": "music"
+          }
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the video.",
+          "example": "Music"
+        },
+        "liveStreamingDetails": {
+          "type": "object",
+          "description": "Details about a live stream, if applicable.",
+          "properties": {
+            "actualStartTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Actual start time of the live stream."
+            },
+            "actualEndTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Actual end time of the live stream."
+            },
+            "scheduledStartTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Scheduled start time of the live stream."
+            },
+            "scheduledEndTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Scheduled end time of the live stream."
+            },
+            "concurrentViewers": {
+              "type": "integer",
+              "description": "Number of concurrent viewers during the live stream."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "videoId",
+        "title",
+        "channelId",
+        "publishedAt",
+        "thumbnails",
+        "duration"
+      ],
+      "additionalProperties": false
+    },
+    "channel": {
+      "type": "object",
+      "description": "Represents a YouTube channel.",
+      "properties": {
+        "channelId": {
+          "type": "string",
+          "description": "Unique identifier for the channel.",
+          "example": "UCuAXFkgsw1L7xaCfnd5JJOw"
+        },
+        "channelName": {
+          "type": "string",
+          "description": "Name of the channel.",
+          "example": "Rick Astley"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the channel."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the channel was created."
+        },
+        "thumbnails": {
+          "type": "object",
+          "description": "Different sizes of thumbnails for the channel.",
+          "properties": {
+            "default": { "$ref": "#/definitions/thumbnail" },
+            "medium": { "$ref": "#/definitions/thumbnail" },
+            "high": { "$ref": "#/definitions/thumbnail" }
+          },
+          "additionalProperties": false
+        },
+        "subscriberCount": {
+          "type": "integer",
+          "description": "Number of subscribers to the channel. (Note: May be hidden or rounded by the channel owner)",
+          "example": 9000000
+        },
+        "videoCount": {
+          "type": "integer",
+          "description": "Number of public videos uploaded by the channel.",
+          "example": 200
+        },
+        "viewCount": {
+          "type": "integer",
+          "description": "Total number of views across all public videos on the channel.",
+          "example": 2500000000
+        },
+        "customUrl": {
+          "type": "string",
+          "description": "Custom URL for the channel, if set.",
+          "example": "@RickAstley"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country associated with the channel.",
+          "example": "GB"
+        }
+      },
+      "required": [
+        "channelId",
+        "channelName"
+      ],
+      "additionalProperties": false
+    },
+    "playlist": {
+      "type": "object",
+      "description": "Represents a YouTube playlist.",
+      "properties": {
+        "playlistId": {
+          "type": "string",
+          "description": "Unique identifier for the playlist.",
+          "example": "PL1234567890abcdef"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the playlist.",
+          "example": "My Favorite Songs"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the playlist."
+        },
+        "channelId": {
+          "type": "string",
+          "description": "ID of the channel that created the playlist."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the playlist was created."
+        },
+        "thumbnails": {
+          "type": "object",
+          "description": "Different sizes of thumbnails for the playlist.",
+          "properties": {
+            "default": { "$ref": "#/definitions/thumbnail" },
+            "medium": { "$ref": "#/definitions/thumbnail" },
+            "high": { "$ref": "#/definitions/thumbnail" },
+            "standard": { "$ref": "#/definitions/thumbnail" },
+            "maxres": { "$ref": "#/definitions/thumbnail" }
+          },
+          "additionalProperties": false
+        },
+        "videoIds": {
+          "type": "array",
+          "description": "List of video IDs contained in the playlist.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "videoCount": {
+          "type": "integer",
+          "description": "Number of videos in the playlist."
+        }
+      },
+      "required": [
+        "playlistId",
+        "title",
+        "channelId"
+      ],
+      "additionalProperties": false
+    },
+    "user": {
+      "type": "object",
+      "description": "Represents a YouTube user (viewer).",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique identifier for the user (often same as channel ID, but not necessarily)."
+        },
+        "userName": {
+          "type": "string",
+          "description": "Public name of the user."
+        }
+        // Add more properties for user interaction if needed, such as:
+        // - subscribedChannels
+        // - likedVideos
+        // - watchHistory
+        // - etc. (These properties often require authentication)
+      },
+      "required": [
+        "userId"
+      ],
+      "additionalProperties": false
+    },
+    "comment": {
+      "type": "object",
+      "description": "Represents a comment on a YouTube video or channel.",
+      "properties": {
+        "commentId": {
+          "type": "string",
+          "description": "Unique identifier for the comment."
+        },
+        "videoId": {
+          "type": "string",
+          "description": "ID of the video the comment is on (if applicable)."
+        },
+        "channelId": {
+          "type": "string",
+          "description": "ID of the channel the comment is on (if applicable)."
+        },
+        "parentId": {
+          "type": "string",
+          "description": "ID of the parent comment, if this is a reply."
+        },
+        "authorChannelId": {
+          "type": "string",
+          "description": "ID of the channel that posted the comment."
+        },
+        "authorDisplayName": {
+          "type": "string",
+          "description": "Display name of the author of the comment."
+        },
+        "textOriginal": {
+          "type": "string",
+          "description": "The comment text (original, unformatted)."
+        },
+        "textDisplay": {
+          "type": "string",
+          "description": "The comment text (may contain formatting like bold, italics, etc.)."
+        },
+        "likeCount": {
+          "type": "integer",
+          "description": "Number of likes the comment has received."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the comment was published."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the comment was last updated (if edited)."
+        }
+      },
+      "required": [
+        "commentId",
+        "authorChannelId",
+        "textOriginal",
+        "publishedAt"
+      ],
+      "additionalProperties": false
+    },
+    "thumbnail": {
+      "type": "object",
+      "description": "Represents a thumbnail image.",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the thumbnail image.",
+          "example": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg"
+        },
+        "width": {
+          "type": "integer",
+          "description": "Width of the thumbnail image in pixels."
+        },
+        "height": {
+          "type": "integer",
+          "description": "Height of the thumbnail image in pixels."
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

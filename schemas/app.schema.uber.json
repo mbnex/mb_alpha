@@ -1,0 +1,363 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Uber App",
+  "description": "JSON Schema for the core functionalities of the Uber App",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "object",
+      "description": "User information",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "pattern": "^\\+[1-9]\\d{1,14}$",
+          "description": "User's phone number (E.164 format)"
+        },
+        "paymentMethods": {
+          "type": "array",
+          "description": "List of user's payment methods",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["credit_card", "debit_card", "paypal", "uber_cash"],
+                "description": "Type of payment method"
+              },
+              "details": {
+                "type": "object",
+                "description": "Details specific to the payment method type",
+                "oneOf": [
+                  {
+                    "properties": {
+                      "cardNumber": {
+                        "type": "string",
+                        "description": "Credit/Debit card number (last 4 digits stored)"
+                      },
+                      "expiryDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Card expiry date (MM/YY)"
+                      },
+                      "cardType": {
+                        "type": "string",
+                        "enum": ["Visa", "MasterCard", "American Express", "Discover"],
+                        "description": "Card issuer"
+                      }
+                    },
+                    "required": ["cardNumber", "expiryDate", "cardType"]
+                  },
+                  {
+                    "properties": {
+                      "paypalEmail": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "PayPal email address"
+                      }
+                    },
+                    "required": ["paypalEmail"]
+                  },
+                  {
+                    "properties":{
+                      "balance":{
+                        "type": "number",
+                        "description": "Balance available in Uber Cash"
+                      }
+                    },
+                    "required": ["balance"]
+                  }
+                ]
+              }
+            },
+            "required": ["type", "details"]
+          }
+        },
+        "profilePicture": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Average rating of the user as a rider",
+          "minimum": 0,
+          "maximum": 5
+        }
+      },
+      "required": [
+        "userId",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber"
+      ]
+    },
+    "driver": {
+      "type": "object",
+      "description": "Driver information",
+      "properties": {
+        "driverId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the driver"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "Driver's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Driver's last name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Driver's email address"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "pattern": "^\\+[1-9]\\d{1,14}$",
+          "description": "Driver's phone number (E.164 format)"
+        },
+        "vehicle": {
+          "type": "object",
+          "description": "Driver's vehicle information",
+          "properties": {
+            "make": {
+              "type": "string",
+              "description": "Vehicle make"
+            },
+            "model": {
+              "type": "string",
+              "description": "Vehicle model"
+            },
+            "year": {
+              "type": "integer",
+              "description": "Vehicle year"
+            },
+            "licensePlate": {
+              "type": "string",
+              "description": "Vehicle license plate number"
+            },
+            "color": {
+              "type": "string",
+              "description": "Vehicle color"
+            }
+          },
+          "required": [
+            "make",
+            "model",
+            "year",
+            "licensePlate",
+            "color"
+          ]
+        },
+        "profilePicture": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the driver's profile picture"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Average rating of the driver",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "status": {
+          "type": "string",
+          "enum": ["online", "offline", "on_trip"],
+          "description": "Current status of the driver"
+        },
+        "location": {
+          "$ref": "#/definitions/location",
+          "description": "Current location of the driver"
+        }
+      },
+      "required": [
+        "driverId",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "vehicle",
+        "rating",
+        "status"
+      ]
+    },
+    "trip": {
+      "type": "object",
+      "description": "Trip information",
+      "properties": {
+        "tripId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the trip"
+        },
+        "riderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the rider requesting the trip"
+        },
+        "driverId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the driver assigned to the trip"
+        },
+        "pickupLocation": {
+          "$ref": "#/definitions/location",
+          "description": "Pickup location"
+        },
+        "dropoffLocation": {
+          "$ref": "#/definitions/location",
+          "description": "Dropoff location"
+        },
+        "pickupAddress": {
+          "type": "string",
+          "description": "Address of the pickup location."
+        },
+        "dropoffAddress": {
+          "type": "string",
+          "description": "Address of the dropoff location."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "requested",
+            "accepted",
+            "driver_arrived",
+            "in_progress",
+            "completed",
+            "cancelled"
+          ],
+          "description": "Current status of the trip"
+        },
+        "fare": {
+          "type": "number",
+          "description": "Estimated or final fare for the trip",
+          "minimum": 0
+        },
+        "distance": {
+          "type": "number",
+          "description": "Distance of the trip in kilometers/miles",
+          "minimum": 0
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Estimated or actual duration of the trip in minutes",
+          "minimum": 0
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the trip"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End time of the trip"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Chosen payment method for the trip (can be masked)"
+        },
+        "vehicleType": {
+          "type": "string",
+          "enum": ["UberX", "UberXL", "Uber Black", "UberPool", "Comfort"],
+          "description": "Type of Uber vehicle requested"
+        }
+      },
+      "required": [
+        "tripId",
+        "riderId",
+        "pickupLocation",
+        "dropoffLocation",
+        "pickupAddress",
+        "dropoffAddress",
+        "status"
+      ]
+    },
+    "rideRequest": {
+      "type": "object",
+      "description": "Ride request parameters",
+      "properties": {
+        "riderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the rider requesting the ride"
+        },
+        "pickupLocation": {
+          "$ref": "#/definitions/location",
+          "description": "Pickup location"
+        },
+        "dropoffLocation": {
+          "$ref": "#/definitions/location",
+          "description": "Dropoff location"
+        },
+        "pickupAddress": {
+          "type": "string",
+          "description": "Address of the pickup location."
+        },
+        "dropoffAddress": {
+          "type": "string",
+          "description": "Address of the dropoff location."
+        },
+        "vehicleType": {
+          "type": "string",
+          "enum": ["UberX", "UberXL", "Uber Black", "UberPool", "Comfort"],
+          "description": "Type of Uber vehicle requested"
+        }
+      },
+      "required": [
+        "riderId",
+        "pickupLocation",
+        "dropoffLocation",
+        "pickupAddress",
+        "dropoffAddress",
+        "vehicleType"
+      ]
+    }
+  },
+  "definitions": {
+    "location": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "float",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "Latitude coordinate"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "Longitude coordinate"
+        }
+      },
+      "required": [
+        "latitude",
+        "longitude"
+      ]
+    }
+  }
+}

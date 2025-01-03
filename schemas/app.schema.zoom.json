@@ -1,0 +1,250 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Zoom App",
+  "description": "JSON Schema for a Zoom App",
+  "type": "object",
+  "properties": {
+    "app_name": {
+      "type": "string",
+      "description": "Name of the Zoom App",
+      "minLength": 3,
+      "maxLength": 64
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of the Zoom App",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the Zoom App",
+      "maxLength": 512
+    },
+    "scopes": {
+      "type": "array",
+      "description": "OAuth scopes required by the app",
+      "items": {
+        "type": "string",
+        "enum": [
+          "user:read",
+          "user:write",
+          "meeting:read",
+          "meeting:write",
+          "recording:read",
+          "recording:write",
+          "webinar:read",
+          "webinar:write",
+          "report:read",
+          "account:read",
+          "account:write",
+          "dashboard_meetings:read",
+          "dashboard_webinars:read",
+          "chat:write:admin",
+          "chat:read",
+          "chat:write",
+          "chat_contact:read",
+          "chat_contact:write",
+          "chat_channel:read",
+          "chat_channel:write",
+          "phone:read",
+          "phone:write",
+          "contact_center:read",
+          "contact_center:write",
+          "im:bot",
+          "im:chat",
+          "room:read",
+          "room:write"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "event_subscriptions": {
+      "type": "object",
+      "description": "Event subscriptions for webhooks",
+      "properties": {
+        "endpoint_url": {
+          "type": "string",
+          "description": "URL to receive event notifications",
+          "format": "url"
+        },
+        "events": {
+          "type": "array",
+          "description": "List of events to subscribe to",
+          "items": {
+            "type": "string",
+            "enum": [
+              "meeting.started",
+              "meeting.ended",
+              "meeting.participant_joined",
+              "meeting.participant_left",
+              "meeting.sharing_started",
+              "meeting.sharing_ended",
+              "meeting.recording_started",
+              "meeting.recording_completed",
+              "meeting.created",
+              "meeting.deleted",
+              "meeting.updated",
+              "meeting.registration_created",
+              "meeting.registration_approved",
+              "meeting.registration_denied",
+              "meeting.registration_cancelled",
+              "webinar.started",
+              "webinar.ended",
+              "webinar.participant_joined",
+              "webinar.participant_left",
+              "webinar.sharing_started",
+              "webinar.sharing_ended",
+              "webinar.created",
+              "webinar.deleted",
+              "webinar.updated",
+              "webinar.registration_created",
+              "webinar.registration_approved",
+              "webinar.registration_denied",
+              "webinar.registration_cancelled",
+              "user.created",
+              "user.updated",
+              "user.deleted",
+              "user.activated",
+              "user.deactivated",
+              "user.presence_status_updated",
+              "user.settings_updated",
+              "recording.started",
+              "recording.completed",
+              "recording.deleted",
+              "recording.trashed",
+              "recording.recovered",
+              "recording.transcript_completed",
+              "chat_message.sent",
+              "chat_message.updated",
+              "chat_message.deleted",
+              "chat_channel.created",
+              "chat_channel.updated",
+              "chat_channel.deleted",
+              "chat_channel.member_added",
+              "chat_channel.member_removed",
+              "phone.caller_connected",
+              "phone.caller_disconnected",
+              "phone.call_recording_completed",
+              "contact_center.engagement_started",
+              "contact_center.engagement_ended",
+              "contact_center.engagement_transferred",
+              "contact_center.engagement_recording_started",
+              "contact_center.engagement_recording_completed"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "endpoint_url",
+        "events"
+      ]
+    },
+    "redirect_urls": {
+      "type": "array",
+      "description": "Allowed redirect URLs for OAuth flow",
+      "items": {
+        "type": "string",
+        "format": "url"
+      },
+      "uniqueItems": true
+    },
+    "home_url": {
+      "type": "string",
+      "description": "Home URL of the Zoom App",
+      "format": "url"
+    },
+    "privacy_policy_url": {
+      "type": "string",
+      "description": "Privacy policy URL of the Zoom App",
+      "format": "url"
+    },
+    "terms_of_use_url": {
+      "type": "string",
+      "description": "Terms of Use URL of the Zoom App",
+      "format": "url"
+    },
+    "support_url": {
+      "type": "string",
+      "description": "Support URL for the Zoom App",
+      "format": "url"
+    },
+    "installation_url": {
+      "type": "string",
+      "description": "URL for installing the Zoom App",
+      "format": "url"
+    },
+    "deauthorization_notification": {
+      "type": "object",
+      "description": "Deauthorization notification settings",
+      "properties": {
+        "endpoint_url": {
+          "type": "string",
+          "description": "URL to receive deauthorization notifications",
+          "format": "url"
+        }
+      },
+      "required": [
+        "endpoint_url"
+      ]
+    },
+    "app_credentials": {
+      "type": "object",
+      "description": "App Credentials, these are sensitive and should not be returned in all responses",
+      "properties": {
+        "client_id": {
+          "type": "string",
+          "description": "OAuth Client ID"
+        },
+        "client_secret": {
+          "type": "string",
+          "description": "OAuth Client Secret"
+        },
+        "verification_token": {
+          "type": "string",
+          "description": "Verification token for event subscriptions"
+        }
+      },
+      "required": [
+        "client_id",
+        "client_secret"
+      ]
+    },
+    "features": {
+      "type": "object",
+      "description": "Features the Zoom App utilizes",
+      "properties": {
+        "in_meeting": {
+          "type": "boolean",
+          "description": "Whether the app can be used within a meeting"
+        },
+        "standalone": {
+          "type": "boolean",
+          "description": "Whether the app can be used outside of a meeting"
+        },
+        "chat_bot": {
+          "type": "boolean",
+          "description": "Whether the app is a Chatbot"
+        },
+        "zoom_app_sdk":{
+          "type": "boolean",
+          "description": "Whether the app uses the Zoom Apps SDK"
+        },
+        "rest_api":{
+          "type": "boolean",
+          "description": "Whether the app uses the Zoom REST API"
+        },
+        "webhooks":{
+          "type": "boolean",
+          "description": "Whether the app uses webhooks"
+        }
+      }
+    }
+  },
+  "required": [
+    "app_name",
+    "version",
+    "description",
+    "scopes"
+  ]
+}

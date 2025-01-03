@@ -1,0 +1,255 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GiveSendGo App",
+  "description": "JSON Schema for a simplified GiveSendGo-like application.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "Unique identifier for the user",
+            "readOnly": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (hashed in a real application)",
+            "writeOnly": true
+          },
+          "first_name": {
+            "type": "string",
+            "description": "User's first name"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "User's last name"
+          },
+          "profile_picture_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to user's profile picture"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "first_name",
+          "last_name"
+        ]
+      }
+    },
+    "campaigns": {
+      "type": "array",
+      "description": "List of fundraising campaigns",
+      "items": {
+        "type": "object",
+        "properties": {
+          "campaign_id": {
+            "type": "integer",
+            "description": "Unique identifier for the campaign",
+            "readOnly": true
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user who created the campaign"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the campaign",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the campaign"
+          },
+          "goal_amount": {
+            "type": "number",
+            "format": "float",
+            "description": "Target amount to be raised",
+            "minimum": 0
+          },
+          "amount_raised": {
+            "type": "number",
+            "format": "float",
+            "description": "Current amount raised",
+            "minimum": 0,
+            "readOnly": true
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the campaign (e.g., Medical, Memorial, Mission)",
+            "enum": [
+              "Medical",
+              "Memorial",
+              "Mission",
+              "Emergency",
+              "Nonprofit",
+              "Education",
+              "Adoption",
+              "Other"
+            ]
+          },
+          "location": {
+            "type": "string",
+            "description": "Location related to the campaign (e.g., city, state)"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the campaign was started",
+            "readOnly": true
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the campaign is scheduled to end (optional)"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the main image for the campaign"
+          },
+          "video_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to a video related to the campaign (optional)"
+          },
+          "updates": {
+            "type": "array",
+            "description": "List of updates for the campaign",
+            "items": {
+              "type": "object",
+              "properties": {
+                "update_id": {
+                  "type": "integer",
+                  "description": "Unique identifier for the update",
+                  "readOnly": true
+                },
+                "campaign_id": {
+                  "type": "integer",
+                  "description": "Campaign that this update belongs to",
+                  "readOnly": true
+                },
+                "user_id": {
+                  "type": "integer",
+                  "description": "ID of user that posted the update",
+                  "readOnly": true
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title of the update",
+                  "maxLength": 255
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Content of the update"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time when the update was created",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "campaign_id",
+                "user_id",
+                "title",
+                "content"
+              ]
+            }
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Indicates if the campaign is currently active",
+            "default": true
+          }
+        },
+        "required": [
+          "user_id",
+          "title",
+          "description",
+          "goal_amount",
+          "category"
+        ]
+      }
+    },
+    "donations": {
+      "type": "array",
+      "description": "List of donations made",
+      "items": {
+        "type": "object",
+        "properties": {
+          "donation_id": {
+            "type": "integer",
+            "description": "Unique identifier for the donation",
+            "readOnly": true
+          },
+          "campaign_id": {
+            "type": "integer",
+            "description": "ID of the campaign being donated to"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user making the donation (optional if anonymous)"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "Amount donated",
+            "minimum": 0.01
+          },
+          "donation_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the donation was made",
+            "readOnly": true
+          },
+          "is_anonymous": {
+            "type": "boolean",
+            "description": "Indicates if the donation is anonymous",
+            "default": false
+          },
+          "comment": {
+            "type": "string",
+            "description": "Optional comment from the donor"
+          },
+          "payment_method": {
+            "type": "string",
+            "description": "Information about the payment method used (e.g., Credit Card, PayPal)",
+            "enum": [
+              "Credit Card",
+              "Debit Card",
+              "PayPal",
+              "Other"
+            ]
+          },
+          "transaction_id": {
+            "type": "string",
+            "description": "Unique identifier for transaction provided by the payment processor"
+          }
+        },
+        "required": [
+          "campaign_id",
+          "amount",
+          "payment_method",
+          "transaction_id"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "campaigns",
+    "donations"
+  ]
+}

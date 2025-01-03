@@ -1,0 +1,361 @@
+{
+  "type": "object",
+  "title": "OfferUp App Schema",
+  "description": "A JSON Schema representing the core data structures of the OfferUp app.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of registered users.",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "items": {
+      "type": "array",
+      "description": "List of items for sale.",
+      "items": {
+        "$ref": "#/definitions/Item"
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "List of item categories.",
+      "items": {
+        "$ref": "#/definitions/Category"
+      }
+    },
+    "messages": {
+      "type": "array",
+      "description": "List of messages exchanged between users.",
+      "items": {
+        "$ref": "#/definitions/Message"
+      }
+    },
+    "transactions": {
+      "type": "array",
+      "description": "Records of completed transactions",
+      "items": {
+        "$ref": "#/definitions/Transaction"
+      }
+    }
+
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "User's display name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (hashed and salted in a real implementation)."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "User's phone number."
+        },
+        "location": {
+          "$ref": "#/definitions/Location",
+          "description": "User's location for local listings."
+        },
+        "profilePicture": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "rating": {
+          "type": "number",
+          "description": "Average user rating (e.g., 4.5 out of 5)",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "joinDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the user joined."
+        },
+        "isVerified": {
+          "type": "boolean",
+          "description": "Indicates whether the user's identity has been verified."
+        }
+      },
+      "required": [
+        "userId",
+        "username",
+        "email",
+        "password"
+      ]
+    },
+    "Item": {
+      "type": "object",
+      "properties": {
+        "itemId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the item."
+        },
+        "sellerId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user selling the item."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title or name of the item."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the item."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price of the item.",
+          "minimum": 0
+        },
+        "condition": {
+          "type": "string",
+          "enum": [
+            "New",
+            "Like New",
+            "Good",
+            "Fair",
+            "Poor"
+          ],
+          "description": "Condition of the item."
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "ID of the category the item belongs to."
+        },
+        "photos": {
+          "type": "array",
+          "description": "List of URLs to photos of the item.",
+          "items": {
+            "type": "string",
+            "format": "URL"
+          }
+        },
+        "location": {
+          "$ref": "#/definitions/Location",
+          "description": "Location of the item."
+        },
+        "postDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the item was posted."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Available",
+            "Sold",
+            "Pending",
+            "Removed"
+          ],
+          "description": "Current status of the item"
+        },
+        "shippingAvailable": {
+          "type": "boolean",
+          "description": "Indicates whether shipping is available for this item."
+        },
+        "localPickupOnly": {
+          "type": "boolean",
+          "description": "Indicates whether this item is only available for local pickup."
+        }
+
+      },
+      "required": [
+        "itemId",
+        "sellerId",
+        "title",
+        "description",
+        "price",
+        "condition",
+        "categoryId",
+        "photos",
+        "location",
+        "postDate"
+      ]
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "categoryId": {
+          "type": "string",
+          "description": "Unique identifier for the category."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the category (e.g., 'Electronics', 'Furniture')."
+        },
+        "parentCategoryId": {
+          "type": ["string", "null"],
+          "description": "ID of the parent category, if it's a subcategory. Null if it's a top-level category."
+        }
+      },
+      "required": [
+        "categoryId",
+        "name"
+      ]
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Latitude of the location."
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Longitude of the location."
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "Postal or ZIP code of the location."
+        },
+        "city": {
+          "type": "string",
+          "description": "City name."
+        },
+        "state": {
+          "type": "string",
+          "description": "State or province name."
+        }
+
+      },
+      "required": [
+        "latitude",
+        "longitude"
+      ]
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "messageId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the message."
+        },
+        "senderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sent the message."
+        },
+        "receiverId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who received the message."
+        },
+        "itemId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the item related to the conversation."
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the message."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the message was sent."
+        },
+        "isRead": {
+          "type": "boolean",
+          "description": "Indicates whether the message has been read by the receiver."
+        }
+      },
+      "required": [
+        "messageId",
+        "senderId",
+        "receiverId",
+        "itemId",
+        "content",
+        "timestamp"
+      ]
+    },
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the transaction."
+        },
+        "buyerId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who bought the item."
+        },
+        "sellerId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sold the item."
+        },
+        "itemId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the item that was sold."
+        },
+        "transactionDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the transaction took place."
+        },
+        "finalPrice": {
+          "type": "number",
+          "format": "float",
+          "description": "Final agreed-upon price of the item.",
+          "minimum": 0
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Method of payment used (e.g., 'Cash', 'OfferUp Payments')."
+        },
+        "shippingInfo": {
+          "type": "object",
+          "description": "Details about shipping if applicable.",
+          "properties": {
+            "trackingNumber": {
+              "type": "string",
+              "description": "Tracking number of the shipment"
+            },
+            "carrier": {
+              "type": "string",
+              "description": "Name of the shipping carrier"
+            },
+            "shippingCost": {
+              "type": "number",
+              "format": "float",
+              "description": "Cost of shipping",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "required": [
+        "transactionId",
+        "buyerId",
+        "sellerId",
+        "itemId",
+        "transactionDate",
+        "finalPrice"
+      ]
+    }
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BitChute",
+  "description": "JSON Schema for BitChute data structures",
+  "definitions": {
+    "video": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the video (often a hash or URL part)",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the video",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the video"
+        },
+        "channel": {
+          "type": "string",
+          "description": "Name or ID of the channel that uploaded the video",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "channel_id": {
+          "type": "string",
+          "description": "Unique identifier for the channel that uploaded the video",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the video in seconds",
+          "minimum": 0
+        },
+        "upload_date": {
+          "type": "string",
+          "description": "Date and time the video was uploaded",
+          "format": "date-time"
+        },
+        "view_count": {
+          "type": "integer",
+          "description": "Number of times the video has been viewed",
+          "minimum": 0
+        },
+        "like_count": {
+          "type": "integer",
+          "description": "Number of likes the video has received (can be inaccurate)",
+          "minimum": 0
+        },
+        "dislike_count": {
+          "type": "integer",
+          "description": "Number of dislikes the video has received (can be inaccurate)",
+          "minimum": 0
+        },
+        "thumbnail_url": {
+          "type": "string",
+          "description": "URL of the video's thumbnail image",
+          "format": "URL"
+        },
+        "video_url": {
+          "type": "string",
+          "description": "URL of the video file (might be a torrent or direct link)",
+          "format": "URL"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Keywords or tags associated with the video",
+          "items": {
+            "type": "string"
+          }
+        },
+        "magnet_link": {
+          "type": "string",
+          "description": "Magnet URI for the video torrent, if available",
+          "format": "URL"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category the video belongs to (e.g., News, Gaming)"
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the video",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "channel",
+        "upload_date",
+        "video_url"
+      ]
+    },
+    "channel": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the channel (often a URL part or name)",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the channel",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the channel"
+        },
+        "banner_url": {
+          "type": "string",
+          "description": "URL of the channel's banner image",
+          "format": "URL"
+        },
+        "avatar_url": {
+          "type": "string",
+          "description": "URL of the channel's avatar/profile image",
+          "format": "URL"
+        },
+        "subscriber_count": {
+          "type": "integer",
+          "description": "Approximate number of subscribers (often not publicly available)",
+          "minimum": 0
+        },
+        "videos": {
+          "type": "array",
+          "description": "List of videos uploaded by the channel",
+          "items": {
+            "$ref": "#/definitions/video"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "Name or identifier of the comment author"
+        },
+        "text": {
+          "type": "string",
+          "description": "The content of the comment"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Date and time the comment was posted",
+          "format": "date-time"
+        },
+        "like_count": {
+          "type": "integer",
+          "description": "Number of likes on the comment (if available)",
+          "minimum": 0
+        },
+        "replies": {
+          "type": "array",
+          "description": "List of replies to this comment",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      },
+      "required": [
+        "author",
+        "text",
+        "timestamp"
+      ]
+    },
+    "search_result": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of search result (e.g., 'video', 'channel')",
+          "enum": [
+            "video",
+            "channel"
+          ]
+        },
+        "data": {
+          "type": "object",
+          "description": "The actual search result data",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/video"
+            },
+            {
+              "$ref": "#/definitions/channel"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "data"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "videos": {
+      "type": "array",
+      "description": "List of videos",
+      "items": {
+        "$ref": "#/definitions/video"
+      }
+    },
+    "channels": {
+      "type": "array",
+      "description": "List of channels",
+      "items": {
+        "$ref": "#/definitions/channel"
+      }
+    },
+    "search_results": {
+      "type": "array",
+      "description": "List of search results",
+      "items": {
+        "$ref": "#/definitions/search_result"
+      }
+    },
+    "trending": {
+      "type": "array",
+      "description": "List of currently trending videos",
+      "items": {
+        "$ref": "#/definitions/video"
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "List of available video categories",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

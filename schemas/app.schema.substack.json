@@ -1,0 +1,312 @@
+{
+  "type": "object",
+  "title": "Substack App Schema",
+  "description": "JSON Schema for a simplified representation of the Substack application's data structure.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users on the platform.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the user."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address."
+          },
+          "name": {
+            "type": "string",
+            "description": "User's full name."
+          },
+          "username": {
+            "type": "string",
+            "description": "User's chosen username (may be used in publication URLs)."
+          },
+          "bio": {
+            "type": "string",
+            "description": "Short biographical information about the user.",
+            "maxLength": 500
+          },
+          "profilePictureUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the user's profile picture."
+          },
+          "publications": {
+            "type": "array",
+            "description": "List of publications owned by the user.",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of a publication owned by this user."
+            }
+          },
+          "subscriptions": {
+            "type": "array",
+            "description": "List of publications the user is subscribed to.",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of a publication the user is subscribed to."
+            }
+          },
+          "paymentInformation": {
+            "type": "object",
+            "description": "Payment information for paid subscriptions (if applicable).",
+            "properties": {
+              "paymentMethod": {
+                "type": "string",
+                "description": "e.g., 'stripe', 'paypal'"
+              },
+              "last4": {
+                "type": "string",
+                "description": "Last 4 digits of card"
+              },
+              "stripeCustomerId": {
+                "type": "string",
+                "description": "Id of the customer in the payment provider"
+              }
+            },
+            "required": ["paymentMethod"]
+          }
+        },
+        "required": [
+          "userId",
+          "email",
+          "username"
+        ]
+      }
+    },
+    "publications": {
+      "type": "array",
+      "description": "List of publications on the platform.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "publicationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the publication."
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the user who owns the publication."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the publication."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the publication.",
+            "maxLength": 1000
+          },
+          "logoUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the publication's logo."
+          },
+          "bannerImageUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to a larger banner image for the publication."
+          },
+          "tags": {
+            "type": "array",
+            "description": "List of tags associated with the publication.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subscriptionPlans": {
+            "type": "array",
+            "description": "Subscription plans offered by the publication.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "planId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the subscription plan."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the plan (e.g., 'Monthly', 'Annual', 'Founding Member')."
+                },
+                "price": {
+                  "type": "number",
+                  "format": "float",
+                  "description": "Price of the plan in the chosen currency.",
+                  "minimum": 0
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency of the plan (e.g., 'USD', 'EUR').",
+                  "pattern": "^[A-Z]{3}$"
+                },
+                "interval": {
+                  "type": "string",
+                  "enum": [
+                    "month",
+                    "year"
+                  ],
+                  "description": "Billing interval for the plan."
+                },
+                "benefits": {
+                  "type": "array",
+                  "description": "List of benefits included in the plan.",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "planId",
+                "name",
+                "price",
+                "currency",
+                "interval"
+              ]
+            }
+          },
+          "posts": {
+            "type": "array",
+            "description": "List of posts in the publication.",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of a post in this publication."
+            }
+          }
+        },
+        "required": [
+          "publicationId",
+          "ownerId",
+          "name",
+          "description"
+        ]
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of posts on the platform.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the post."
+          },
+          "publicationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the publication the post belongs to."
+          },
+          "authorId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the user who authored the post."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the post."
+          },
+          "subtitle": {
+            "type": "string",
+            "description": "Subtitle of the post (optional)."
+          },
+          "content": {
+            "type": "string",
+            "description": "Content of the post (can be HTML or Markdown).",
+            "maxLength": 200000
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the post was published."
+          },
+          "isFree": {
+            "type": "boolean",
+            "description": "Whether the post is free or requires a subscription."
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to a cover image for the post."
+          },
+          "likes": {
+            "type": "integer",
+            "description": "Number of likes the post has received.",
+            "minimum": 0
+          },
+          "comments": {
+            "type": "array",
+            "description": "List of comments on the post.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "commentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique ID for the comment."
+                },
+                "authorId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "ID of the user who made the comment."
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Content of the comment.",
+                  "maxLength": 5000
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time the comment was created."
+                },
+                "likes": {
+                  "type": "integer",
+                  "description": "Number of likes the comment has received.",
+                  "minimum": 0
+                },
+                "parentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Id of the parent comment, it will be null if it is not a reply"
+                }
+              },
+              "required": [
+                "commentId",
+                "authorId",
+                "content",
+                "createdAt"
+              ]
+            }
+          }
+        },
+        "required": [
+          "postId",
+          "publicationId",
+          "authorId",
+          "title",
+          "content",
+          "publishedAt",
+          "isFree"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "publications",
+    "posts"
+  ]
+}

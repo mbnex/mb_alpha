@@ -1,0 +1,605 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Instacart App Schema",
+  "description": "JSON Schema for the core data structures of the Instacart app.",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "object",
+      "description": "User profile information.",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "description": "Unique identifier for the user.",
+          "readOnly": true
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "User's phone number (e.g., +15551234567)."
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (hashed).",
+          "writeOnly": true
+        },
+        "addresses": {
+          "type": "array",
+          "description": "List of user's saved addresses.",
+          "items": {
+            "$ref": "#/definitions/address"
+          }
+        },
+        "paymentMethods": {
+          "type": "array",
+          "description": "List of user's saved payment methods.",
+          "items": {
+            "$ref": "#/definitions/paymentMethod"
+          }
+        },
+        "orderHistory": {
+          "type": "array",
+          "description": "List of user's past orders.",
+          "items": {
+            "$ref": "#/definitions/order"
+          },
+          "readOnly": true
+        }
+      },
+      "required": [
+        "firstName",
+        "lastName",
+        "email",
+        "password"
+      ]
+    },
+    "store": {
+      "type": "object",
+      "description": "Store information.",
+      "properties": {
+        "storeId": {
+          "type": "integer",
+          "description": "Unique identifier for the store.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the store."
+        },
+        "logoUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the store's logo."
+        },
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "departments": {
+          "type": "array",
+          "description": "List of departments in the store.",
+          "items": {
+            "$ref": "#/definitions/department"
+          }
+        },
+        "deliveryFee": {
+          "type": "number",
+          "format": "float",
+          "description": "Delivery fee for this store.",
+          "minimum": 0
+        },
+        "minimumOrderAmount": {
+          "type": "number",
+          "format": "float",
+          "description": "Minimum order amount for free delivery.",
+          "minimum": 0
+        },
+        "estimatedDeliveryTime": {
+          "type": "string",
+          "description": "Estimated delivery time (e.g., 30-45 minutes)."
+        }
+      },
+      "required": [
+        "name",
+        "address"
+      ]
+    },
+    "department": {
+      "type": "object",
+      "description": "Department within a store.",
+      "properties": {
+        "departmentId": {
+          "type": "integer",
+          "description": "Unique identifier for the department.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the department (e.g., Produce, Dairy & Eggs)."
+        },
+        "aisles": {
+          "type": "array",
+          "description": "List of aisles within the department",
+          "items": {
+            "$ref": "#/definitions/aisle"
+          }
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "aisle": {
+      "type": "object",
+      "description": "Aisle within a store department",
+      "properties": {
+        "aisleId": {
+          "type": "integer",
+          "description": "Unique identifier for the aisle",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the aisle (e.g. Fresh Vegetables, Milk)"
+        },
+        "products": {
+          "type": "array",
+          "description": "List of products in the aisle",
+          "items": {
+            "$ref": "#/definitions/product"
+          }
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "product": {
+      "type": "object",
+      "description": "Product information.",
+      "properties": {
+        "productId": {
+          "type": "integer",
+          "description": "Unique identifier for the product.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "brand": {
+          "type": "string",
+          "description": "Brand of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "Product description."
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the product image."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price of the product.",
+          "minimum": 0
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement (e.g., oz, lb, each)."
+        },
+        "size": {
+          "type": "string",
+          "description": "Size or weight of the product (e.g. 12oz, 2 lbs)"
+        },
+        "stock": {
+          "type": "integer",
+          "description": "Number in stock",
+          "minimum": 0
+        },
+        "storeId": {
+          "type": "integer",
+          "description": "ID of the store this product belongs to"
+        },
+        "promotions": {
+          "type": "array",
+          "description": "List of active promotions for this product.",
+          "items": {
+            "$ref": "#/definitions/promotion"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "price",
+        "storeId"
+      ]
+    },
+    "cart": {
+      "type": "object",
+      "description": "User's shopping cart.",
+      "properties": {
+        "cartId": {
+          "type": "integer",
+          "description": "Unique identifier for the cart.",
+          "readOnly": true
+        },
+        "userId": {
+          "type": "integer",
+          "description": "ID of the user the cart belongs to."
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items in the cart.",
+          "items": {
+            "$ref": "#/definitions/cartItem"
+          }
+        },
+        "storeId": {
+          "type": "integer",
+          "description": "ID of the store the cart is for."
+        },
+        "subtotal": {
+          "type": "number",
+          "format": "float",
+          "description": "Subtotal of the items in the cart.",
+          "minimum": 0,
+          "readOnly": true
+        },
+        "deliveryFee": {
+          "type": "number",
+          "format": "float",
+          "description": "Delivery fee.",
+          "minimum": 0,
+          "readOnly": true
+        },
+        "tax": {
+          "type": "number",
+          "format": "float",
+          "description": "Tax amount.",
+          "minimum": 0,
+          "readOnly": true
+        },
+        "total": {
+          "type": "number",
+          "format": "float",
+          "description": "Total cost of the cart.",
+          "minimum": 0,
+          "readOnly": true
+        }
+      },
+      "required": [
+        "userId",
+        "storeId"
+      ]
+    },
+    "cartItem": {
+      "type": "object",
+      "description": "An item in the shopping cart.",
+      "properties": {
+        "productId": {
+          "type": "integer",
+          "description": "ID of the product."
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Quantity of the product in the cart.",
+          "minimum": 1
+        },
+        "productDetails": {
+          "$ref": "#/definitions/product"
+        }
+      },
+      "required": [
+        "productId",
+        "quantity"
+      ]
+    },
+    "order": {
+      "type": "object",
+      "description": "Order information.",
+      "properties": {
+        "orderId": {
+          "type": "integer",
+          "description": "Unique identifier for the order.",
+          "readOnly": true
+        },
+        "userId": {
+          "type": "integer",
+          "description": "ID of the user who placed the order."
+        },
+        "storeId": {
+          "type": "integer",
+          "description": "ID of the store the order is from."
+        },
+        "storeDetails": {
+          "$ref": "#/definitions/store"
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items in the order.",
+          "items": {
+            "$ref": "#/definitions/cartItem"
+          }
+        },
+        "orderDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the order was placed.",
+          "readOnly": true
+        },
+        "deliveryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the order is scheduled for delivery."
+        },
+        "deliveryAddress": {
+          "$ref": "#/definitions/address"
+        },
+        "paymentMethod": {
+          "$ref": "#/definitions/paymentMethod"
+        },
+        "subtotal": {
+          "type": "number",
+          "format": "float",
+          "description": "Subtotal of the order.",
+          "minimum": 0
+        },
+        "deliveryFee": {
+          "type": "number",
+          "format": "float",
+          "description": "Delivery fee.",
+          "minimum": 0
+        },
+        "tax": {
+          "type": "number",
+          "format": "float",
+          "description": "Tax amount.",
+          "minimum": 0
+        },
+        "total": {
+          "type": "number",
+          "format": "float",
+          "description": "Total cost of the order.",
+          "minimum": 0
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the order (e.g., placed, processing, out for delivery, delivered, canceled).",
+          "enum": [
+            "placed",
+            "processing",
+            "out for delivery",
+            "delivered",
+            "canceled"
+          ]
+        },
+        "shopper": {
+          "$ref": "#/definitions/shopper",
+          "description": "Details of the shopper assigned to the order, if any"
+        },
+        "specialInstructions": {
+          "type": "string",
+          "description": "Special instructions for the shopper or delivery person."
+        }
+      },
+      "required": [
+        "userId",
+        "storeId",
+        "items",
+        "deliveryAddress",
+        "paymentMethod",
+        "subtotal",
+        "deliveryFee",
+        "tax",
+        "total"
+      ]
+    },
+    "promotion": {
+      "type": "object",
+      "description": "Promotion or discount information.",
+      "properties": {
+        "promotionId": {
+          "type": "integer",
+          "description": "Unique identifier for the promotion.",
+          "readOnly": true
+        },
+        "code": {
+          "type": "string",
+          "description": "Promotion code (if applicable)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the promotion."
+        },
+        "discountType": {
+          "type": "string",
+          "description": "Type of discount (e.g., percentage, fixed amount).",
+          "enum": [
+            "percentage",
+            "fixed"
+          ]
+        },
+        "discountValue": {
+          "type": "number",
+          "format": "float",
+          "description": "Value of the discount (e.g., 10 for 10% or 5 for $5 off).",
+          "minimum": 0
+        },
+        "minimumPurchase": {
+          "type": "number",
+          "format": "float",
+          "description": "Minimum purchase amount required to apply the promotion.",
+          "minimum": 0
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the promotion."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the promotion."
+        },
+        "applicableTo": {
+          "type": "string",
+          "description": "Specifies what the promotion applies to (e.g., all products, specific product, specific category).",
+          "enum": [
+            "all",
+            "product",
+            "category"
+          ]
+        },
+        "applicableProductId": {
+          "type": "integer",
+          "description": "ID of the product the promotion applies to, if applicable."
+        },
+        "applicableCategory": {
+          "type": "string",
+          "description": "Name of the category the promotion applies to, if applicable."
+        }
+      },
+      "required": [
+        "description",
+        "discountType",
+        "discountValue"
+      ]
+    },
+    "shopper": {
+      "type": "object",
+      "description": "Information about an Instacart shopper.",
+      "properties": {
+        "shopperId": {
+          "type": "integer",
+          "description": "Unique identifier for the shopper.",
+          "readOnly": true
+        },
+        "firstName": {
+          "type": "string",
+          "description": "Shopper's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Shopper's last name."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Shopper's phone number."
+        },
+        "rating": {
+          "type": "number",
+          "format": "float",
+          "description": "Shopper's average rating.",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "vehicleType": {
+          "type": "string",
+          "description": "Type of vehicle the shopper uses (e.g., car, bike, scooter)."
+        }
+      },
+      "required": [
+        "firstName",
+        "lastName",
+        "phoneNumber"
+      ]
+    }
+  },
+  "definitions": {
+    "address": {
+      "type": "object",
+      "description": "Address information.",
+      "properties": {
+        "addressId": {
+          "type": "integer",
+          "description": "Unique address identifier"
+        },
+        "streetAddress": {
+          "type": "string",
+          "description": "Street address."
+        },
+        "streetAddress2": {
+          "type": "string",
+          "description": "Apartment, suite, or unit number."
+        },
+        "city": {
+          "type": "string",
+          "description": "City."
+        },
+        "state": {
+          "type": "string",
+          "description": "State (e.g., CA, NY)."
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "ZIP code."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country (e.g., US, Canada)."
+        },
+        "latitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Latitude coordinate."
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Longitude coordinate."
+        }
+      },
+      "required": [
+        "streetAddress",
+        "city",
+        "state",
+        "zipCode"
+      ]
+    },
+    "paymentMethod": {
+      "type": "object",
+      "description": "Payment method information.",
+      "properties": {
+        "paymentMethodId": {
+          "type": "integer",
+          "description": "Unique identifier of payment method"
+        },
+        "cardType": {
+          "type": "string",
+          "description": "Type of card (e.g., Visa, Mastercard, Amex)."
+        },
+        "lastFourDigits": {
+          "type": "string",
+          "description": "Last four digits of the card number.",
+          "pattern": "^\\d{4}$"
+        },
+        "expirationDate": {
+          "type": "string",
+          "description": "Expiration date (MM/YY)."
+        },
+        "billingAddress": {
+          "$ref": "#/definitions/address"
+        }
+      },
+      "required": [
+        "cardType",
+        "lastFourDigits",
+        "expirationDate"
+      ]
+    }
+  }
+}

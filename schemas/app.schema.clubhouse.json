@@ -1,0 +1,399 @@
+{
+  "type": "object",
+  "title": "Clubhouse App Schema",
+  "description": "JSON Schema representing the core data structures of the Clubhouse app.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of all users in the app.",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "clubs": {
+      "type": "array",
+      "description": "List of all clubs in the app.",
+      "items": {
+        "$ref": "#/definitions/Club"
+      }
+    },
+    "rooms": {
+      "type": "array",
+      "description": "List of all rooms (active and past) in the app.",
+      "items": {
+        "$ref": "#/definitions/Room"
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "List of scheduled events.",
+      "items": {
+        "$ref": "#/definitions/Event"
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "description": "Represents a user profile.",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "User's chosen username.",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name.",
+          "maxLength": 100
+        },
+        "photo_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "bio": {
+          "type": "string",
+          "description": "Short biography of the user.",
+          "maxLength": 255
+        },
+        "twitter": {
+          "type": "string",
+          "description": "User's Twitter handle (optional)."
+        },
+        "instagram": {
+          "type": "string",
+          "description": "User's Instagram handle (optional)."
+        },
+        "num_followers": {
+          "type": "integer",
+          "description": "Number of followers the user has."
+        },
+        "num_following": {
+          "type": "integer",
+          "description": "Number of users the user is following."
+        },
+        "time_created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the user account was created."
+        },
+        "invited_by_user_profile": {
+          "type": "object",
+          "description": "Basic info about the user who invited this user (optional, as later invites could be removed).",
+          "properties": {
+            "user_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string"
+            },
+            "photo_url": {
+              "type": "string",
+              "format": "URL"
+            }
+          },
+          "required": [
+            "user_id",
+            "name"
+          ]
+        },
+        "is_blocked_by_network": {
+          "type": "boolean",
+          "description": "Whether the user has been blocked by the network"
+        },
+        "is_admin":{
+          "type": "boolean",
+          "description": "Whether the user has admin permissions"
+        }
+      },
+      "required": [
+        "user_id",
+        "username",
+        "name",
+        "time_created"
+      ]
+    },
+    "Club": {
+      "type": "object",
+      "description": "Represents a club within the app.",
+      "properties": {
+        "club_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the club."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the club.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the club.",
+          "maxLength": 500
+        },
+        "photo_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the club's photo."
+        },
+        "num_members": {
+          "type": "integer",
+          "description": "Number of members in the club."
+        },
+        "num_followers": {
+          "type": "integer",
+          "description": "Number of followers of the club."
+        },
+        "is_follow_allowed": {
+          "type": "boolean",
+          "description": "Whether users can follow the club."
+        },
+        "is_membership_private": {
+          "type": "boolean",
+          "description": "Whether the club's member list is private."
+        },
+        "is_community": {
+          "type": "boolean",
+          "description": "Whether the club is a community type"
+        },
+        "rules": {
+          "type": "array",
+          "description": "List of club rules",
+          "items": {
+            "type": "object",
+            "properties":{
+              "title":{
+                "type": "string"
+              },
+              "desc":{
+                "type": "string"
+              }
+            }
+          }
+        },
+        "member_ids": {
+          "type": "array",
+          "description": "List of user IDs who are members of the club.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "admin_ids": {
+          "type": "array",
+          "description": "List of user IDs who are admins of the club.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "club_id",
+        "name",
+        "description"
+      ]
+    },
+    "Room": {
+      "type": "object",
+      "description": "Represents a live audio room.",
+      "properties": {
+        "room_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the room."
+        },
+        "club": {
+          "type": "object",
+          "description": "The club associated with the room (optional).",
+          "properties": {
+            "club_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string"
+            },
+            "is_follow_allowed": {
+              "type": "boolean"
+            },
+            "is_membership_private": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "club_id",
+            "name"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "description": "Title/topic of the room."
+        },
+        "is_private": {
+          "type": "boolean",
+          "description": "Whether the room is private."
+        },
+        "is_social_mode": {
+          "type": "boolean",
+          "description": "Whether the room is in social mode"
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to join the room."
+        },
+        "feature_flags": {
+          "type": "array",
+          "description": "List of features available in the room",
+          "items": {
+            "type": "string"
+          }
+        },
+        "time_created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the room was created."
+        },
+        "users": {
+          "type": "array",
+          "description": "List of users currently in the room.",
+          "items": {
+            "$ref": "#/definitions/RoomUser"
+          }
+        },
+        "creator_user_profile_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User ID of the room creator"
+        },
+        "is_expired": {
+          "type": "boolean",
+          "description": "Indicates whether the room has ended"
+        }
+      },
+      "required": [
+        "room_id",
+        "name",
+        "time_created"
+      ]
+    },
+    "RoomUser": {
+      "type": "object",
+      "description": "Represents a user within a room, including their role.",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name."
+        },
+        "photo_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "is_speaker": {
+          "type": "boolean",
+          "description": "Whether the user is currently a speaker."
+        },
+        "is_moderator": {
+          "type": "boolean",
+          "description": "Whether the user is a moderator in the room."
+        },
+        "time_joined_as_speaker": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the user joined as a speaker (optional)."
+        },
+        "is_new": {
+          "type": "boolean",
+          "description": "Whether the user is new in the platform"
+        },
+        "is_followed_by_speaker": {
+          "type": "boolean",
+          "description": "Whether the user is followed by a speaker"
+        },
+        "is_invited_as_speaker": {
+          "type": "boolean",
+          "description": "Whether the user has been invited to be a speaker"
+        }
+      },
+      "required": [
+        "user_id",
+        "name"
+      ]
+    },
+    "Event": {
+      "type": "object",
+      "description": "Represents a scheduled event.",
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the event."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name/title of the event."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event."
+        },
+        "time_start": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the event."
+        },
+        "club": {
+          "$ref": "#/definitions/Club",
+          "description": "The club hosting the event (optional)."
+        },
+        "hosts": {
+          "type": "array",
+          "description": "List of users who are hosts of the event.",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "is_expired": {
+          "type": "boolean",
+          "description": "Indicates whether the event has ended"
+        },
+        "is_member_only": {
+          "type": "boolean",
+          "description": "Whether the event is for club members only"
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the event page."
+        },
+        "channel": {
+          "type": "string",
+          "description": "Channel where the event will be held (room id)"
+        }
+      },
+      "required": [
+        "event_id",
+        "name",
+        "description",
+        "time_start"
+      ]
+    }
+  }
+}

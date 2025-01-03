@@ -1,0 +1,280 @@
+{
+  "type": "object",
+  "title": "Netflix",
+  "description": "JSON Schema for a simplified Netflix data model",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Netflix users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "description": "Unique identifier for the user",
+            "example": 12345
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (should be hashed in a real system)",
+            "example": "hashedpassword"
+          },
+          "subscriptionPlan": {
+            "type": "string",
+            "description": "Type of subscription plan",
+            "enum": [
+              "Basic",
+              "Standard",
+              "Premium"
+            ],
+            "example": "Premium"
+          },
+          "profiles": {
+            "type": "array",
+            "description": "Profiles associated with the user account",
+            "items": {
+              "type": "object",
+              "properties": {
+                "profileId": {
+                  "type": "integer",
+                  "description": "Unique identifier for the profile",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the profile",
+                  "example": "John"
+                },
+                "isKids": {
+                  "type": "boolean",
+                  "description": "Indicates if the profile is a kids profile",
+                  "example": false
+                },
+                "avatarUrl": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the profile's avatar image"
+                },
+                "watchHistory": {
+                  "type": "array",
+                  "description": "List of titles watched by the profile",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "titleId": {
+                        "type": "integer",
+                        "description": "ID of the title watched",
+                        "example": 987
+                      },
+                      "watchDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time when the title was watched"
+                      },
+                      "progress": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Watch progress (0.0 - 1.0, where 1.0 is fully watched)",
+                        "example": 0.75
+                      }
+                    },
+                    "required": [
+                      "titleId",
+                      "watchDate"
+                    ]
+                  }
+                },
+                "myList": {
+                  "type": "array",
+                  "description": "List of titles added to 'My List'",
+                  "items": {
+                    "type": "integer",
+                    "description": "ID of the title added to the list"
+                  }
+                }
+              },
+              "required": [
+                "profileId",
+                "name"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 5
+          },
+          "paymentDetails": {
+            "type": "object",
+            "description": "Payment information for the user"
+
+          }
+        },
+        "required": [
+          "userId",
+          "email",
+          "password",
+          "subscriptionPlan",
+          "profiles"
+        ]
+      }
+    },
+    "titles": {
+      "type": "array",
+      "description": "List of movies and TV shows available on Netflix",
+      "items": {
+        "type": "object",
+        "properties": {
+          "titleId": {
+            "type": "integer",
+            "description": "Unique identifier for the title",
+            "example": 987
+          },
+          "title": {
+            "type": "string",
+            "description": "Name of the movie or TV show",
+            "example": "Stranger Things"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of title (movie or series)",
+            "enum": [
+              "movie",
+              "series"
+            ],
+            "example": "series"
+          },
+          "description": {
+            "type": "string",
+            "description": "Synopsis of the title",
+            "example": "A group of kids..."
+          },
+          "releaseYear": {
+            "type": "integer",
+            "description": "Year the title was released",
+            "example": 2016
+          },
+          "genres": {
+            "type": "array",
+            "description": "List of genres",
+            "items": {
+              "type": "string",
+              "example": "Sci-Fi"
+            },
+            "minItems": 1
+          },
+          "cast": {
+            "type": "array",
+            "description": "List of main cast members",
+            "items": {
+              "type": "string",
+              "example": "Winona Ryder"
+            }
+          },
+          "director": {
+            "type": "string",
+            "description": "Director of the movie (null for series)",
+            "example": null
+          },
+          "creators": {
+            "type": "array",
+            "description": "Creators of the series (null for movies)",
+            "items": {
+              "type": "string",
+              "example": "The Duffer Brothers"
+            }
+          },
+          "seasons": {
+            "type": "array",
+            "description": "List of seasons (only for series)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "seasonNumber": {
+                  "type": "integer",
+                  "description": "Season number",
+                  "example": 1
+                },
+                "episodes": {
+                  "type": "array",
+                  "description": "List of episodes in the season",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "episodeNumber": {
+                        "type": "integer",
+                        "description": "Episode number",
+                        "example": 1
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "Title of the episode",
+                        "example": "Chapter One: The Vanishing of Will Byers"
+                      },
+                      "synopsis": {
+                        "type": "string",
+                        "description": "Synopsis of the episode"
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "description": "Duration of the episode in minutes",
+                        "example": 50
+                      }
+                    },
+                    "required": [
+                      "episodeNumber",
+                      "title",
+                      "duration"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "seasonNumber",
+                "episodes"
+              ]
+            }
+          },
+          "maturityRating": {
+            "type": "string",
+            "description": "Maturity rating of the title",
+            "example": "TV-14"
+          },
+          "posterImageUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the title's poster image"
+          },
+          "trailerUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the title's trailer"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float",
+            "description": "Average rating from users (e.g., 4.5)",
+            "minimum": 0,
+            "maximum": 5
+          }
+        },
+        "required": [
+          "titleId",
+          "title",
+          "type",
+          "description",
+          "releaseYear",
+          "genres",
+          "maturityRating"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "titles"
+  ]
+}

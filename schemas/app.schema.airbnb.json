@@ -1,0 +1,459 @@
+{
+  "type": "object",
+  "title": "Airbnb Schema",
+  "description": "JSON Schema for a simplified Airbnb application.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique user ID",
+            "readOnly": true
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email address",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (hashed)",
+            "minLength": 8,
+            "writeOnly": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "User's phone number",
+            "pattern": "^\\+?[1-9]\\d{1,14}$"
+          },
+          "profilePicture": {
+            "type": "string",
+            "description": "URL to user's profile picture",
+            "format": "URL"
+          },
+          "aboutMe": {
+            "type": "string",
+            "description": "A short description about the user"
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "password"
+        ]
+      }
+    },
+    "listings": {
+      "type": "array",
+      "description": "List of property listings",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique listing ID",
+            "readOnly": true
+          },
+          "hostId": {
+            "type": "integer",
+            "description": "ID of the user who owns the listing",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the listing",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the listing"
+          },
+          "propertyType": {
+            "type": "string",
+            "description": "Type of property (e.g., Apartment, House, etc.)",
+            "enum": [
+              "Apartment",
+              "House",
+              "Condominium",
+              "Townhouse",
+              "Loft",
+              "Guesthouse",
+              "Bed & Breakfast",
+              "Bungalow",
+              "Villa",
+              "Cabin",
+              "Chalet",
+              "Other"
+            ]
+          },
+          "roomType": {
+            "type": "string",
+            "description": "Type of room (e.g., Entire home/apt, Private room, etc.)",
+            "enum": [
+              "Entire home/apt",
+              "Private room",
+              "Shared room",
+              "Hotel room"
+            ]
+          },
+          "address": {
+            "type": "object",
+            "description": "Address of the listing",
+            "properties": {
+              "streetAddress": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "zipCode": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "streetAddress",
+              "city",
+              "state",
+              "zipCode",
+              "country"
+            ]
+          },
+          "coordinates": {
+            "type": "object",
+            "description": "Geographic coordinates of the listing",
+            "properties": {
+              "latitude": {
+                "type": "number",
+                "format": "float"
+              },
+              "longitude": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            "required": [
+              "latitude",
+              "longitude"
+            ]
+          },
+          "amenities": {
+            "type": "array",
+            "description": "List of amenities offered",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Wifi",
+                "Kitchen",
+                "Heating",
+                "Air conditioning",
+                "Washer",
+                "Dryer",
+                "Free parking on premises",
+                "Paid parking on premises",
+                "TV",
+                "Pool",
+                "Gym",
+                "Breakfast",
+                "Indoor fireplace",
+                "Hot tub",
+                "Pets allowed",
+                "Smoking allowed",
+                "Events allowed",
+                "Other"
+              ]
+            }
+          },
+          "pricePerNight": {
+            "type": "number",
+            "description": "Price per night in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "cleaningFee": {
+            "type": "number",
+            "description": "Cleaning fee in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "serviceFee": {
+            "type": "number",
+            "description": "Service fee in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "maxGuests": {
+            "type": "integer",
+            "description": "Maximum number of guests allowed",
+            "minimum": 1
+          },
+          "bedrooms": {
+            "type": "integer",
+            "description": "Number of bedrooms",
+            "minimum": 0
+          },
+          "beds": {
+            "type": "integer",
+            "description": "Number of beds",
+            "minimum": 0
+          },
+          "bathrooms": {
+            "type": "number",
+            "description": "Number of bathrooms",
+            "format": "float",
+            "minimum": 0
+          },
+          "photos": {
+            "type": "array",
+            "description": "List of URLs to photos of the listing",
+            "items": {
+              "type": "string",
+              "format": "URL"
+            }
+          },
+          "availability": {
+            "type": "array",
+            "description": "Dates the listing is available (start and end)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date"
+                }
+              },
+              "required": ["startDate", "endDate"]
+            }
+          },
+          "rating": {
+            "type": "number",
+            "description": "Average rating of the listing (e.g., 4.5)",
+            "minimum": 0,
+            "maximum": 5,
+            "readOnly": true
+          },
+          "numberOfReviews": {
+            "type": "integer",
+            "description": "Total number of reviews for the listing",
+            "minimum": 0,
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "hostId",
+          "title",
+          "description",
+          "propertyType",
+          "roomType",
+          "address",
+          "coordinates",
+          "pricePerNight",
+          "maxGuests",
+          "bedrooms",
+          "beds",
+          "bathrooms"
+        ]
+      }
+    },
+    "bookings": {
+      "type": "array",
+      "description": "List of bookings made by users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique booking ID",
+            "readOnly": true
+          },
+          "listingId": {
+            "type": "integer",
+            "description": "ID of the listing being booked"
+          },
+          "guestId": {
+            "type": "integer",
+            "description": "ID of the user making the booking"
+          },
+          "checkInDate": {
+            "type": "string",
+            "description": "Check-in date",
+            "format": "date"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "description": "Check-out date",
+            "format": "date"
+          },
+          "numberOfGuests": {
+            "type": "integer",
+            "description": "Number of guests for the booking",
+            "minimum": 1
+          },
+          "totalPrice": {
+            "type": "number",
+            "description": "Total price of the booking in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the booking",
+            "enum": [
+              "pending",
+              "confirmed",
+              "cancelled",
+              "completed"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "listingId",
+          "guestId",
+          "checkInDate",
+          "checkOutDate",
+          "numberOfGuests",
+          "totalPrice",
+          "status"
+        ]
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "description": "List of reviews for listings",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique review ID",
+            "readOnly": true
+          },
+          "listingId": {
+            "type": "integer",
+            "description": "ID of the listing being reviewed"
+          },
+          "guestId": {
+            "type": "integer",
+            "description": "ID of the user writing the review"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Rating given (1-5)",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "comment": {
+            "type": "string",
+            "description": "Review text"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date the review was written",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "listingId",
+          "guestId",
+          "rating",
+          "comment",
+          "date"
+        ]
+      }
+    },
+    "payments": {
+      "type": "array",
+      "description": "Records of payment transactions.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique payment ID",
+            "readOnly": true
+          },
+          "bookingId": {
+            "type": "integer",
+            "description": "ID of the associated booking"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Payment amount in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "paymentMethod": {
+            "type": "string",
+            "description": "Payment method used (e.g., credit card, PayPal)",
+            "enum": [
+              "credit card",
+              "debit card",
+              "PayPal",
+              "other"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Payment status",
+            "enum": [
+              "pending",
+              "successful",
+              "failed"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Date and time of payment",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "bookingId",
+          "amount",
+          "paymentMethod",
+          "status",
+          "timestamp"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "listings",
+    "bookings"
+  ]
+}

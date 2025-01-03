@@ -1,0 +1,321 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Facebook Messenger Schema",
+  "description": "A JSON Schema representing the core data structures of Facebook Messenger.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users within the Messenger ecosystem.",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "conversations": {
+      "type": "array",
+      "description": "List of conversations (threads).",
+      "items": {
+        "$ref": "#/definitions/conversation"
+      }
+    },
+    "messages": {
+      "type": "array",
+      "description": "List of all messages.",
+      "items": {
+        "$ref": "#/definitions/message"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "List of group conversations.",
+      "items": {
+        "$ref": "#/definitions/group"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "profile_picture": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "is_online": {
+          "type": "boolean",
+          "description": "Indicates if the user is currently online."
+        }
+      },
+      "required": [
+        "id",
+        "first_name",
+        "last_name"
+      ]
+    },
+    "conversation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the conversation."
+        },
+        "participants": {
+          "type": "array",
+          "description": "List of user IDs participating in the conversation.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "minItems": 2
+        },
+        "last_message": {
+          "$ref": "#/definitions/message",
+          "description": "The most recent message in the conversation."
+        },
+        "unread_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of unread messages in the conversation."
+        }
+      },
+      "required": [
+        "id",
+        "participants"
+      ]
+    },
+    "message": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the message."
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the conversation this message belongs to."
+        },
+        "sender_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sent the message."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the message was sent."
+        },
+        "content": {
+          "type": "object",
+          "description": "Content of the message.",
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["text"]
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Text content of the message."
+                }
+              },
+              "required": [
+                "type",
+                "text"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["image"]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the image."
+                }
+              },
+              "required": [
+                "type",
+                "url"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["video"]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the video."
+                }
+              },
+              "required": [
+                "type",
+                "url"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["audio"]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the audio file."
+                }
+              },
+              "required": [
+                "type",
+                "url"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["file"]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the file."
+                },
+                "filename": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "url",
+                "filename"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["sticker"]
+                },
+                "sticker_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "sticker_id"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["reaction"]
+                },
+                "emoji": {
+                  "type": "string",
+                  "description": "Unicode emoji representing the reaction."
+                },
+                "target_message_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The ID of the message being reacted to"
+                },
+                "user_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "The ID of the user who reacted"
+                }
+              },
+              "required": [
+                "type",
+                "emoji",
+                "target_message_id",
+                "user_id"
+              ]
+            }
+          ]
+        },
+        "is_read": {
+          "type": "boolean",
+          "description": "Indicates if the message has been read."
+        }
+      },
+      "required": [
+        "id",
+        "conversation_id",
+        "sender_id",
+        "timestamp",
+        "content"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the group."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the group."
+        },
+        "members": {
+          "type": "array",
+          "description": "List of user IDs who are members of the group.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "admins": {
+          "type": "array",
+          "description": "List of user IDs who are admins of the group.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "group_conversation": {
+          "$ref": "#/definitions/conversation",
+          "description": "The corresponding conversation object for this group."
+        }
+      },
+      "required": [
+        "id",
+        "members",
+        "group_conversation"
+      ]
+    }
+  }
+}

@@ -1,0 +1,258 @@
+{
+  "type": "object",
+  "title": "Pinterest App Schema",
+  "description": "JSON Schema for a simplified representation of the Pinterest application data model.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users in the Pinterest app.",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "boards": {
+      "type": "array",
+      "description": "List of boards created by users.",
+      "items": {
+        "$ref": "#/definitions/board"
+      }
+    },
+    "pins": {
+      "type": "array",
+      "description": "List of pins (images/videos with associated data).",
+      "items": {
+        "$ref": "#/definitions/pin"
+      }
+    },
+    "interests": {
+      "type": "array",
+      "description": "List of predefined interests/topics that users can follow",
+      "items": {
+        "type": "string",
+        "description": "Interest or topic name"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "Represents a Pinterest user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "User's unique username."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "bio": {
+          "type": "string",
+          "description": "User's profile description."
+        },
+        "profile_image_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the user's profile image."
+        },
+        "website": {
+          "type": "string",
+          "format": "URL",
+          "description": "User's external website URL."
+        },
+        "followers": {
+          "type": "array",
+          "description": "List of users who follow this user",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID of a follower"
+          }
+        },
+        "following": {
+          "type": "array",
+          "description": "List of users that this user follows.",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID of a user being followed"
+          }
+        },
+        "interests": {
+          "type": "array",
+          "description": "List of interest IDs followed by the user.",
+          "items": {
+            "type": "string",
+            "description": "Interest ID."
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the user account was created."
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email"
+      ]
+    },
+    "board": {
+      "type": "object",
+      "description": "Represents a Pinterest board.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the board."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the board."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the board."
+        },
+        "owner_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User ID of the board's creator."
+        },
+        "is_secret": {
+          "type": "boolean",
+          "description": "Indicates whether the board is secret (private) or not."
+        },
+        "cover_image_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the board's cover image (optional)."
+        },
+        "pin_ids": {
+          "type": "array",
+          "description": "List of pin IDs that belong to this board.",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Pin ID."
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the board was created."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "owner_id"
+      ]
+    },
+    "pin": {
+      "type": "object",
+      "description": "Represents a Pinterest pin.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the pin."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the pin."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the pin."
+        },
+        "image_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the pin's image."
+        },
+        "link": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the website the pin links to (optional)."
+        },
+        "creator_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User ID of the pin's creator."
+        },
+        "board_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Board ID the pin is saved to (optional, initially can be null)."
+        },
+        "saves": {
+          "type": "array",
+          "description": "List of user IDs who have saved this pin.",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID who saved the pin"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "Comments on the pin.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "User ID of the commenter"
+              },
+              "text": {
+                "type": "string",
+                "description": "Comment text"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Comment creation timestamp"
+              }
+            },
+            "required": ["user_id", "text", "created_at"]
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the pin was created."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags associated with the pin",
+          "items": {
+            "type": "string",
+            "description": "Tag name"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "image_url",
+        "creator_id"
+      ]
+    }
+  }
+}
