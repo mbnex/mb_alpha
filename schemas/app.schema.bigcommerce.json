@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BigCommerce App Schema",
+  "description": "Schema for defining a BigCommerce App",
+  "type": "object",
+  "required": [
+    "auth_callback",
+    "load_callback",
+    "uninstall_callback",
+    "scopes",
+    "app_name",
+    "app_description",
+    "app_version",
+    "author_name",
+    "author_email",
+    "author_url"
+  ],
+  "properties": {
+    "auth_callback": {
+      "type": "string",
+      "format": "url",
+      "description": "URL to receive OAuth2 authentication requests. This is where BigCommerce will redirect the user during the app installation process."
+    },
+    "load_callback": {
+      "type": "string",
+      "format": "url",
+      "description": "URL to receive requests when the app is loaded in the BigCommerce control panel or in other designated places within BigCommerce."
+    },
+    "uninstall_callback": {
+      "type": "string",
+      "format": "url",
+      "description": "URL to receive a notification when the app is uninstalled from a store. This is where you can perform cleanup tasks like revoking API tokens or removing data."
+    },
+    "remove_user_callback": {
+      "type": "string",
+      "format": "url",
+      "description": "URL called when a user is removed from a store. Useful for revoking their access to your app."
+    },
+    "scopes": {
+      "type": "string",
+      "description": "Space-separated list of OAuth scopes the app requires. Scopes define the permissions your app needs to access specific data or perform actions on behalf of the user. Example: 'store_v2_products store_v2_orders'",
+      "examples": [
+        "store_v2_products store_v2_orders store_v2_customers",
+        "store_v2_content"
+      ]
+    },
+    "app_name": {
+      "type": "string",
+      "description": "Name of the app. This will be displayed to users during the installation process and in the BigCommerce control panel.",
+      "maxLength": 255
+    },
+    "app_description": {
+      "type": "string",
+      "description": "A detailed description of the app's functionality. This will be displayed to users during the installation process."
+    },
+    "app_version": {
+      "type": "string",
+      "description": "Version of the app. Follow semantic versioning (e.g., 1.0.0).",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "examples": [
+        "1.0.0",
+        "2.5.1"
+      ]
+    },
+    "author_name": {
+      "type": "string",
+      "description": "Name of the app developer or company.",
+      "maxLength": 255
+    },
+    "author_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Contact email address of the app developer or company."
+    },
+    "author_url": {
+      "type": "string",
+      "format": "url",
+      "description": "Website URL of the app developer or company."
+    },
+    "logo": {
+      "type": "string",
+      "format": "url",
+      "description": "URL to the app's logo. Recommended size is 250x250 pixels."
+    },
+    "support_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address for customer support inquiries."
+    },
+    "support_url": {
+      "type": "string",
+      "format": "url",
+      "description": "URL to a support page or documentation for the app."
+    },
+    "privacy_policy_url": {
+      "type": "string",
+      "format": "url",
+      "description": "URL to the app's privacy policy."
+    },
+    "app_type": {
+      "type": "string",
+      "description": "Indicates the type of app being developed. Can be used to categorize apps (e.g., 'marketing', 'inventory', 'shipping')",
+      "examples": [
+        "marketing",
+        "inventory",
+        "shipping"
+      ]
+    },
+    "features": {
+      "type": "array",
+      "description": "An array of features provided by the app.",
+      "items": {
+        "type": "string",
+        "description": "A description of a specific feature."
+      }
+    },
+    "external_ids": {
+      "type": "object",
+      "description": "External identifiers if the app interacts with other platforms.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "is_visible": {
+      "type": "boolean",
+      "description": "Determines if the app is visible in the App Marketplace. Defaults to true for draft apps.",
+      "default": true
+    },
+    "dev_tools": {
+      "type": "object",
+      "description": "Settings specifically for use during development.",
+      "properties": {
+        "debug_callback": {
+          "type": "string",
+          "format": "url",
+          "description": "Optional URL for receiving debug information during development."
+        }
+      }
+    },
+    "translations": {
+      "type": "object",
+      "description": "Object containing translations of the app's metadata for different locales.",
+      "additionalProperties": {
+        "type": "object",
+        "description": "Translation for a specific locale.",
+        "properties": {
+          "app_name": {
+            "type": "string",
+            "description": "Translated app name."
+          },
+          "app_description": {
+            "type": "string",
+            "description": "Translated app description."
+          }
+        },
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "es": {
+            "app_name": "Mi Aplicación",
+            "app_description": "Descripción de mi aplicación en español."
+          },
+          "fr": {
+            "app_name": "Mon Application",
+            "app_description": "Description de mon application en français."
+          }
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

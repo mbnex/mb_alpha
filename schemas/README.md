@@ -84,5 +84,5 @@ JSON Schemas have be created for the following apps:
 "coinbase",
 "robinhood",
 "binance",
-"bitfinex"
+"bitfinex","shopify","twitch","bigcommerce"
 ],

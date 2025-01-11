@@ -1,0 +1,445 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Twitch App",
+  "description": "JSON Schema for a simplified representation of the Twitch App data model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Twitch users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique user ID"
+          },
+          "login": {
+            "type": "string",
+            "description": "User's login name (username)"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "profile_image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the user's profile image"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address (requires appropriate OAuth scope)"
+          },
+          "broadcaster_type": {
+            "type": "string",
+            "enum": ["", "affiliate", "partner"],
+            "description": "User's broadcaster type (empty string for non-broadcasters)"
+          },
+          "description": {
+            "type": "string",
+            "description": "User's channel description"
+          },
+          "view_count": {
+            "type": "integer",
+            "description": "Total number of views on the user's channel"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the user account was created"
+          }
+        },
+        "required": [
+          "id",
+          "login",
+          "display_name"
+        ]
+      }
+    },
+    "streams": {
+      "type": "array",
+      "description": "List of live streams",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique stream ID"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID of the broadcaster"
+          },
+          "user_login": {
+            "type": "string",
+            "description": "User's login name (username)"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "game_id": {
+            "type": "string",
+            "description": "Game ID being streamed"
+          },
+          "game_name": {
+            "type": "string",
+            "description": "Name of the game being streamed"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["live", ""],
+            "description": "Stream type (live or empty string for vodcasts)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Stream title"
+          },
+          "viewer_count": {
+            "type": "integer",
+            "description": "Number of viewers currently watching the stream"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the stream started"
+          },
+          "language": {
+            "type": "string",
+            "description": "Stream language (e.g., 'en', 'es')"
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "Template URL for the stream thumbnail"
+          },
+          "tag_ids": {
+            "type": "array",
+            "description": "List of tag IDs associated with the stream",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_mature": {
+            "type": "boolean",
+            "description": "Indicates if the stream is marked as mature"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "user_login",
+          "user_name",
+          "viewer_count",
+          "started_at"
+        ]
+      }
+    },
+    "games": {
+      "type": "array",
+      "description": "List of games",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique game ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the game"
+          },
+          "box_art_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "Template URL for the game's box art"
+          },
+          "igdb_id": {
+            "type": "string",
+            "description": "ID of the game on IGDB"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "box_art_url"
+        ]
+      }
+    },
+    "videos": {
+      "type": "array",
+      "description": "List of videos (VODs, highlights, uploads)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique video ID"
+          },
+          "stream_id": {
+            "type": "string",
+            "description": "ID of the stream that the video originated from (null if not associated with a stream)"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID of the video owner"
+          },
+          "user_login": {
+            "type": "string",
+            "description": "User login name of the video owner"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "Display name of the video owner"
+          },
+          "title": {
+            "type": "string",
+            "description": "Video title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Video description"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the video was created"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the video was published"
+          },
+          "url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the video"
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "Template URL for the video thumbnail"
+          },
+          "viewable": {
+            "type": "string",
+            "enum": ["public", "private"],
+            "description": "Whether the video is public or private"
+          },
+          "view_count": {
+            "type": "integer",
+            "description": "Number of times the video has been viewed"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the video (e.g., 'en', 'es')"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["upload", "archive", "highlight"],
+            "description": "Type of video (upload, archive, or highlight)"
+          },
+          "duration": {
+            "type": "string",
+            "description": "Video duration in format: '0h0m0s'"
+          },
+          "muted_segments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "duration": {
+                  "type": "integer",
+                  "description": "Duration of the muted segment in seconds"
+                },
+                "offset": {
+                  "type": "integer",
+                  "description": "Offset in the video in seconds"
+                }
+              },
+              "required": [
+                "duration",
+                "offset"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "user_login",
+          "user_name",
+          "title",
+          "url",
+          "view_count"
+        ]
+      }
+    },
+    "clips": {
+      "type": "array",
+      "description": "List of clips.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique ID of the clip."
+          },
+          "url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to view the clip."
+          },
+          "embed_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to embed the clip."
+          },
+          "broadcaster_id": {
+            "type": "integer",
+            "description": "User ID of the stream from which the clip was created."
+          },
+          "broadcaster_name": {
+            "type": "string",
+            "description": "Display name of the broadcaster."
+          },
+          "creator_id": {
+            "type": "integer",
+            "description": "User ID of the user who created the clip."
+          },
+          "creator_name": {
+            "type": "string",
+            "description": "Display name of the user who created the clip."
+          },
+          "video_id": {
+            "type": "string",
+            "description": "ID of the video from which the clip was created."
+          },
+          "game_id": {
+            "type": "string",
+            "description": "ID of the game being played when the clip was created."
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the clip (e.g., 'en', 'es')."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the clip."
+          },
+          "view_count": {
+            "type": "integer",
+            "description": "Number of times the clip has been viewed."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the clip was created."
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the thumbnail image of the clip."
+          },
+          "duration": {
+            "type": "number",
+            "format": "float",
+            "description": "Duration of the clip in seconds."
+          },
+          "vod_offset": {
+            "type": "integer",
+            "description": "The zero-based offset, in seconds, to where the clip starts in the video (VOD). Is null if the video is not available or hasn't been created yet from the live stream."
+          },
+          "is_featured": {
+            "type": "boolean",
+            "description": "Indicates if the clip is featured."
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "embed_url",
+          "broadcaster_id",
+          "broadcaster_name",
+          "creator_id",
+          "creator_name",
+          "game_id",
+          "language",
+          "title",
+          "view_count",
+          "created_at",
+          "thumbnail_url",
+          "duration"
+        ]
+      }
+    },
+    "teams": {
+      "type": "array",
+      "description": "List of channel teams.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "background_image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL for the team's background image."
+          },
+          "banner": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL for the team's banner."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the team was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the team was last updated."
+          },
+          "info": {
+            "type": "string",
+            "description": "Team description."
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the team's thumbnail image."
+          },
+          "team_name": {
+            "type": "string",
+            "description": "Team name."
+          },
+          "team_display_name": {
+            "type": "string",
+            "description": "Team display name."
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique ID of the team."
+          },
+          "users": {
+            "type": "array",
+            "description": "List of users that are part of the team.",
+            "items": {
+              "$ref": "#/properties/users/items"
+            }
+          }
+        },
+        "required": [
+          "created_at",
+          "updated_at",
+          "info",
+          "thumbnail_url",
+          "team_name",
+          "team_display_name",
+          "id",
+          "users"
+        ]
+      }
+    }
+  },
+  "required": []
