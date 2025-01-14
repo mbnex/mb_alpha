@@ -1,0 +1,991 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Twitter/X App",
+  "description": "JSON Schema for Elon Musk's envisioned Twitter/X app, encompassing social networking, payments, and more.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users on the platform",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the user"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's unique handle (e.g., @elonmusk)",
+            "pattern": "^@[a-zA-Z0-9_]{1,15}$"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "profileImageUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the user's profile image"
+          },
+          "bio": {
+            "type": "string",
+            "description": "User's profile description",
+            "maxLength": 160
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Indicates if the user is verified"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of user account creation"
+          },
+          "followersCount": {
+            "type": "integer",
+            "description": "Number of followers"
+          },
+          "followingCount": {
+            "type": "integer",
+            "description": "Number of accounts the user follows"
+          },
+          "wallet": {
+            "type": "object",
+            "description": "User's digital wallet",
+            "properties": {
+              "balance": {
+                "type": "number",
+                "format": "float",
+                "description": "Current balance in the wallet"
+              },
+              "currency": {
+                "type": "string",
+                "description": "Default currency for the wallet (e.g., USD, X-Coin)",
+                "enum": ["USD", "EUR", "JPY", "BTC", "DOGE", "X-COIN"]
+              },
+              "transactions": {
+                "type": "array",
+                "description": "List of transactions associated with the wallet",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transactionId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the transaction"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Type of transaction (e.g., deposit, withdrawal, payment, tip)",
+                      "enum": ["deposit", "withdrawal", "payment", "tip", "transfer"]
+                    },
+                    "amount": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Amount of the transaction"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency of the transaction"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp of the transaction"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the transaction (e.g., pending, completed, failed)",
+                      "enum": ["pending", "completed", "failed"]
+                    },
+                    "sender": {
+                      "type": "string",
+                      "description": "Sender's user ID or external account identifier (optional)"
+                    },
+                    "recipient": {
+                      "type": "string",
+                      "description": "Recipient's user ID or external account identifier (optional)"
+                    }
+                  },
+                  "required": [
+                    "transactionId",
+                    "type",
+                    "amount",
+                    "currency",
+                    "timestamp",
+                    "status"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "balance",
+              "currency"
+            ]
+          },
+          "isCreator": {
+            "type": "boolean",
+            "description": "Indicates whether the user is registered as a creator",
+            "default": false
+          },
+          "subscriptionTier": {
+            "type": "string",
+            "description": "The creator's subscription tier, if applicable",
+            "enum": ["free", "basic", "premium", "gold"],
+            "default": "free"
+          }
+        },
+        "required": [
+          "userId",
+          "username",
+          "createdAt"
+        ]
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of posts (tweets, messages, etc.)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the post"
+          },
+          "authorId": {
+            "type": "string",
+            "description": "User ID of the post's author"
+          },
+          "content": {
+            "type": "string",
+            "description": "Text content of the post",
+            "maxLength": 1000
+          },
+          "media": {
+            "type": "array",
+            "description": "List of media attachments (images, videos, etc.)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mediaId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the media"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Type of media (e.g., image, video)",
+                  "enum": ["image", "video"]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the media content"
+                }
+              },
+              "required": [
+                "mediaId",
+                "type",
+                "url"
+              ]
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of post creation"
+          },
+          "likes": {
+            "type": "integer",
+            "description": "Number of likes the post has received"
+          },
+          "reposts": {
+            "type": "integer",
+            "description": "Number of times the post has been reposted"
+          },
+          "comments": {
+            "type": "array",
+            "description": "List of comments on the post",
+            "items": {
+              "type": "object",
+              "properties": {
+                "commentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the comment"
+                },
+                "authorId": {
+                  "type": "string",
+                  "description": "User ID of the comment's author"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Text content of the comment",
+                  "maxLength": 500
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of comment creation"
+                }
+              },
+              "required": [
+                "commentId",
+                "authorId",
+                "content",
+                "createdAt"
+              ]
+            }
+          },
+          "inReplyTo": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the post this post is in reply to (optional)"
+          },
+          "isQuotePost": {
+            "type": "boolean",
+            "description": "Indicates if the post is a quote post"
+          },
+          "quotedPostId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the post being quoted (if isQuotePost is true)"
+          },
+          "poll": {
+            "type": "object",
+            "description": "Poll embedded in the post (optional)",
+            "properties": {
+              "options": {
+                "type": "array",
+                "description": "List of poll options",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "optionId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the option"
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "Text of the poll option",
+                      "maxLength": 25
+                    },
+                    "votes": {
+                      "type": "integer",
+                      "description": "Number of votes for this option",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "optionId",
+                    "text"
+                  ]
+                },
+                "minItems": 2,
+                "maxItems": 4
+              },
+              "endsAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the poll ends"
+              }
+            },
+            "required": [
+              "options",
+              "endsAt"
+            ]
+          }
+        },
+        "required": [
+          "postId",
+          "authorId",
+          "content",
+          "createdAt"
+        ]
+      }
+    },
+    "directMessages": {
+      "type": "array",
+      "description": "List of direct message conversations",
+      "items": {
+        "type": "object",
+        "properties": {
+          "conversationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the conversation"
+          },
+          "participants": {
+            "type": "array",
+            "description": "List of participants in the conversation",
+            "items": {
+              "type": "string",
+              "description": "User ID of a participant"
+            },
+            "minItems": 2
+          },
+          "messages": {
+            "type": "array",
+            "description": "List of messages in the conversation",
+            "items": {
+              "type": "object",
+              "properties": {
+                "messageId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the message"
+                },
+                "senderId": {
+                  "type": "string",
+                  "description": "User ID of the message sender"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Text content of the message",
+                  "maxLength": 1000
+                },
+                "media": {
+                  "type": "array",
+                  "description": "List of media attachments (images, videos, etc.)",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "mediaId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Unique identifier for the media"
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Type of media (e.g., image, video)",
+                        "enum": ["image", "video"]
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "URL",
+                        "description": "URL to the media content"
+                      }
+                    },
+                    "required": [
+                      "mediaId",
+                      "type",
+                      "url"
+                    ]
+                  }
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of message creation"
+                }
+              },
+              "required": [
+                "messageId",
+                "senderId",
+                "content",
+                "createdAt"
+              ]
+            }
+          }
+        },
+        "required": [
+          "conversationId",
+          "participants",
+          "messages"
+        ]
+      }
+    },
+    "spaces": {
+      "type": "array",
+      "description": "List of live audio spaces",
+      "items": {
+        "type": "object",
+        "properties": {
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the space"
+          },
+          "hostId": {
+            "type": "string",
+            "description": "User ID of the space host"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the space",
+            "maxLength": 100
+          },
+          "speakers": {
+            "type": "array",
+            "description": "List of users who are speaking in the space",
+            "items": {
+              "type": "string",
+              "description": "User ID of a speaker"
+            }
+          },
+          "listeners": {
+            "type": "array",
+            "description": "List of users who are listening to the space",
+            "items": {
+              "type": "string",
+              "description": "User ID of a listener"
+            }
+          },
+          "state": {
+            "type": "string",
+            "description": "Current state of the space (e.g., live, scheduled, ended)",
+            "enum": ["live", "scheduled", "ended"]
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the space started"
+          },
+          "scheduledStart": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the space is scheduled to start (if state is scheduled)"
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the space ended (if state is ended)"
+          }
+        },
+        "required": [
+          "spaceId",
+          "hostId",
+          "title",
+          "state"
+        ]
+      }
+    },
+    "communities": {
+      "type": "array",
+      "description": "List of communities",
+      "items": {
+        "type": "object",
+        "properties": {
+          "communityId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the community"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the community",
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the community",
+            "maxLength": 200
+          },
+          "members": {
+            "type": "array",
+            "description": "List of members in the community",
+            "items": {
+              "type": "string",
+              "description": "User ID of a member"
+            }
+          },
+          "admins": {
+            "type": "array",
+            "description": "List of administrators in the community",
+            "items": {
+              "type": "string",
+              "description": "User ID of an administrator"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of community creation"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Indicates if the community is public or private"
+          }
+        },
+        "required": [
+          "communityId",
+          "name",
+          "description",
+          "members",
+          "createdAt",
+          "isPublic"
+        ]
+      }
+    },
+    "trends": {
+      "type": "array",
+      "description": "List of trending topics",
+      "items": {
+        "type": "object",
+        "properties": {
+          "trend": {
+            "type": "string",
+            "description": "The trending topic"
+          },
+          "volume": {
+            "type": "integer",
+            "description": "Approximate number of posts related to the trend"
+          }
+        },
+        "required": [
+          "trend",
+          "volume"
+        ]
+      }
+    },
+    "payments": {
+      "type": "array",
+      "description": "List of payment methods",
+      "items": {
+        "type": "object",
+        "properties": {
+          "methodId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the payment method"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User ID that the payment method is linked to"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of payment method (e.g., credit_card, bank_account, crypto_wallet)",
+            "enum": [
+              "credit_card",
+              "bank_account",
+              "crypto_wallet"
+            ]
+          },
+          "details": {
+            "type": "object",
+            "description": "Details specific to the payment method type",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "brand": {
+                    "type": "string",
+                    "description": "Card brand (e.g., Visa, Mastercard)",
+                    "enum": ["Visa", "Mastercard", "Amex", "Discover"]
+                  },
+                  "last4": {
+                    "type": "string",
+                    "description": "Last 4 digits of the card number",
+                    "pattern": "^[0-9]{4}$"
+                  },
+                  "expMonth": {
+                    "type": "integer",
+                    "description": "Expiration month",
+                    "minimum": 1,
+                    "maximum": 12
+                  },
+                  "expYear": {
+                    "type": "integer",
+                    "description": "Expiration year",
+                    "minimum": 2023
+                  }
+                },
+                "required": [
+                  "brand",
+                  "last4",
+                  "expMonth",
+                  "expYear"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "bankName": {
+                    "type": "string",
+                    "description": "Name of the bank"
+                  },
+                  "accountType": {
+                    "type": "string",
+                    "description": "Type of bank account (e.g., checking, savings)",
+                    "enum": ["checking", "savings"]
+                  },
+                  "routingNumber": {
+                    "type": "string",
+                    "description": "Bank routing number"
+                  },
+                  "last4": {
+                    "type": "string",
+                    "description": "Last 4 digits of the account number"
+                  }
+                },
+                "required": [
+                  "bankName",
+                  "accountType",
+                  "routingNumber",
+                  "last4"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "cryptoType": {
+                    "type": "string",
+                    "description": "Type of cryptocurrency (e.g., BTC, ETH, DOGE)",
+                    "enum": ["BTC", "ETH", "DOGE", "X-COIN"]
+                  },
+                  "walletAddress": {
+                    "type": "string",
+                    "description": "Public address of the crypto wallet"
+                  }
+                },
+                "required": [
+                  "cryptoType",
+                  "walletAddress"
+                ]
+              }
+            ]
+          },
+          "isDefault": {
+            "type": "boolean",
+            "description": "Indicates if this is the user's default payment method",
+            "default": false
+          }
+        },
+        "required": [
+          "methodId",
+          "userId",
+          "type",
+          "details"
+        ]
+      }
+    },
+    "subscriptions": {
+      "type": "array",
+      "description": "List of user subscriptions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subscriberId": {
+            "type": "string",
+            "description": "User ID of the subscriber"
+          },
+          "creatorId": {
+            "type": "string",
+            "description": "User ID of the creator being subscribed to"
+          },
+          "tier": {
+            "type": "string",
+            "description": "Subscription tier",
+            "enum": ["basic", "premium", "gold"]
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start date of the subscription"
+          },
+          "renewalDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Next renewal date of the subscription"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the subscription",
+            "enum": ["active", "canceled", "expired"]
+          }
+        },
+        "required": [
+          "subscriberId",
+          "creatorId",
+          "tier",
+          "startDate",
+          "renewalDate",
+          "status"
+        ]
+      }
+    },
+    "commerce": {
+      "type": "object",
+      "description": "E-commerce functionalities",
+      "properties": {
+        "products": {
+          "type": "array",
+          "description": "List of products for sale",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier for the product"
+              },
+              "sellerId": {
+                "type": "string",
+                "description": "User ID of the seller"
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the product",
+                "maxLength": 100
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the product",
+                "maxLength": 500
+              },
+              "price": {
+                "type": "number",
+                "format": "float",
+                "description": "Price of the product"
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency of the price",
+                "enum": ["USD", "EUR", "JPY", "BTC", "DOGE", "X-COIN"]
+              },
+              "images": {
+                "type": "array",
+                "description": "List of product images",
+                "items": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to a product image"
+                }
+              },
+              "stock": {
+                "type": "integer",
+                "description": "Available stock of the product",
+                "minimum": 0
+              },
+              "category": {
+                "type": "string",
+                "description": "Category of the product (e.g., electronics, fashion, books)",
+                "enum": ["electronics", "fashion", "books", "home", "beauty", "other"]
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the product was added"
+              }
+            },
+            "required": [
+              "productId",
+              "sellerId",
+              "name",
+              "description",
+              "price",
+              "currency",
+              "stock"
+            ]
+          }
+        },
+        "orders": {
+          "type": "array",
+          "description": "List of orders placed",
+          "items": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier for the order"
+              },
+              "buyerId": {
+                "type": "string",
+                "description": "User ID of the buyer"
+              },
+              "items": {
+                "type": "array",
+                "description": "List of items in the order",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string",
+                      "description": "ID of the product"
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "description": "Quantity of the product ordered",
+                      "minimum": 1
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Price per item at the time of order"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity",
+                    "price"
+                  ]
+                }
+              },
+              "totalAmount": {
+                "type": "number",
+                "format": "float",
+                "description": "Total amount of the order"
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency of the order total"
+              },
+              "orderDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the order was placed"
+              },
+              "status": {
+                "type": "string",
+                "description": "Status of the order (e.g., pending, processing, shipped, delivered, canceled)",
+                "enum": [
+                  "pending",
+                  "processing",
+                  "shipped",
+                  "delivered",
+                  "canceled"
+                ]
+              },
+              "shippingAddress": {
+                "type": "object",
+                "description": "Shipping address for the order",
+                "properties": {
+                  "street": {
+                    "type": "string",
+                    "description": "Street address"
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "City"
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "State or province"
+                  },
+                  "zipCode": {
+                    "type": "string",
+                    "description": "ZIP or postal code"
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "Country"
+                  }
+                },
+                "required": [
+                  "street",
+                  "city",
+                  "state",
+                  "zipCode",
+                  "country"
+                ]
+              }
+            },
+            "required": [
+              "orderId",
+              "buyerId",
+              "items",
+              "totalAmount",
+              "currency",
+              "orderDate",
+              "status"
+            ]
+          }
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "Application settings",
+      "properties": {
+        "defaultCurrency": {
+          "type": "string",
+          "description": "Default currency for the application",
+          "enum": ["USD", "EUR", "JPY", "BTC", "DOGE", "X-COIN"]
+        },
+        "supportedCurrencies": {
+          "type": "array",
+          "description": "List of supported currencies",
+          "items": {
+            "type": "string",
+            "enum": ["USD", "EUR", "JPY", "BTC", "DOGE", "X-COIN"]
+          }
+        },
+        "contentModeration": {
+          "type": "object",
+          "description": "Content moderation settings",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Indicates if content moderation is enabled"
+            },
+            "rules": {
+              "type": "array",
+              "description": "List of content moderation rules",
+              "items": {
+                "type": "string",
+                "description": "A content moderation rule (e.g., no hate speech, no spam)"
+              }
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "algorithm": {
+          "type": "object",
+          "description": "Algorithm settings",
+          "properties": {
+            "timeline": {
+              "type": "string",
+              "description": "Algorithm used for the main timeline",
+              "enum": ["chronological", "algorithmic"],
+              "default": "algorithmic"
+            },
+            "recommendations": {
+              "type": "string",
+              "description": "Algorithm used for content recommendations",
+              "enum": ["collaborative", "content-based", "hybrid"]
+            }
+          },
+          "required": [
+            "timeline",
+            "recommendations"
+          ]
+        },
+        "creatorMonetization": {
+          "type": "object",
+          "description": "Creator Monetization Settings",
+          "properties": {
+            "tipsEnabled": {
+              "type": "boolean",
+              "description": "Whether tipping is globally enabled",
+              "default": true
+            },
+            "subscriptionsEnabled": {
+              "type": "boolean",
+              "description": "Whether subscriptions are globally enabled",
+              "default": true
+            },
+            "platformFee": {
+              "type": "number",
+              "description": "Percentage fee the platform takes on creator earnings",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.1
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "users",
+    "posts"
+  ]
+}

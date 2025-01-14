@@ -1,0 +1,6544 @@
+{
+  "type": "object",
+  "title": "4chan.org JSON Schema",
+  "description": "A JSON Schema representing the structure of data on 4chan.org",
+  "properties": {
+    "boards": {
+      "type": "array",
+      "description": "List of available boards",
+      "items": {
+        "$ref": "#/definitions/board"
+      }
+    },
+    "threads": {
+      "type": "array",
+      "description": "List of threads on a board (can also be within a board object)",
+      "items": {
+        "$ref": "#/definitions/thread"
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "description": "Represents the catalog view of a board",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "description": "The current catalog page number"
+        },
+        "threads": {
+          "type": "array",
+          "description": "List of threads in the catalog view",
+          "items": {
+            "$ref": "#/definitions/catalogThread"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "board": {
+      "type": "object",
+      "description": "Represents a single board",
+      "properties": {
+        "board": {
+          "type": "string",
+          "description": "The board's short name (e.g., 'b', 'g', 'v')",
+          "pattern": "^[a-z0-9]+$"
+        },
+        "title": {
+          "type": "string",
+          "description": "The board's full title (e.g., 'Random', 'Technology', 'Video Games')"
+        },
+        "ws_board": {
+          "type": "integer",
+          "description": "Indicates if the board is work-safe (0 = not work-safe, 1 = work-safe)"
+        },
+        "per_page": {
+          "type": "integer",
+          "description": "Number of threads per page"
+        },
+        "pages": {
+          "type": "integer",
+          "description": "Total number of pages"
+        },
+        "max_filesize": {
+          "type": "integer",
+          "description": "Maximum file size allowed (in bytes)"
+        },
+        "max_webm_filesize": {
+          "type": "integer",
+          "description": "Maximum WebM file size allowed (in bytes)"
+        },
+        "max_comment_chars": {
+          "type": "integer",
+          "description": "Maximum number of characters allowed in a comment"
+        },
+        "max_webm_duration": {
+          "type": "integer",
+          "description": "Maximum WebM duration (in seconds)"
+        },
+        "bump_limit": {
+          "type": "integer",
+          "description": "Maximum number of replies before a thread stops being bumped"
+        },
+        "image_limit": {
+          "type": "integer",
+          "description": "Maximum number of images allowed in a thread"
+        },
+        "meta_description": {
+          "type": "string",
+          "description": "A short description of the board's content"
+        },
+        "is_archived": {
+          "type": "integer",
+          "description": "Indicates if the board is archived (0 = not archived, 1 = archived)"
+        },
+        "spoilers": {
+          "type": "integer",
+          "description": "Indicates if the board has spoilers enabled (0 = disabled, 1 = enabled)"
+        },
+        "custom_spoilers": {
+          "type": "integer",
+          "description": "Number of custom spoiler images available on the board"
+        },
+        "cooldowns": {
+          "type": "object",
+          "description": "Cooldown times for posting on the board",
+          "properties": {
+            "threads": {
+              "type": "integer",
+              "description": "Cooldown time for creating new threads (in seconds)"
+            },
+            "replies": {
+              "type": "integer",
+              "description": "Cooldown time for making replies (in seconds)"
+            },
+            "images": {
+              "type": "integer",
+              "description": "Cooldown time for posting images (in seconds)"
+            }
+          }
+        },
+        "forced_anon": {
+          "type": "integer",
+          "description": "Whether posting name is forced off (1), optional (0) or mandatory (-1)."
+        }
+      },
+      "required": [
+        "board",
+        "title"
+      ]
+    },
+    "thread": {
+      "type": "object",
+      "description": "Represents a single thread, including OP and replies",
+      "properties": {
+        "posts": {
+          "type": "array",
+          "description": "List of posts in the thread (including OP)",
+          "items": {
+            "$ref": "#/definitions/post"
+          }
+        }
+      },
+      "required": [
+        "posts"
+      ]
+    },
+    "catalogThread": {
+      "type": "object",
+      "description": "Represents a thread in the catalog view",
+      "properties": {
+        "no": {
+          "type": "integer",
+          "description": "The OP's post number"
+        },
+        "last_replies": {
+          "type": "array",
+          "description": "A list of the last few replies in the thread (abbreviated)",
+          "items": {
+            "$ref": "#/definitions/post"
+          }
+        },
+        "omitted_posts": {
+          "type": "integer",
+          "description": "The number of omitted replies"
+        },
+        "omitted_images": {
+          "type": "integer",
+          "description": "The number of omitted images"
+        },
+        "sticky": {
+          "type": "integer",
+          "description": "Indicates if the thread is stickied (0 = not stickied, 1 = stickied)"
+        },
+        "closed": {
+          "type": "integer",
+          "description": "Indicates if the thread is closed (0 = not closed, 1 = closed)"
+        },
+        "replies": {
+          "type": "integer",
+          "description": "The number of replies in the thread"
+        },
+        "images": {
+          "type": "integer",
+          "description": "The number of images in the thread"
+        },
+        "bumplimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the bump limit (0 = no, 1 = yes)"
+        },
+        "imagelimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the image limit (0 = no, 1 = yes)"
+        },
+        "last_modified": {
+          "type": "integer",
+          "description": "Timestamp of the last modification to the thread"
+        },
+        "resto": {
+          "type": "integer",
+          "description": "Indicates the type of reply. Always 0 on the OP."
+        },
+        "now": {
+          "type": "string",
+          "description": "Human-readable string with post date and time"
+        },
+        "time": {
+          "type": "integer",
+          "description": "Unix timestamp of the post creation time"
+        },
+        "name": {
+          "type": "string",
+          "description": "The poster's name (or 'Anonymous')"
+        },
+        "trip": {
+          "type": "string",
+          "description": "The poster's tripcode (if any)"
+        },
+        "id": {
+          "type": "string",
+          "description": "Poster ID, only enabled on some boards"
+        },
+        "capcode": {
+          "type": "string",
+          "description": "Indicates poster's role (e.g., 'mod', 'admin')"
+        },
+        "country": {
+          "type": "string",
+          "description": "Poster's country code (if enabled)"
+        },
+        "country_name": {
+          "type": "string",
+          "description": "Poster's country name (if enabled)"
+        },
+        "sub": {
+          "type": "string",
+          "description": "The thread's subject"
+        },
+        "com": {
+          "type": "string",
+          "description": "The post's comment (may contain HTML)"
+        },
+        "tim": {
+          "type": "integer",
+          "description": "Timestamp used for the filename of the uploaded image"
+        },
+        "filename": {
+          "type": "string",
+          "description": "The original filename of the uploaded image"
+        },
+        "ext": {
+          "type": "string",
+          "description": "The file extension of the uploaded image"
+        },
+        "fsize": {
+          "type": "integer",
+          "description": "The file size of the uploaded image (in bytes)"
+        },
+        "md5": {
+          "type": "string",
+          "description": "The MD5 hash of the uploaded image"
+        },
+        "w": {
+          "type": "integer",
+          "description": "The width of the uploaded image"
+        },
+        "h": {
+          "type": "integer",
+          "description": "The height of the uploaded image"
+        },
+        "tn_w": {
+          "type": "integer",
+          "description": "The width of the thumbnail image"
+        },
+        "tn_h": {
+          "type": "integer",
+          "description": "The height of the thumbnail image"
+        },
+        "filedeleted": {
+          "type": "integer",
+          "description": "Indicates if the file was deleted (0 = no, 1 = yes)"
+        },
+        "spoiler": {
+          "type": "integer",
+          "description": "Indicates if the image is a spoiler (0 = no, 1 = yes)"
+        },
+        "custom_spoiler": {
+          "type": "integer",
+          "description": "ID of the custom spoiler image used"
+        },
+        "m_img": {
+          "type": "integer",
+          "description": "Indicates whether the image is a static image (0) or a gif (1)."
+        },
+        "replies": {
+          "type": "integer",
+          "description": "Number of replies"
+        },
+        "images": {
+          "type": "integer",
+          "description": "Number of images"
+        },
+        "bumplimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the bump limit (0 = no, 1 = yes)"
+        },
+        "imagelimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the image limit (0 = no, 1 = yes)"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Thread tag. Only available on some boards."
+        },
+        "semantic_url": {
+          "type": "string",
+          "description": "URL-friendly version of the thread subject."
+        }
+      },
+      "required": [
+        "no"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "description": "Represents a single post (can be OP or reply)",
+      "properties": {
+        "no": {
+          "type": "integer",
+          "description": "The post number"
+        },
+        "resto": {
+          "type": "integer",
+          "description": "The post number of the thread OP (0 if this is the OP)"
+        },
+        "sticky": {
+          "type": "integer",
+          "description": "Indicates if the thread is stickied (0 = not stickied, 1 = stickied)"
+        },
+        "closed": {
+          "type": "integer",
+          "description": "Indicates if the thread is closed (0 = not closed, 1 = closed)"
+        },
+        "now": {
+          "type": "string",
+          "description": "Human-readable string with post date and time"
+        },
+        "time": {
+          "type": "integer",
+          "description": "Unix timestamp of the post creation time"
+        },
+        "name": {
+          "type": "string",
+          "description": "The poster's name (or 'Anonymous')"
+        },
+        "trip": {
+          "type": "string",
+          "description": "The poster's tripcode (if any)"
+        },
+        "id": {
+          "type": "string",
+          "description": "Poster ID, only enabled on some boards"
+        },
+        "capcode": {
+          "type": "string",
+          "description": "Indicates poster's role (e.g., 'mod', 'admin')"
+        },
+        "country": {
+          "type": "string",
+          "description": "Poster's country code (if enabled)"
+        },
+        "country_name": {
+          "type": "string",
+          "description": "Poster's country name (if enabled)"
+        },
+        "sub": {
+          "type": "string",
+          "description": "The thread's subject (only on OP)"
+        },
+        "com": {
+          "type": "string",
+          "description": "The post's comment (may contain HTML)"
+        },
+        "tim": {
+          "type": "integer",
+          "description": "Timestamp used for the filename of the uploaded image"
+        },
+        "filename": {
+          "type": "string",
+          "description": "The original filename of the uploaded image"
+        },
+        "ext": {
+          "type": "string",
+          "description": "The file extension of the uploaded image"
+        },
+        "fsize": {
+          "type": "integer",
+          "description": "The file size of the uploaded image (in bytes)"
+        },
+        "md5": {
+          "type": "string",
+          "description": "The MD5 hash of the uploaded image"
+        },
+        "w": {
+          "type": "integer",
+          "description": "The width of the uploaded image"
+        },
+        "h": {
+          "type": "integer",
+          "description": "The height of the uploaded image"
+        },
+        "tn_w": {
+          "type": "integer",
+          "description": "The width of the thumbnail image"
+        },
+        "tn_h": {
+          "type": "integer",
+          "description": "The height of the thumbnail image"
+        },
+        "filedeleted": {
+          "type": "integer",
+          "description": "Indicates if the file was deleted (0 = no, 1 = yes)"
+        },
+        "spoiler": {
+          "type": "integer",
+          "description": "Indicates if the image is a spoiler (0 = no, 1 = yes)"
+        },
+        "custom_spoiler": {
+          "type": "integer",
+          "description": "ID of the custom spoiler image used"
+        },
+        "replies": {
+          "type": "integer",
+          "description": "Number of replies, only present on OP in board listing"
+        },
+        "images": {
+          "type": "integer",
+          "description": "Number of images, only present on OP in board listing"
+        },
+        "bumplimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the bump limit (0 = no, 1 = yes), only present on OP in board listing"
+        },
+        "imagelimit": {
+          "type": "integer",
+          "description": "Indicates if the thread has reached the image limit (0 = no, 1 = yes), only present on OP in board listing"
+        },
+        "last_modified": {
+          "type": "integer",
+          "description": "Timestamp of the last modification to the thread, only present on OP in board listing"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Thread tag. Only available on some boards and only present on OP in board listing."
+        },
+        "semantic_url": {
+          "type": "string",
+          "description": "URL-friendly version of the thread subject, only present on OP in board listing."
+        },
+        "since4pass": {
+          "type": "integer",
+          "description": "The year when 4chan pass was bought. Only shown to mods and staff."
+        },
+        "unique_ips": {
+          "type": "integer",
+          "description": "Number of unique IPs that have posted in the thread. Only shown to mods and staff."
+        },
+        "m_img": {
+          "type": "integer",
+          "description": "Indicates whether the image is a static image (0) or a gif (1)."
+        }
+      },
+      "required": [
+        "no"
+      ]
+    }
+  }
+}{
+  "type": "object",
+  "title": "Clubhouse App Schema",
+  "description": "JSON Schema representing the core data structures of the Clubhouse app.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of all users in the app.",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "clubs": {
+      "type": "array",
+      "description": "List of all clubs in the app.",
+      "items": {
+        "$ref": "#/definitions/Club"
+      }
+    },
+    "rooms": {
+      "type": "array",
+      "description": "List of all rooms (active and past) in the app.",
+      "items": {
+        "$ref": "#/definitions/Room"
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "List of scheduled events.",
+      "items": {
+        "$ref": "#/definitions/Event"
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "description": "Represents a user profile.",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "User's chosen username.",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name.",
+          "maxLength": 100
+        },
+        "photo_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "bio": {
+          "type": "string",
+          "description": "Short biography of the user.",
+          "maxLength": 255
+        },
+        "twitter": {
+          "type": "string",
+          "description": "User's Twitter handle (optional)."
+        },
+        "instagram": {
+          "type": "string",
+          "description": "User's Instagram handle (optional)."
+        },
+        "num_followers": {
+          "type": "integer",
+          "description": "Number of followers the user has."
+        },
+        "num_following": {
+          "type": "integer",
+          "description": "Number of users the user is following."
+        },
+        "time_created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the user account was created."
+        },
+        "invited_by_user_profile": {
+          "type": "object",
+          "description": "Basic info about the user who invited this user (optional, as later invites could be removed).",
+          "properties": {
+            "user_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string"
+            },
+            "photo_url": {
+              "type": "string",
+              "format": "URL"
+            }
+          },
+          "required": [
+            "user_id",
+            "name"
+          ]
+        },
+        "is_blocked_by_network": {
+          "type": "boolean",
+          "description": "Whether the user has been blocked by the network"
+        },
+        "is_admin":{
+          "type": "boolean",
+          "description": "Whether the user has admin permissions"
+        }
+      },
+      "required": [
+        "user_id",
+        "username",
+        "name",
+        "time_created"
+      ]
+    },
+    "Club": {
+      "type": "object",
+      "description": "Represents a club within the app.",
+      "properties": {
+        "club_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the club."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the club.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the club.",
+          "maxLength": 500
+        },
+        "photo_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the club's photo."
+        },
+        "num_members": {
+          "type": "integer",
+          "description": "Number of members in the club."
+        },
+        "num_followers": {
+          "type": "integer",
+          "description": "Number of followers of the club."
+        },
+        "is_follow_allowed": {
+          "type": "boolean",
+          "description": "Whether users can follow the club."
+        },
+        "is_membership_private": {
+          "type": "boolean",
+          "description": "Whether the club's member list is private."
+        },
+        "is_community": {
+          "type": "boolean",
+          "description": "Whether the club is a community type"
+        },
+        "rules": {
+          "type": "array",
+          "description": "List of club rules",
+          "items": {
+            "type": "object",
+            "properties":{
+              "title":{
+                "type": "string"
+              },
+              "desc":{
+                "type": "string"
+              }
+            }
+          }
+        },
+        "member_ids": {
+          "type": "array",
+          "description": "List of user IDs who are members of the club.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "admin_ids": {
+          "type": "array",
+          "description": "List of user IDs who are admins of the club.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "club_id",
+        "name",
+        "description"
+      ]
+    },
+    "Room": {
+      "type": "object",
+      "description": "Represents a live audio room.",
+      "properties": {
+        "room_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the room."
+        },
+        "club": {
+          "type": "object",
+          "description": "The club associated with the room (optional).",
+          "properties": {
+            "club_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string"
+            },
+            "is_follow_allowed": {
+              "type": "boolean"
+            },
+            "is_membership_private": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "club_id",
+            "name"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "description": "Title/topic of the room."
+        },
+        "is_private": {
+          "type": "boolean",
+          "description": "Whether the room is private."
+        },
+        "is_social_mode": {
+          "type": "boolean",
+          "description": "Whether the room is in social mode"
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to join the room."
+        },
+        "feature_flags": {
+          "type": "array",
+          "description": "List of features available in the room",
+          "items": {
+            "type": "string"
+          }
+        },
+        "time_created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the room was created."
+        },
+        "users": {
+          "type": "array",
+          "description": "List of users currently in the room.",
+          "items": {
+            "$ref": "#/definitions/RoomUser"
+          }
+        },
+        "creator_user_profile_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User ID of the room creator"
+        },
+        "is_expired": {
+          "type": "boolean",
+          "description": "Indicates whether the room has ended"
+        }
+      },
+      "required": [
+        "room_id",
+        "name",
+        "time_created"
+      ]
+    },
+    "RoomUser": {
+      "type": "object",
+      "description": "Represents a user within a room, including their role.",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name."
+        },
+        "photo_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "is_speaker": {
+          "type": "boolean",
+          "description": "Whether the user is currently a speaker."
+        },
+        "is_moderator": {
+          "type": "boolean",
+          "description": "Whether the user is a moderator in the room."
+        },
+        "time_joined_as_speaker": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the user joined as a speaker (optional)."
+        },
+        "is_new": {
+          "type": "boolean",
+          "description": "Whether the user is new in the platform"
+        },
+        "is_followed_by_speaker": {
+          "type": "boolean",
+          "description": "Whether the user is followed by a speaker"
+        },
+        "is_invited_as_speaker": {
+          "type": "boolean",
+          "description": "Whether the user has been invited to be a speaker"
+        }
+      },
+      "required": [
+        "user_id",
+        "name"
+      ]
+    },
+    "Event": {
+      "type": "object",
+      "description": "Represents a scheduled event.",
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the event."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name/title of the event."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event."
+        },
+        "time_start": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the event."
+        },
+        "club": {
+          "$ref": "#/definitions/Club",
+          "description": "The club hosting the event (optional)."
+        },
+        "hosts": {
+          "type": "array",
+          "description": "List of users who are hosts of the event.",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "is_expired": {
+          "type": "boolean",
+          "description": "Indicates whether the event has ended"
+        },
+        "is_member_only": {
+          "type": "boolean",
+          "description": "Whether the event is for club members only"
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the event page."
+        },
+        "channel": {
+          "type": "string",
+          "description": "Channel where the event will be held (room id)"
+        }
+      },
+      "required": [
+        "event_id",
+        "name",
+        "description",
+        "time_start"
+      ]
+    }
+  }
+}{
+  "type": "object",
+  "title": "Facebook",
+  "description": "A simplified JSON Schema representation of Facebook's core features.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Facebook users.",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of Facebook posts.",
+      "items": {
+        "$ref": "#/definitions/post"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "List of Facebook groups.",
+      "items": {
+        "$ref": "#/definitions/group"
+      }
+    },
+    "pages": {
+      "type": "array",
+      "description": "List of Facebook pages.",
+      "items": {
+        "$ref": "#/definitions/page"
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "List of Facebook events.",
+      "items": {
+        "$ref": "#/definitions/event"
+      }
+    },
+    "messages": {
+      "type": "array",
+      "description": "List of private messages.",
+      "items": {
+        "$ref": "#/definitions/message"
+      }
+    },
+    "ads": {
+      "type": "array",
+      "description": "List of Facebook ads.",
+      "items": {
+        "$ref": "#/definitions/ad"
+      }
+    },
+    "marketplace_listings": {
+      "type": "array",
+      "description": "List of Facebook Marketplace listings.",
+      "items": {
+        "$ref": "#/definitions/marketplaceListing"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "A Facebook user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (hashed and salted in a real system)."
+        },
+        "profile_picture": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the user's profile picture."
+        },
+        "friends": {
+          "type": "array",
+          "description": "List of user IDs who are friends with this user.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "description": "List of group IDs the user is a member of.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "pages_liked": {
+          "type": "array",
+          "description": "List of page IDs the user has liked.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "date_of_birth": {
+          "type": "string",
+          "format": "date",
+          "description": "User's date of birth."
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "bio": {
+          "type": "string",
+          "description": "Short biography of the user."
+        },
+        "joined_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the user joined Facebook."
+        }
+      },
+      "required": [
+        "id",
+        "first_name",
+        "last_name",
+        "email",
+        "password"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "description": "A post on Facebook.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the post."
+        },
+        "author_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who created the post."
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the post."
+        },
+        "media": {
+          "type": "array",
+          "description": "List of media attachments (photos, videos, etc.).",
+          "items": {
+            "$ref": "#/definitions/media"
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the post was created."
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the post.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the post.",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        },
+        "shares": {
+          "type": "array",
+          "description": "List of user IDs who shared the post. In reality, this would likely be a more complex structure to handle different types of shares",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "privacy": {
+          "type": "string",
+          "enum": [
+            "public",
+            "friends",
+            "friends_except",
+            "only_me",
+            "custom"
+          ],
+          "description": "Privacy setting of the post."
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        }
+      },
+      "required": [
+        "id",
+        "author_id",
+        "content",
+        "timestamp"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "description": "A comment on a post.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the comment."
+        },
+        "author_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who wrote the comment."
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the comment."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the comment was created."
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the comment.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "author_id",
+        "content",
+        "timestamp"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "description": "A Facebook group.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the group."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the group."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the group."
+        },
+        "admin_ids": {
+          "type": "array",
+          "description": "List of user IDs who are administrators of the group.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "members": {
+          "type": "array",
+          "description": "List of user IDs who are members of the group.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "posts": {
+          "type": "array",
+          "description": "List of post IDs that belong to this group.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "privacy": {
+          "type": "string",
+          "enum": [
+            "public",
+            "closed",
+            "secret"
+          ],
+          "description": "Privacy setting of the group."
+        },
+        "cover_photo": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the group's cover photo."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the group was created"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "admin_ids",
+        "members"
+      ]
+    },
+    "page": {
+      "type": "object",
+      "description": "A Facebook page.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the page."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the page."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the page."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the page (e.g., Business, Brand, Public Figure)."
+        },
+        "admin_ids": {
+          "type": "array",
+          "description": "List of user IDs who are administrators of the page.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "likes": {
+          "type": "integer",
+          "description": "Number of likes the page has received."
+        },
+        "followers": {
+          "type": "integer",
+          "description": "Number of followers the page has"
+        },
+        "posts": {
+          "type": "array",
+          "description": "List of post IDs that belong to this page.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "cover_photo": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the page's cover photo."
+        },
+        "profile_picture": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the page's profile picture."
+        },
+        "website": {
+          "type": "string",
+          "format": "URL",
+          "description": "Website URL associated with the page."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number associated with the page."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email associated with the page."
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the page was created"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "admin_ids"
+      ]
+    },
+    "event": {
+      "type": "object",
+      "description": "A Facebook event.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the event."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the event."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event."
+        },
+        "organizer_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user or page organizing the event."
+        },
+        "start_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the event."
+        },
+        "end_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End time of the event."
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "privacy": {
+          "type": "string",
+          "enum": [
+            "public",
+            "private",
+            "group"
+          ],
+          "description": "Privacy setting of the event."
+        },
+        "attendees": {
+          "type": "array",
+          "description": "List of user IDs who are attending the event.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "interested": {
+          "type": "array",
+          "description": "List of user IDs who are interested in the event.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "cover_photo": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the event's cover photo."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "organizer_id",
+        "start_time"
+      ]
+    },
+    "message": {
+      "type": "object",
+      "description": "A private message between users.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the message."
+        },
+        "sender_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sent the message."
+        },
+        "recipient_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who received the message."
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the message."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the message was sent."
+        },
+        "is_read": {
+          "type": "boolean",
+          "description": "Whether the message has been read by the recipient."
+        }
+      },
+      "required": [
+        "id",
+        "sender_id",
+        "recipient_id",
+        "content",
+        "timestamp"
+      ]
+    },
+    "media": {
+      "type": "object",
+      "description": "Represents a media item (photo, video).",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "photo",
+            "video"
+          ],
+          "description": "Type of media."
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the media file."
+        },
+        "caption": {
+          "type": "string",
+          "description": "Optional caption for the media."
+        }
+      },
+      "required": [
+        "type",
+        "url"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "description": "Represents a geographic location.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the location (e.g., city, place)."
+        },
+        "latitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Latitude coordinate."
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Longitude coordinate."
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "latitude",
+        "longitude"
+      ]
+    },
+    "ad": {
+      "type": "object",
+      "description": "Represents a Facebook ad.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the ad."
+        },
+        "page_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the page associated with the ad."
+        },
+        "headline": {
+          "type": "string",
+          "description": "Headline of the ad."
+        },
+        "body": {
+          "type": "string",
+          "description": "Body text of the ad."
+        },
+        "image_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the ad image."
+        },
+        "call_to_action": {
+          "type": "string",
+          "description": "Call to action text (e.g., 'Learn More', 'Shop Now')."
+        },
+        "target_audience": {
+          "$ref": "#/definitions/targetAudience"
+        },
+        "budget": {
+          "type": "number",
+          "format": "float",
+          "description": "Budget allocated for the ad."
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the ad campaign."
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the ad campaign."
+        },
+        "clicks": {
+          "type": "integer",
+          "description": "Number of clicks on the ad."
+        },
+        "impressions": {
+          "type": "integer",
+          "description": "Number of times the ad was displayed."
+        }
+      },
+      "required": [
+        "id",
+        "page_id",
+        "headline",
+        "body",
+        "target_audience"
+      ]
+    },
+    "targetAudience": {
+      "type": "object",
+      "description": "Represents the target audience for an ad.",
+      "properties": {
+        "locations": {
+          "type": "array",
+          "description": "List of target locations.",
+          "items": {
+            "$ref": "#/definitions/location"
+          }
+        },
+        "age_min": {
+          "type": "integer",
+          "description": "Minimum age of the target audience."
+        },
+        "age_max": {
+          "type": "integer",
+          "description": "Maximum age of the target audience."
+        },
+        "genders": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ]
+          },
+          "description": "Target genders."
+        },
+        "interests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of interests for targeting."
+        },
+        "behaviors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of behaviors for targeting."
+        },
+        "connections": {
+          "type": "string",
+          "enum": [
+            "all",
+            "people_who_like_your_page",
+            "friends_of_people_who_like_your_page"
+          ]
+        }
+      },
+      "required": []
+    },
+    "marketplaceListing": {
+      "type": "object",
+      "description": "A listing on Facebook Marketplace.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the listing."
+        },
+        "seller_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user selling the item."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the listing."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the item."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price of the item."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., USD, EUR)."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the item."
+        },
+        "condition": {
+          "type": "string",
+          "enum": [
+            "new",
+            "used_like_new",
+            "used_good",
+            "used_fair"
+          ],
+          "description": "Condition of the item."
+        },
+        "photos": {
+          "type": "array",
+          "description": "List of URLs to photos of the item.",
+          "items": {
+            "type": "string",
+            "format": "URL"
+          }
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "availability": {
+          "type": "string",
+          "enum": [
+            "in_stock",
+            "out_of_stock",
+            "pending",
+            "sold"
+          ],
+          "description": "Availability of the item."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the listing was created."
+        }
+      },
+      "required": [
+        "id",
+        "seller_id",
+        "title",
+        "description",
+        "price",
+        "currency",
+        "category",
+        "condition",
+        "photos",
+        "location",
+        "availability"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Instagram",
+  "description": "JSON Schema for a simplified Instagram application",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users in the application",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of posts in the application",
+      "items": {
+        "$ref": "#/definitions/Post"
+      }
+    },
+    "stories": {
+      "type": "array",
+      "description": "List of stories currently active",
+      "items": {
+        "$ref": "#/definitions/Story"
+      }
+    },
+    "comments": {
+      "type": "array",
+      "description": "List of comments on posts",
+      "items": {
+        "$ref": "#/definitions/Comment"
+      }
+    },
+    "directMessages": {
+      "type": "array",
+      "description": "List of direct message conversations",
+      "items": {
+        "$ref": "#/definitions/DirectMessage"
+      }
+    }
+  },
+  "required": [
+    "users",
+    "posts"
+  ],
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "readOnly": true
+        },
+        "username": {
+          "type": "string",
+          "description": "User's unique username",
+          "pattern": "^[a-zA-Z0-9._]{1,30}$"
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (should be hashed in a real implementation)",
+          "writeOnly": true,
+          "minLength": 8
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address",
+          "format": "email"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "User's full name"
+        },
+        "profilePicture": {
+          "type": "string",
+          "description": "URL to the user's profile picture",
+          "format": "URL"
+        },
+        "bio": {
+          "type": "string",
+          "description": "User's bio"
+        },
+        "followers": {
+          "type": "array",
+          "description": "List of user IDs who follow this user",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "following": {
+          "type": "array",
+          "description": "List of user IDs this user follows",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "isPrivate": {
+          "type": "boolean",
+          "description": "Whether the user's account is private"
+        },
+        "website": {
+          "type": "string",
+          "description": "URL to user website",
+          "format": "URL"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "User's phone number"
+        }
+      },
+      "required": [
+        "userId",
+        "username",
+        "password",
+        "email"
+      ]
+    },
+    "Post": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "integer",
+          "description": "Unique identifier for the post",
+          "readOnly": true
+        },
+        "userId": {
+          "type": "integer",
+          "description": "ID of the user who created the post"
+        },
+        "mediaUrls": {
+          "type": "array",
+          "description": "URLs of the media (images or videos) in the post",
+          "items": {
+            "type": "string",
+            "format": "URL"
+          }
+        },
+        "caption": {
+          "type": "string",
+          "description": "Text caption for the post"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Date and time when the post was created",
+          "format": "date-time"
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the post",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "location": {
+          "type": "object",
+          "description": "Location information associated with the post",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "latitude": {
+              "type": "number"
+            },
+            "longitude": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "taggedUsers": {
+          "type": "array",
+          "description": "Users tagged in this post",
+          "items": {
+            "type": "integer",
+            "description": "userId of tagged user"
+          }
+        }
+      },
+      "required": [
+        "postId",
+        "userId",
+        "mediaUrls",
+        "timestamp"
+      ]
+    },
+    "Story": {
+      "type": "object",
+      "properties": {
+        "storyId": {
+          "type": "integer",
+          "description": "Unique identifier for the story",
+          "readOnly": true
+        },
+        "userId": {
+          "type": "integer",
+          "description": "ID of the user who created the story"
+        },
+        "mediaUrl": {
+          "type": "string",
+          "description": "URL of the media (image or video) in the story",
+          "format": "URL"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Date and time when the story was created",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "description": "Date and time when the story expires (typically 24 hours after creation)",
+          "format": "date-time"
+        },
+        "viewers": {
+          "type": "array",
+          "description": "List of user IDs who viewed this story",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "storyId",
+        "userId",
+        "mediaUrl",
+        "timestamp",
+        "expiresAt"
+      ]
+    },
+    "Comment": {
+      "type": "object",
+      "properties": {
+        "commentId": {
+          "type": "integer",
+          "description": "Unique identifier for the comment",
+          "readOnly": true
+        },
+        "postId": {
+          "type": "integer",
+          "description": "ID of the post the comment belongs to"
+        },
+        "userId": {
+          "type": "integer",
+          "description": "ID of the user who wrote the comment"
+        },
+        "text": {
+          "type": "string",
+          "description": "Content of the comment"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Date and time when the comment was created",
+          "format": "date-time"
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the comment",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "commentId",
+        "postId",
+        "userId",
+        "text",
+        "timestamp"
+      ]
+    },
+    "DirectMessage": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "integer",
+          "description": "Unique identifier for the conversation",
+          "readOnly": true
+        },
+        "participants": {
+          "type": "array",
+          "description": "List of user IDs participating in the conversation",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2
+        },
+        "messages": {
+          "type": "array",
+          "description": "List of messages in the conversation",
+          "items": {
+            "type": "object",
+            "properties": {
+              "messageId": {
+                "type": "integer",
+                "description": "Unique identifier for the message",
+                "readOnly": true
+              },
+              "senderId": {
+                "type": "integer",
+                "description": "ID of the user who sent the message"
+              },
+              "content": {
+                "type": "string",
+                "description": "Content of the message"
+              },
+              "timestamp": {
+                "type": "string",
+                "description": "Date and time when the message was sent",
+                "format": "date-time"
+              },
+              "seenBy": {
+                "type": "array",
+                "description": "List of user IDs who have seen the message",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            },
+            "required": [
+              "messageId",
+              "senderId",
+              "content",
+              "timestamp"
+            ]
+          }
+        }
+      },
+      "required": [
+        "conversationId",
+        "participants",
+        "messages"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LinkedIn",
+  "description": "JSON Schema for a simplified LinkedIn data model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of LinkedIn users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "companies": {
+      "type": "array",
+      "description": "List of companies on LinkedIn",
+      "items": {
+        "$ref": "#/definitions/company"
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "description": "List of job postings",
+      "items": {
+        "$ref": "#/definitions/job"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of user and company posts",
+      "items": {
+        "$ref": "#/definitions/post"
+      }
+    },
+    "groups":{
+      "type": "array",
+      "description": "List of groups on LinkedIn",
+      "items": {
+        "$ref": "#/definitions/group"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "A LinkedIn user profile",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address"
+        },
+        "headline": {
+          "type": "string",
+          "description": "User's professional headline"
+        },
+        "summary": {
+          "type": "string",
+          "description": "A brief summary about the user"
+        },
+        "location": {
+          "type": "string",
+          "description": "User's location (e.g., city, country)"
+        },
+        "industry": {
+          "type": "string",
+          "description": "User's industry"
+        },
+        "profilePictureUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the user's profile picture"
+        },
+        "connections": {
+          "type": "array",
+          "description": "List of user IDs that are connections",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "experience": {
+          "type": "array",
+          "description": "User's work experience",
+          "items": {
+            "$ref": "#/definitions/experience"
+          }
+        },
+        "education": {
+          "type": "array",
+          "description": "User's education history",
+          "items": {
+            "$ref": "#/definitions/education"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "description": "List of user's skills",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recommendations": {
+          "type": "array",
+          "description": "Recommendations given to the user",
+          "items": {
+            "$ref": "#/definitions/recommendation"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "description": "List of groups a user is member of.",
+          "items": {
+            "type": "string",
+            "description": "Id of the group",
+            "format": "uuid"
+          }
+        }
+
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email"
+      ]
+    },
+    "company": {
+      "type": "object",
+      "description": "A company on LinkedIn",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the company"
+        },
+        "name": {
+          "type": "string",
+          "description": "Company name"
+        },
+        "industry": {
+          "type": "string",
+          "description": "Company's industry"
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the company"
+        },
+        "website": {
+          "type": "string",
+          "format": "URL",
+          "description": "Company's website URL"
+        },
+        "logoUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the company's logo"
+        },
+        "headquarters": {
+          "type": "string",
+          "description": "Location of the company's headquarters"
+        },
+        "companySize": {
+          "type": "string",
+          "description": "Company size (e.g., 1-10 employees, 51-200 employees)"
+        },
+        "specialties": {
+          "type": "array",
+          "description": "List of company's specialties",
+          "items": {
+            "type": "string"
+          }
+        },
+        "followers": {
+          "type": "array",
+          "description": "List of user IDs that follow this company",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "job": {
+      "type": "object",
+      "description": "A job posting on LinkedIn",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the job posting"
+        },
+        "title": {
+          "type": "string",
+          "description": "Job title"
+        },
+        "companyId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the company posting the job"
+        },
+        "location": {
+          "type": "string",
+          "description": "Job location"
+        },
+        "description": {
+          "type": "string",
+          "description": "Job description"
+        },
+        "employmentType": {
+          "type": "string",
+          "enum": [
+            "Full-time",
+            "Part-time",
+            "Contract",
+            "Temporary",
+            "Volunteer",
+            "Internship",
+            "Other"
+          ],
+          "description": "Type of employment"
+        },
+        "seniorityLevel": {
+          "type": "string",
+          "enum": [
+            "Internship",
+            "Entry level",
+            "Associate",
+            "Mid-Senior level",
+            "Director",
+            "Executive"
+          ],
+          "description": "Seniority level of the job"
+        },
+        "functions": {
+          "type": "array",
+          "description": "Job functions",
+          "items": {
+            "type": "string"
+          }
+        },
+        "industries": {
+          "type": "array",
+          "description": "Industries related to the job",
+          "items": {
+            "type": "string"
+          }
+        },
+        "postedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the job was posted"
+        },
+        "applicants": {
+          "type": "array",
+          "description": "List of user IDs that have applied for this job",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "companyId",
+        "description"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "description": "A post on LinkedIn",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the post"
+        },
+        "authorType": {
+          "type": "string",
+          "enum": [
+            "user",
+            "company"
+          ],
+          "description": "Type of author (user or company)"
+        },
+        "authorId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user or company who created the post"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the post"
+        },
+        "mediaUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of any media (image, video) associated with the post"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "anyone",
+            "connections"
+          ],
+          "description": "Visibility scope of the post"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the post was created"
+        },
+        "likes": {
+          "type": "array",
+          "description": "List of user IDs who liked the post",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the post",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "authorType",
+        "authorId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "experience": {
+      "type": "object",
+      "description": "Work experience entry",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the experience entry"
+        },
+        "title": {
+          "type": "string",
+          "description": "Job title"
+        },
+        "companyId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the company"
+        },
+        "companyName": {
+          "type": "string",
+          "description": "Name of the company (can be used if company is not on LinkedIn)"
+        },
+        "location": {
+          "type": "string",
+          "description": "Location of the job"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the job"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the job (null if currently working there)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the role"
+        },
+        "currentlyWorkingHere": {
+          "type": "boolean",
+          "description": "Whether the user is currently working in this role"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "startDate",
+        "currentlyWorkingHere"
+      ]
+    },
+    "education": {
+      "type": "object",
+      "description": "Education history entry",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the education entry"
+        },
+        "school": {
+          "type": "string",
+          "description": "Name of the school"
+        },
+        "degree": {
+          "type": "string",
+          "description": "Degree earned"
+        },
+        "fieldOfStudy": {
+          "type": "string",
+          "description": "Field of study"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the education"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the education (null if currently studying there)"
+        },
+        "grade": {
+          "type": "string",
+          "description": "Grade achieved"
+        },
+        "activities": {
+          "type": "string",
+          "description": "Activities and societies"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the education"
+        },
+        "currentlyStudyingHere": {
+          "type": "boolean",
+          "description": "Whether the user is currently studying here"
+        }
+      },
+      "required": [
+        "id",
+        "school",
+        "startDate",
+        "currentlyStudyingHere"
+      ]
+    },
+    "recommendation": {
+      "type": "object",
+      "description": "A recommendation given to a user",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the recommendation"
+        },
+        "recommenderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user giving the recommendation"
+        },
+        "text": {
+          "type": "string",
+          "description": "Content of the recommendation"
+        },
+        "relationship": {
+          "type": "string",
+          "description": "Relationship between the recommender and the user being recommended"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date when the recommendation was given"
+        }
+      },
+      "required": [
+        "id",
+        "recommenderId",
+        "text"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "description": "A comment on a post",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the comment"
+        },
+        "authorId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who wrote the comment"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the comment"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the comment was created"
+        }
+      },
+      "required": [
+        "id",
+        "authorId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "description": "A group on LinkedIn",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier of the group"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the group"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the group"
+        },
+        "members": {
+          "type": "array",
+          "description": "List of user IDs that are members of the group",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "ownerId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User ID of the group owner"
+        },
+        "rules": {
+          "type": "string",
+          "description": "Group rules"
+        },
+        "groupType": {
+          "type": "string",
+          "enum": [
+            "open",
+            "members-only"
+          ],
+          "description": "Type of the group"
+        },
+        "industry": {
+          "type": "string",
+          "description": "Industry associated with the group"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the group was created"
+        },
+        "logoUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the group's logo"
+        },
+        "posts": {
+          "type": "array",
+          "description": "Posts within the group. This is a simplified representation and in a real implementation, it might be fetched separately.",
+          "items": {
+            "$ref": "#/definitions/post"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "members"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MySpace",
+  "description": "JSON Schema for a simplified MySpace data model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of MySpace users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "List of MySpace groups",
+      "items": {
+        "$ref": "#/definitions/group"
+      }
+    },
+    "forums": {
+      "type": "array",
+      "description": "List of MySpace forums",
+      "items": {
+        "$ref": "#/definitions/forum"
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "List of MySpace events",
+      "items": {
+        "$ref": "#/definitions/event"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "MySpace user profile",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "readOnly": true
+        },
+        "username": {
+          "type": "string",
+          "description": "User's chosen username",
+          "minLength": 3,
+          "maxLength": 20
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "description": "Hashed password for security (not stored in plain text)",
+          "minLength": 8
+        },
+        "profile": {
+          "type": "object",
+          "description": "User's profile information",
+          "properties": {
+            "displayName": {
+              "type": "string",
+              "description": "Name displayed on the profile"
+            },
+            "headline": {
+              "type": "string",
+              "description": "Short tagline or status"
+            },
+            "aboutMe": {
+              "type": "string",
+              "description": "Longer description about the user"
+            },
+            "interests": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "music": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "movies": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "books": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "profilePictureUrl": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the user's profile picture"
+            },
+            "customCss": {
+              "type": "string",
+              "description": "User-defined CSS for profile customization"
+            },
+            "top8": {
+              "type": "array",
+              "description": "User's Top 8 friends",
+              "items": {
+                "type": "integer",
+                "description": "userId of a friend"
+              },
+              "maxItems": 8,
+              "uniqueItems": true
+            },
+            "bulletins": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/bulletin"
+              }
+            }
+          }
+        },
+        "friends": {
+          "type": "array",
+          "description": "List of user's friends (userIds)",
+          "items": {
+            "type": "integer",
+            "description": "userId of a friend"
+          },
+          "uniqueItems": true
+        },
+        "friendRequests": {
+          "type": "array",
+          "description": "Pending friend requests",
+          "items": {
+            "type": "integer",
+            "description": "userId of the user who sent the request"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "Comments left on the users profile",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "description": "Groups the user is a member of",
+          "items": {
+            "type": "integer",
+            "description": "groupId of the group"
+          }
+        },
+        "photos": {
+          "type": "array",
+          "description": "List of photos uploaded by the user",
+          "items": {
+            "$ref": "#/definitions/photo"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "User's current online status (e.g., Online, Offline, Away)",
+          "enum": ["Online", "Offline", "Away", "Do Not Disturb"]
+        },
+        "lastLogin": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the user's last login"
+        }
+      },
+      "required": [
+        "userId",
+        "username",
+        "email",
+        "password"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "description": "MySpace group",
+      "properties": {
+        "groupId": {
+          "type": "integer",
+          "description": "Unique identifier for the group",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the group"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the group"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the group (e.g., Music, Movies, Books)"
+        },
+        "creatorId": {
+          "type": "integer",
+          "description": "userId of the group creator"
+        },
+        "members": {
+          "type": "array",
+          "description": "List of group members (userIds)",
+          "items": {
+            "type": "integer"
+          },
+          "uniqueItems": true
+        },
+        "forum": {
+          "$ref": "#/definitions/forum",
+          "description": "The forum related to this group"
+        }
+      },
+      "required": [
+        "groupId",
+        "name",
+        "description",
+        "creatorId",
+        "members"
+      ]
+    },
+    "forum": {
+      "type": "object",
+      "description": "MySpace forum",
+      "properties": {
+        "forumId": {
+          "type": "integer",
+          "description": "Unique identifier for the forum",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the forum"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the forum"
+        },
+        "threads": {
+          "type": "array",
+          "description": "List of threads in the forum",
+          "items": {
+            "$ref": "#/definitions/thread"
+          }
+        }
+      },
+      "required": [
+        "forumId",
+        "name",
+        "description",
+        "threads"
+      ]
+    },
+    "thread": {
+      "type": "object",
+      "description": "Thread within a forum",
+      "properties": {
+        "threadId": {
+          "type": "integer",
+          "description": "Unique identifier for the thread",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the thread"
+        },
+        "creatorId": {
+          "type": "integer",
+          "description": "userId of the thread creator"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of thread creation"
+        },
+        "posts": {
+          "type": "array",
+          "description": "List of posts in the thread",
+          "items": {
+            "$ref": "#/definitions/post"
+          }
+        }
+      },
+      "required": [
+        "threadId",
+        "title",
+        "creatorId",
+        "createdAt",
+        "posts"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "description": "Post within a thread",
+      "properties": {
+        "postId": {
+          "type": "integer",
+          "description": "Unique identifier for the post",
+          "readOnly": true
+        },
+        "authorId": {
+          "type": "integer",
+          "description": "userId of the post author"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the post"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of post creation"
+        }
+      },
+      "required": [
+        "postId",
+        "authorId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "event": {
+      "type": "object",
+      "description": "MySpace event",
+      "properties": {
+        "eventId": {
+          "type": "integer",
+          "description": "Unique identifier for the event",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the event"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event"
+        },
+        "location": {
+          "type": "string",
+          "description": "Location of the event"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start date and time of the event"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End date and time of the event"
+        },
+        "creatorId": {
+          "type": "integer",
+          "description": "userId of the event creator"
+        },
+        "attendees": {
+          "type": "array",
+          "description": "List of users attending the event (userIds)",
+          "items": {
+            "type": "integer"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "eventId",
+        "title",
+        "description",
+        "location",
+        "startDate",
+        "endDate",
+        "creatorId",
+        "attendees"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "description": "A comment on a user's profile",
+      "properties": {
+        "commentId": {
+          "type": "integer",
+          "description": "Unique identifier for the comment.",
+          "readOnly": true
+        },
+        "authorId": {
+          "type": "integer",
+          "description": "User ID of the author of the comment"
+        },
+        "content": {
+          "type": "string",
+          "description": "The text content of the comment"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the comment was posted"
+        }
+      },
+      "required": [
+        "commentId",
+        "authorId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "photo": {
+      "type": "object",
+      "description": "A photo object",
+      "properties": {
+        "photoId": {
+          "type": "integer",
+          "description": "Unique identifier of the photo",
+          "readOnly": true
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the photo"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Caption or description of the photo"
+        },
+        "uploadedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the photo was uploaded"
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the photo",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      },
+      "required": [
+        "photoId",
+        "url",
+        "uploadedAt"
+      ]
+    },
+    "bulletin": {
+      "type": "object",
+      "description": "Represents a bulletin posted by a user",
+      "properties": {
+        "bulletinId": {
+          "type": "integer",
+          "description": "Unique ID of the bulletin",
+          "readOnly": true
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject of the bulletin"
+        },
+        "body": {
+          "type": "string",
+          "description": "Body content of the bulletin"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the bulletin was created"
+        },
+        "authorId": {
+          "type": "integer",
+          "description": "ID of the user who created the bulletin"
+        }
+      },
+      "required": [
+        "bulletinId",
+        "subject",
+        "body",
+        "createdAt",
+        "authorId"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Nostr Event",
+  "description": "JSON Schema for a Nostr event, covering NIP-01, NIP-09, NIP-13, NIP-26, NIP-40, NIP-42, and NIP-57.",
+  "type": "object",
+  "required": [
+    "id",
+    "pubkey",
+    "created_at",
+    "kind",
+    "tags",
+    "content",
+    "sig"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "32-bytes lowercase hex-encoded sha256 of the serialized event data",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "pubkey": {
+      "type": "string",
+      "description": "32-bytes lowercase hex-encoded public key of the event creator",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "created_at": {
+      "type": "integer",
+      "description": "Unix timestamp (seconds)"
+    },
+    "kind": {
+      "type": "integer",
+      "description": "Event kind",
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        16,
+        40,
+        41,
+        42,
+        9734,
+        9735,
+        10002,
+        30023
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Event tags",
+      "items": {
+        "type": "array",
+        "description": "A tag",
+        "minItems": 1,
+        "items": {
+          "type": "string"
+        },
+        "oneOf": [
+          {
+            "description": "Event tag (NIP-01)",
+            "minItems": 2,
+            "maxItems": 4,
+            "prefixItems": [
+              {
+                "const": "e"
+              },
+              {
+                "description": "Event ID",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "description": "Recommended relay URL",
+                "pattern": "^wss?://"
+              },
+              {
+                "description": "Marker (NIP-33: root, reply, mention)",
+                "enum": [
+                  "root",
+                  "reply",
+                  "mention"
+                ]
+              }
+            ]
+          },
+          {
+            "description": "Pubkey tag (NIP-01)",
+            "minItems": 2,
+            "maxItems": 3,
+            "prefixItems": [
+              {
+                "const": "p"
+              },
+              {
+                "description": "Pubkey",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "description": "Recommended relay URL",
+                "pattern": "^wss?://"
+              }
+            ]
+          },
+          {
+            "description": "Nonce tag (NIP-13)",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "const": "nonce"
+              },
+              {
+                "description": "Nonce string"
+              },
+              {
+                "description": "Difficulty (number of leading zero bits)"
+              }
+            ]
+          },
+          {
+            "description": "Subject tag (NIP-14)",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "const": "subject"
+              },
+              {
+                "description": "Subject for kind 1 notes"
+              }
+            ]
+          },
+          {
+            "description": "Delegation tag (NIP-26)",
+            "minItems": 4,
+            "maxItems": 4,
+            "prefixItems": [
+              {
+                "const": "delegation"
+              },
+              {
+                "description": "Delegator pubkey",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "description": "Conditions (e.g., kind=1&created_at>1672531200&created_at<1704067200)"
+              },
+              {
+                "description": "Delegation signature"
+              }
+            ]
+          },
+          {
+            "description": "Expiration tag (NIP-40)",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "const": "expiration"
+              },
+              {
+                "description": "Unix timestamp (seconds)"
+              }
+            ]
+          },
+          {
+            "description": "d tag (NIP-33)",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "const": "d"
+              },
+              {
+                "description": "Unique identifier for parameterized replaceable events"
+              }
+            ]
+          },
+          {
+            "description": "Lightning Zaps (NIP-57)",
+            "minItems": 3,
+            "maxItems": 3,
+            "prefixItems": [
+              {
+                "enum": ["relays", "bolt11", "description"]
+              },
+              {
+                "description": "array of relay URLs or a bolt11 invoice or description for the lightning zap request"
+              },
+              {
+                "description": "The actual zap request event in JSON string format"
+              }
+            ]
+          },
+          {
+            "description": "Generic tag",
+            "minItems": 1
+          }
+        ]
+      }
+    },
+    "content": {
+      "type": "string",
+      "description": "Event content. Interpretation depends on 'kind'"
+    },
+    "sig": {
+      "type": "string",
+      "description": "64-bytes lowercase hex of the signature of the sha256 hash of the serialized event data, which is the same as the 'id' field",
+      "pattern": "^[a-f0-9]{128}$"
+    }
+  },
+  "definitions": {
+    "kind0": {
+      "description": "Metadata (NIP-01)",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "User's profile name"
+        },
+        "about": {
+          "type": "string",
+          "description": "User's profile about text"
+        },
+        "picture": {
+          "type": "string",
+          "description": "User's profile picture URL",
+          "format": "URL"
+        },
+        "nip05": {
+          "type": "string",
+          "description": "NIP-05 identifier"
+        },
+        "lud16": {
+          "type": "string",
+          "description": "Lightning Address"
+        }
+      },
+      "additionalProperties": true
+    },
+    "kind3": {
+      "description": "Contact List (NIP-02)",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 3,
+        "prefixItems": [
+          {
+            "const": "p"
+          },
+          {
+            "description": "Pubkey",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          {
+            "description": "Petname",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "kind10002": {
+      "description": "Relay List Metadata (NIP-65)",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 3,
+        "prefixItems": [
+          {
+            "const": "r"
+          },
+          {
+            "description": "Relay URL",
+            "pattern": "^wss?://"
+          },
+          {
+            "description": "read/write",
+            "enum": [
+              "read",
+              "write",
+              ""
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "$ref": "#/definitions/kind0"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 3
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tags": {
+            "$ref": "#/definitions/kind3"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 10002
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tags": {
+            "$ref": "#/definitions/kind10002"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              0,
+              3,
+              10002
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content must be valid JSON for kinds 0, 3, and 10002."
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 1
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content can be any string for kind 1."
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": 9
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tags": {
+            "contains": {
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "const": "e"
+                },
+                {
+                  "description": "Event ID to be deleted",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}{
+  "type": "object",
+  "title": "Pinterest App Schema",
+  "description": "JSON Schema for a simplified representation of the Pinterest application data model.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users in the Pinterest app.",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "boards": {
+      "type": "array",
+      "description": "List of boards created by users.",
+      "items": {
+        "$ref": "#/definitions/board"
+      }
+    },
+    "pins": {
+      "type": "array",
+      "description": "List of pins (images/videos with associated data).",
+      "items": {
+        "$ref": "#/definitions/pin"
+      }
+    },
+    "interests": {
+      "type": "array",
+      "description": "List of predefined interests/topics that users can follow",
+      "items": {
+        "type": "string",
+        "description": "Interest or topic name"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "Represents a Pinterest user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "User's unique username."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "bio": {
+          "type": "string",
+          "description": "User's profile description."
+        },
+        "profile_image_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the user's profile image."
+        },
+        "website": {
+          "type": "string",
+          "format": "URL",
+          "description": "User's external website URL."
+        },
+        "followers": {
+          "type": "array",
+          "description": "List of users who follow this user",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID of a follower"
+          }
+        },
+        "following": {
+          "type": "array",
+          "description": "List of users that this user follows.",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID of a user being followed"
+          }
+        },
+        "interests": {
+          "type": "array",
+          "description": "List of interest IDs followed by the user.",
+          "items": {
+            "type": "string",
+            "description": "Interest ID."
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the user account was created."
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email"
+      ]
+    },
+    "board": {
+      "type": "object",
+      "description": "Represents a Pinterest board.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the board."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the board."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the board."
+        },
+        "owner_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User ID of the board's creator."
+        },
+        "is_secret": {
+          "type": "boolean",
+          "description": "Indicates whether the board is secret (private) or not."
+        },
+        "cover_image_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the board's cover image (optional)."
+        },
+        "pin_ids": {
+          "type": "array",
+          "description": "List of pin IDs that belong to this board.",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Pin ID."
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the board was created."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "owner_id"
+      ]
+    },
+    "pin": {
+      "type": "object",
+      "description": "Represents a Pinterest pin.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the pin."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the pin."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the pin."
+        },
+        "image_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the pin's image."
+        },
+        "link": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the website the pin links to (optional)."
+        },
+        "creator_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User ID of the pin's creator."
+        },
+        "board_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Board ID the pin is saved to (optional, initially can be null)."
+        },
+        "saves": {
+          "type": "array",
+          "description": "List of user IDs who have saved this pin.",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID who saved the pin"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "description": "Comments on the pin.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "User ID of the commenter"
+              },
+              "text": {
+                "type": "string",
+                "description": "Comment text"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Comment creation timestamp"
+              }
+            },
+            "required": ["user_id", "text", "created_at"]
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating when the pin was created."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags associated with the pin",
+          "items": {
+            "type": "string",
+            "description": "Tag name"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "image_url",
+        "creator_id"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reddit App Schema",
+  "description": "JSON Schema for a simplified Reddit-like application",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "subreddits": {
+      "type": "array",
+      "description": "List of subreddits",
+      "items": {
+        "$ref": "#/definitions/subreddit"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of posts",
+      "items": {
+        "$ref": "#/definitions/post"
+      }
+    },
+    "comments": {
+      "type": "array",
+      "description": "List of comments",
+      "items": {
+        "$ref": "#/definitions/comment"
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "readOnly": true
+        },
+        "username": {
+          "type": "string",
+          "description": "User's username",
+          "minLength": 3,
+          "maxLength": 20
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password (hashed)",
+          "minLength": 8,
+          "writeOnly": true
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Date and time the user was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "karma": {
+          "type": "integer",
+          "description": "User's total karma points",
+          "default": 0,
+          "readOnly": true
+        }
+      },
+      "required": [
+        "username",
+        "email",
+        "password"
+      ]
+    },
+    "subreddit": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the subreddit",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the subreddit (e.g., 'pics', 'funny')",
+          "pattern": "^[a-zA-Z0-9_]+$",
+          "minLength": 3,
+          "maxLength": 21
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the subreddit",
+          "maxLength": 500
+        },
+        "created_by": {
+          "type": "integer",
+          "description": "ID of the user who created the subreddit",
+          "$ref": "#/definitions/user/properties/id"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Date and time the subreddit was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "subscribers": {
+          "type": "integer",
+          "description": "Number of subscribers to the subreddit",
+          "default": 0,
+          "readOnly": true
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "created_by"
+      ]
+    },
+    "post": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the post",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the post",
+          "maxLength": 300
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the post (text or URL)",
+          "oneOf": [
+            {"format": "url"},
+            {"maxLength": 10000}
+          ]
+        },
+        "author": {
+          "type": "integer",
+          "description": "ID of the user who created the post",
+          "$ref": "#/definitions/user/properties/id"
+        },
+        "subreddit_id": {
+          "type": "integer",
+          "description": "ID of the subreddit the post belongs to",
+          "$ref": "#/definitions/subreddit/properties/id"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Date and time the post was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "upvotes": {
+          "type": "integer",
+          "description": "Number of upvotes",
+          "default": 0,
+          "readOnly": true
+        },
+        "downvotes": {
+          "type": "integer",
+          "description": "Number of downvotes",
+          "default": 0,
+          "readOnly": true
+        },
+        "vote_score": {
+          "type": "integer",
+          "description": "Calculated score (upvotes - downvotes)",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "title",
+        "content",
+        "author",
+        "subreddit_id"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the comment",
+          "readOnly": true
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the comment",
+          "maxLength": 10000
+        },
+        "author": {
+          "type": "integer",
+          "description": "ID of the user who wrote the comment",
+          "$ref": "#/definitions/user/properties/id"
+        },
+        "post_id": {
+          "type": "integer",
+          "description": "ID of the post the comment belongs to",
+          "$ref": "#/definitions/post/properties/id"
+        },
+        "parent_comment_id": {
+          "type": ["integer", "null"],
+          "description": "ID of the parent comment (if this is a reply)",
+          "default": null,
+          "$ref": "#/definitions/comment/properties/id"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Date and time the comment was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "upvotes": {
+          "type": "integer",
+          "description": "Number of upvotes",
+          "default": 0,
+          "readOnly": true
+        },
+        "downvotes": {
+          "type": "integer",
+          "description": "Number of downvotes",
+          "default": 0,
+          "readOnly": true
+        },
+        "vote_score": {
+          "type": "integer",
+          "description": "Calculated score (upvotes - downvotes)",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "content",
+        "author",
+        "post_id"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Snapchat",
+  "description": "JSON Schema for the Snapchat App Data Model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Snapchat users",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "stories": {
+      "type": "array",
+      "description": "List of user stories",
+      "items": {
+        "$ref": "#/definitions/story"
+      }
+    },
+    "snaps": {
+      "type": "array",
+      "description": "List of individual snaps",
+      "items": {
+        "$ref": "#/definitions/snap"
+      }
+    },
+    "chats": {
+      "type": "array",
+      "description": "List of chat conversations",
+      "items": {
+        "$ref": "#/definitions/chat"
+      }
+    },
+    "memories": {
+      "type": "array",
+      "description": "List of saved snaps and stories (Memories)",
+      "items": {
+        "$ref": "#/definitions/memory"
+      }
+    },
+    "discoverContent": {
+      "type": "array",
+      "description": "List of content available on the Discover page",
+      "items": {
+        "$ref": "#/definitions/discoverContentItem"
+      }
+    },
+    "filters": {
+      "type": "array",
+      "description": "List of available filters and lenses",
+      "items": {
+        "$ref": "#/definitions/filter"
+      }
+    },
+    "friends": {
+      "type": "object",
+      "description": "Friend relationships between users",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "Username of a friend"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "description": "A Snapchat user",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user"
+        },
+        "username": {
+          "type": "string",
+          "description": "User's public username"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User's display name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "User's phone number (optional)",
+          "pattern": "^\\+[1-9]\\d{1,14}$"
+        },
+        "bitmojiAvatar": {
+          "type": "string",
+          "description": "URL to the user's Bitmoji avatar (optional)"
+        },
+        "snapcode": {
+          "type": "string",
+          "description": "URL or data for the user's Snapcode"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the account was created"
+        },
+        "lastLogin": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time of the user's last login"
+        },
+        "location": {
+          "type": "object",
+          "description": "User's current location (if shared)",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "format": "float"
+            },
+            "longitude": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "privacySettings": {
+          "$ref": "#/definitions/privacySettings"
+        },
+        "notificationSettings": {
+          "$ref": "#/definitions/notificationSettings"
+        }
+      },
+      "required": [
+        "userId",
+        "username",
+        "displayName",
+        "email"
+      ]
+    },
+    "story": {
+      "type": "object",
+      "description": "A user's story",
+      "properties": {
+        "storyId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the story"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who posted the story"
+        },
+        "snaps": {
+          "type": "array",
+          "description": "List of snaps in the story",
+          "items": {
+            "$ref": "#/definitions/snapReference"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the story was created"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the story will expire (typically 24 hours after creation)"
+        },
+        "viewers": {
+          "type": "array",
+          "description": "List of user IDs who have viewed the story",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Indicates if the story is visible to everyone or just friends."
+        }
+      },
+      "required": [
+        "storyId",
+        "userId",
+        "snaps",
+        "createdAt",
+        "expiresAt",
+        "isPublic"
+      ]
+    },
+    "snap": {
+      "type": "object",
+      "description": "A single snap (photo or video)",
+      "properties": {
+        "snapId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the snap"
+        },
+        "senderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sent the snap"
+        },
+        "recipientIds": {
+          "type": "array",
+          "description": "List of user IDs who received the snap",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "mediaType": {
+          "type": "string",
+          "enum": [
+            "image",
+            "video"
+          ],
+          "description": "Type of media (image or video)"
+        },
+        "mediaUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the snap's media content"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the snap in seconds (for videos)"
+        },
+        "filterId": {
+          "type": "string",
+          "description": "ID of the filter applied to the snap (optional)"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Text caption added to the snap (optional)"
+        },
+        "location": {
+          "type": "object",
+          "description": "Location attached to the snap (optional)",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "format": "float"
+            },
+            "longitude": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the snap was created"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the snap will expire"
+        },
+        "openedBy": {
+          "type": "array",
+          "description": "List of user IDs who have opened the snap",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "screenshotCount": {
+          "type": "integer",
+          "description": "Number of times the snap has been screenshotted",
+          "default": 0
+        }
+      },
+      "required": [
+        "snapId",
+        "senderId",
+        "recipientIds",
+        "mediaType",
+        "mediaUrl",
+        "createdAt",
+        "expiresAt"
+      ]
+    },
+    "snapReference": {
+      "type": "object",
+      "description": "Reference to a snap within a story.",
+      "properties": {
+        "snapId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the snap in seconds (for videos)"
+        }
+      },
+      "required": [
+        "snapId"
+      ]
+    },
+    "chat": {
+      "type": "object",
+      "description": "A chat conversation between users",
+      "properties": {
+        "chatId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the chat"
+        },
+        "participants": {
+          "type": "array",
+          "description": "List of user IDs participating in the chat",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "minItems": 2
+        },
+        "messages": {
+          "type": "array",
+          "description": "List of messages in the chat",
+          "items": {
+            "$ref": "#/definitions/chatMessage"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the chat was created"
+        },
+        "lastActivityAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time of the last activity in the chat"
+        }
+      },
+      "required": [
+        "chatId",
+        "participants",
+        "messages",
+        "createdAt",
+        "lastActivityAt"
+      ]
+    },
+    "chatMessage": {
+      "type": "object",
+      "description": "A single message within a chat",
+      "properties": {
+        "messageId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the message"
+        },
+        "senderId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who sent the message"
+        },
+        "contentType": {
+          "type": "string",
+          "enum": [
+            "text",
+            "snap",
+            "audio",
+            "sticker",
+            "gif"
+          ],
+          "description": "Type of content in the message"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the message (text, snapId, URL, etc.)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the message was sent"
+        },
+        "readBy": {
+          "type": "array",
+          "description": "List of user IDs who have read the message",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "messageId",
+        "senderId",
+        "contentType",
+        "content",
+        "createdAt"
+      ]
+    },
+    "memory": {
+      "type": "object",
+      "description": "A saved snap or story in Memories",
+      "properties": {
+        "memoryId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the memory"
+        },
+        "userId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who owns the memory"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "snap",
+            "story"
+          ],
+          "description": "Type of memory (snap or story)"
+        },
+        "snapId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the snap (if type is 'snap')"
+        },
+        "storyId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the story (if type is 'story')"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the memory was created (saved)"
+        }
+      },
+      "required": [
+        "memoryId",
+        "userId",
+        "type"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "snapId"
+          ]
+        },
+        {
+          "required": [
+            "storyId"
+          ]
+        }
+      ]
+    },
+    "discoverContentItem": {
+      "type": "object",
+      "description": "An item on the Discover page (e.g., article, video, show)",
+      "properties": {
+        "contentId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the content"
+        },
+        "publisher": {
+          "type": "string",
+          "description": "Name of the publisher"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the content"
+        },
+        "mediaType": {
+          "type": "string",
+          "enum": [
+            "article",
+            "video",
+            "show",
+            "collection"
+          ],
+          "description": "Type of media"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the content's thumbnail image"
+        },
+        "contentUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the actual content"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the content in seconds (for videos)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the content was published"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the content (e.g., news, entertainment, sports)"
+        }
+      },
+      "required": [
+        "contentId",
+        "publisher",
+        "title",
+        "mediaType",
+        "thumbnailUrl",
+        "contentUrl"
+      ]
+    },
+    "filter": {
+      "type": "object",
+      "description": "A filter or lens",
+      "properties": {
+        "filterId": {
+          "type": "string",
+          "description": "Unique identifier for the filter or lens"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the filter or lens"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "filter",
+            "lens"
+          ],
+          "description": "Type of filter (visual filter or AR lens)"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to an image representing the filter/lens"
+        },
+        "creator": {
+          "type": "string",
+          "description": "Username or ID of the creator (if applicable)"
+        },
+        "sponsored": {
+          "type": "boolean",
+          "description": "Indicates if the filter is sponsored"
+        }
+      },
+      "required": [
+        "filterId",
+        "name",
+        "type",
+        "imageUrl"
+      ]
+    },
+    "privacySettings": {
+      "type": "object",
+      "description": "User's privacy settings.",
+      "properties": {
+        "viewMyStory": {
+          "type": "string",
+          "enum": [
+            "everyone",
+            "friends",
+            "custom"
+          ],
+          "description": "Who can view the user's story"
+        },
+        "contactMe": {
+          "type": "string",
+          "enum": [
+            "everyone",
+            "friends"
+          ],
+          "description": "Who can contact the user"
+        },
+        "seeMyLocation": {
+          "type": "string",
+          "enum": [
+            "friends",
+            "custom",
+            "none"
+          ],
+          "description": "Who can see the user's location on the Snap Map"
+        },
+        "customList": {
+          "type": "array",
+          "description": "List of user IDs for custom privacy settings",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "notificationSettings": {
+      "type": "object",
+      "description": "User's notification settings.",
+      "properties": {
+        "sound": {
+          "type": "boolean",
+          "description": "Enable or disable sound for notifications"
+        },
+        "vibrate": {
+          "type": "boolean",
+          "description": "Enable or disable vibration for notifications"
+        },
+        "stories": {
+          "type": "boolean",
+          "description": "Receive notifications for new stories"
+        },
+        "mentions": {
+          "type": "boolean",
+          "description": "Receive notifications for mentions"
+        },
+        "friendSuggestions": {
+          "type": "boolean",
+          "description": "Receive notifications for friend suggestions"
+        },
+        "memories": {
+          "type": "boolean",
+          "description": "Receive notifications for memories"
+        }
+      }
+    }
+  }
+}{
+    "title": "TikTok App Schema",
+    "description": "A JSON Schema representing the core data structures of the TikTok app.",
+    "type": "object",
+    "properties": {
+    "users": {
+        "type": "array",
+            "description": "List of registered users.",
+            "items": {
+            "$ref": "#/definitions/User"
+        }
+    },
+    "videos": {
+        "type": "array",
+            "description": "List of videos uploaded to the platform.",
+            "items": {
+            "$ref": "#/definitions/Video"
+        }
+    },
+    "comments": {
+        "type": "array",
+            "description": "List of comments made on videos.",
+            "items": {
+            "$ref": "#/definitions/Comment"
+        }
+    },
+    "likes": {
+        "type": "array",
+            "description": "List of likes given to videos.",
+            "items": {
+            "$ref": "#/definitions/Like"
+        }
+    },
+    "hashtags": {
+        "type": "array",
+            "description": "List of hashtags used in the app.",
+            "items": {
+            "$ref": "#/definitions/Hashtag"
+        }
+    },
+    "sounds": {
+        "type": "array",
+            "description": "List of sounds (music/audio) available in the app.",
+            "items": {
+            "$ref": "#/definitions/Sound"
+        }
+    },
+    "messages": {
+        "type": "array",
+            "description": "List of direct messages between users",
+            "items": {
+            "$ref": "#/definitions/Message"
+        }
+    },
+    "notifications": {
+        "type": "array",
+            "description": "List of user notifications.",
+            "items": {
+            "$ref": "#/definitions/Notification"
+        }
+    }
+},
+    "definitions": {
+    "User": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the user."
+            },
+            "username": {
+                "type": "string",
+                    "description": "User's unique username."
+            },
+            "full_name": {
+                "type": "string",
+                    "description": "User's full name (optional)."
+            },
+            "profile_picture": {
+                "type": "string",
+                    "format": "URL",
+                    "description": "URL to the user's profile picture."
+            },
+            "bio": {
+                "type": "string",
+                    "description": "User's bio (optional)."
+            },
+            "followers": {
+                "type": "array",
+                    "description": "List of user IDs following this user.",
+                    "items": {
+                    "type": "string",
+                        "format": "uuid"
+                }
+            },
+            "following": {
+                "type": "array",
+                    "description": "List of user IDs this user is following.",
+                    "items": {
+                    "type": "string",
+                        "format": "uuid"
+                }
+            },
+            "is_private": {
+                "type": "boolean",
+                    "description": "Indicates if the user's profile is private."
+            }
+        },
+        "required": [
+            "id",
+            "username"
+        ]
+    },
+    "Video": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the video."
+            },
+            "user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who uploaded the video."
+            },
+            "video_url": {
+                "type": "string",
+                    "format": "URL",
+                    "description": "URL to the video file."
+            },
+            "description": {
+                "type": "string",
+                    "description": "Description of the video (optional)."
+            },
+            "sound_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the sound used in the video (optional)."
+            },
+            "hashtags": {
+                "type": "array",
+                    "description": "List of hashtag IDs associated with the video.",
+                    "items": {
+                    "type": "string",
+                        "format": "uuid"
+                }
+            },
+            "duration": {
+                "type": "number",
+                    "format": "float",
+                    "description": "Duration of the video in seconds."
+            },
+            "created_at": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when the video was created."
+            },
+            "location": {
+                "type": "object",
+                    "description": "Location information, if provided.",
+                    "properties": {
+                    "latitude": {
+                        "type": "number",
+                            "format": "float"
+                    },
+                    "longitude": {
+                        "type": "number",
+                            "format": "float"
+                    }
+                }
+            }
+        },
+        "required": [
+            "id",
+            "user_id",
+            "video_url"
+        ]
+    },
+    "Comment": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the comment."
+            },
+            "video_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the video the comment is on."
+            },
+            "user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who made the comment."
+            },
+            "text": {
+                "type": "string",
+                    "description": "Content of the comment."
+            },
+            "created_at": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when the comment was created."
+            }
+        },
+        "required": [
+            "id",
+            "video_id",
+            "user_id",
+            "text"
+        ]
+    },
+    "Like": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the like."
+            },
+            "video_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the video that was liked."
+            },
+            "user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who gave the like."
+            },
+            "created_at": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when the like was given."
+            }
+        },
+        "required": [
+            "id",
+            "video_id",
+            "user_id"
+        ]
+    },
+    "Hashtag": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the hashtag."
+            },
+            "name": {
+                "type": "string",
+                    "description": "Name of the hashtag (e.g., \"funny\", \"dance\")."
+            }
+        },
+        "required": [
+            "id",
+            "name"
+        ]
+    },
+    "Sound": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the sound."
+            },
+            "title": {
+                "type": "string",
+                    "description": "Title of the sound."
+            },
+            "artist": {
+                "type": "string",
+                    "description": "Artist of the sound (if applicable)."
+            },
+            "sound_url": {
+                "type": "string",
+                    "format": "URL",
+                    "description": "URL to the sound file."
+            },
+            "duration": {
+                "type": "number",
+                    "format": "float",
+                    "description": "Duration of the sound in seconds."
+            }
+        },
+        "required": [
+            "id",
+            "title",
+            "sound_url"
+        ]
+    },
+    "Message": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the message."
+            },
+            "sender_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who sent the message"
+            },
+            "recipient_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who will receive the message"
+            },
+            "content": {
+                "type": "string",
+                    "description": "Content of the message"
+            },
+            "timestamp": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp of when the message was sent"
+            }
+        },
+        "required": [
+            "id",
+            "sender_id",
+            "recipient_id",
+            "content",
+            "timestamp"
+        ]
+    },
+    "Notification": {
+        "type": "object",
+            "properties": {
+            "id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier for the notification."
+            },
+            "user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the user who will receive the notification."
+            },
+            "type": {
+                "type": "string",
+                    "enum": [
+                    "like",
+                    "comment",
+                    "follow",
+                    "mention"
+                ],
+                    "description": "Type of notification."
+            },
+            "content": {
+                "type": "string",
+                    "description": "Description of the notification."
+            },
+            "is_read": {
+                "type": "boolean",
+                    "description": "Indicates if the notification has been read."
+            },
+            "created_at": {
+                "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when the notification was created."
+            },
+            "related_video_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "The id of the video related to the notification (if applicable)."
+            },
+            "related_user_id": {
+                "type": "string",
+                    "format": "uuid",
+                    "description": "The id of the user related to the notification (if applicable)."
+            }
+        },
+        "required": [
+            "id",
+            "user_id",
+            "type",
+            "content",
+            "created_at"
+        ]
+    }
+}
+}
+
+{
+  "type": "object",
+  "title": "Twitter",
+  "description": "JSON Schema for Twitter data model (simplified)",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Twitter users",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "tweets": {
+      "type": "array",
+      "description": "List of Tweets",
+      "items": {
+        "$ref": "#/definitions/Tweet"
+      }
+    },
+    "trends": {
+      "type": "array",
+      "description": "List of trending topics",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the trending topic"
+          },
+          "tweet_volume": {
+            "type": "integer",
+            "description": "Approximate number of tweets related to the trend"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "direct_messages": {
+      "type": "array",
+      "description": "List of direct messages",
+      "items": {
+        "$ref": "#/definitions/DirectMessage"
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "readOnly": true
+        },
+        "id_str": {
+          "type": "string",
+          "description": "String representation of the unique identifier",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "The user's display name",
+          "maxLength": 50
+        },
+        "screen_name": {
+          "type": "string",
+          "description": "The user's Twitter handle (username)",
+          "maxLength": 15,
+          "pattern": "^[a-zA-Z0-9_]+$"
+        },
+        "location": {
+          "type": "string",
+          "description": "The user's location (as entered by the user)",
+          "maxLength": 30
+        },
+        "description": {
+          "type": "string",
+          "description": "The user's profile description (bio)",
+          "maxLength": 160
+        },
+        "url": {
+          "type": "string",
+          "description": "URL associated with the user's profile",
+          "format": "url"
+        },
+        "protected": {
+          "type": "boolean",
+          "description": "Indicates if the user's tweets are protected (private)"
+        },
+        "followers_count": {
+          "type": "integer",
+          "description": "Number of followers",
+          "readOnly": true
+        },
+        "friends_count": {
+          "type": "integer",
+          "description": "Number of users this user is following",
+          "readOnly": true
+        },
+        "listed_count": {
+          "type": "integer",
+          "description": "Number of public lists the user is a member of",
+          "readOnly": true
+        },
+        "created_at": {
+          "type": "string",
+          "description": "UTC time when the user was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "favourites_count": {
+          "type": "integer",
+          "description": "Number of tweets this user has liked",
+          "readOnly": true
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Indicates if the user's account is verified"
+        },
+        "statuses_count": {
+          "type": "integer",
+          "description": "Number of tweets (including retweets) posted by the user",
+          "readOnly": true
+        },
+        "profile_image_url_https": {
+          "type": "string",
+          "description": "URL of the user's profile image (HTTPS)",
+          "format": "url"
+        },
+        "following": {
+          "type": "array",
+          "description": "IDs of users this user is following",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "followers": {
+          "type": "array",
+          "description": "IDs of users following this user",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "id_str",
+        "name",
+        "screen_name"
+      ]
+    },
+    "Tweet": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "description": "UTC time when the tweet was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the tweet",
+          "readOnly": true
+        },
+        "id_str": {
+          "type": "string",
+          "description": "String representation of the unique identifier",
+          "readOnly": true
+        },
+        "text": {
+          "type": "string",
+          "description": "The actual UTF-8 text of the tweet",
+          "maxLength": 280
+        },
+        "source": {
+          "type": "string",
+          "description": "Utility used to post the tweet (e.g., 'Twitter for iPhone')",
+          "readOnly": true
+        },
+        "truncated": {
+          "type": "boolean",
+          "description": "Indicates if the text was truncated",
+          "readOnly": true
+        },
+        "in_reply_to_status_id": {
+          "type": "integer",
+          "description": "ID of the tweet this tweet is in reply to (if applicable)"
+        },
+        "in_reply_to_user_id": {
+          "type": "integer",
+          "description": "ID of the user this tweet is in reply to (if applicable)"
+        },
+        "user_id": {
+          "type": "integer",
+          "description": "ID of the user who posted the tweet",
+          "$ref": "#/definitions/User/properties/id"
+        },
+        "coordinates": {
+          "type": "object",
+          "description": "Geographic coordinates associated with the tweet",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "Point"
+              ]
+            },
+            "coordinates": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "float"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "type",
+            "coordinates"
+          ]
+        },
+        "place": {
+          "type": "object",
+          "description": "Information about the place tagged in the tweet",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string",
+              "format": "url"
+            },
+            "place_type": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "full_name": {
+              "type": "string"
+            },
+            "country_code": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          }
+        },
+        "retweet_count": {
+          "type": "integer",
+          "description": "Number of times the tweet has been retweeted",
+          "readOnly": true
+        },
+        "favorite_count": {
+          "type": "integer",
+          "description": "Number of times the tweet has been liked",
+          "readOnly": true
+        },
+        "entities": {
+          "type": "object",
+          "description": "Entities extracted from the tweet text (hashtags, URLs, user mentions, etc.)",
+          "properties": {
+            "hashtags": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "urls": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "expanded_url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "display_url": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "user_mentions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "screen_name": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "id_str": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "media": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "id_str": {
+                    "type": "string"
+                  },
+                  "media_url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "media_url_https": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "display_url": {
+                    "type": "string"
+                  },
+                  "expanded_url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["photo", "video", "animated_gif"]
+                  },
+                  "sizes": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "w": {
+                          "type": "integer"
+                        },
+                        "h": {
+                          "type": "integer"
+                        },
+                        "resize": {
+                          "type": "string",
+                          "enum": ["crop", "fit"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "retweeted": {
+          "type": "boolean",
+          "description": "Indicates if the authenticated user has retweeted this tweet",
+          "readOnly": true
+        },
+        "favorited": {
+          "type": "boolean",
+          "description": "Indicates if the authenticated user has liked this tweet",
+          "readOnly": true
+        },
+        "retweeted_status": {
+          "type": "object",
+          "description": "If this is a retweet, this will contain the original Tweet object",
+          "$ref": "#/definitions/Tweet"
+        }
+      },
+      "required": [
+        "id",
+        "id_str",
+        "text",
+        "user_id"
+      ]
+    },
+    "DirectMessage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the direct message",
+          "readOnly": true
+        },
+        "id_str": {
+          "type": "string",
+          "description": "String representation of the unique identifier",
+          "readOnly": true
+        },
+        "text": {
+          "type": "string",
+          "description": "The text of the direct message",
+          "maxLength": 10000
+        },
+        "sender_id": {
+          "type": "integer",
+          "description": "ID of the user who sent the message"
+        },
+        "recipient_id": {
+          "type": "integer",
+          "description": "ID of the user who received the message"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "UTC time when the message was created",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "entities": {
+          "type": "object",
+          "description": "Entities extracted from the message text (URLs, user mentions, etc.)",
+          "properties": {
+            "urls": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "expanded_url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "display_url": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "user_mentions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "screen_name": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "id_str": {
+                    "type": "string"
+                  },
+                  "indices": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "id_str",
+        "text",
+        "sender_id",
+        "recipient_id"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Twitter/X App",
+  "description": "JSON Schema for Elon Musk's envisioned Twitter/X app, encompassing social networking, payments, and more.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users on the platform",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the user"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's unique handle (e.g., @elonmusk)",
+            "pattern": "^@[a-zA-Z0-9_]{1,15}$"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "profileImageUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the user's profile image"
+          },
+          "bio": {
+            "type": "string",
+            "description": "User's profile description",
+            "maxLength": 160
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Indicates if the user is verified"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of user account creation"
+          },
+          "followersCount": {
+            "type": "integer",
+            "description": "Number of followers"
+          },
+          "followingCount": {
+            "type": "integer",
+            "description": "Number of accounts the user follows"
+          },
+          "wallet": {
+            "type": "object",
+            "description": "User's digital wallet",
+            "properties": {
+              "balance": {
+                "type": "number",
+                "format": "float",
+                "description": "Current balance in the wallet"
+              },
+              "currency": {
+                "type": "string",
+                "description": "Default currency for the wallet (e.g., USD, X-Coin)",
+                "enum": ["USD", "EUR", "JPY", "BTC", "DOGE", "X-COIN"]
+              },
+              "transactions": {
+                "type": "array",
+                "description": "List of transactions associated with the wallet",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transactionId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the transaction"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Type of transaction (e.g., deposit, withdrawal, payment, tip)",
+                      "enum": ["deposit", "withdrawal", "payment", "tip", "transfer"]
+                    },
+                    "amount": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Amount of the transaction"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency of the transaction"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp of the transaction"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the transaction (e.g., pending, completed, failed)",
+                      "enum": ["pending", "completed", "failed"]
+                    },
+                    "sender": {
+                      "type": "string",
+                      "description": "Sender's user ID or external account identifier (optional)"
+                    },
+                    "recipient": {
+                      "type": "string",
+                      "description": "Recipient's user ID or external account identifier (optional)"
+                    }
+                  },
+                  "required": [
+                    "transactionId",
+                    "type",
+                    "amount",
+                    "currency",
+                    "timestamp",
+                    "status"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "balance",
+              "currency"
+            ]
+          },
+          "isCreator": {
+            "type": "boolean",
+            "description": "Indicates whether the user is registered as a creator",
+            "default": false
+          },
+          "subscriptionTier": {
+            "type": "string",
+            "description": "The creator's subscription tier, if applicable",
+            "enum": ["free", "basic", "premium", "gold"],
+            "default": "free"
+          }
+        },
+        "required": [
+          "userId",
+          "username",
+          "createdAt"
+        ]
+      }
+    },
+    "posts": {
+      "type": "array",
+      "description": "List of posts (tweets, messages, etc.)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the post"
+          },
+          "authorId": {
+            "type": "string",
+            "description": "User ID of the post's author"
+          },
+          "content": {
+            "type": "string",
+            "description": "Text content of the post",
+            "maxLength": 1000
+          },
+          "media": {
+            "type": "array",
+            "description": "List of media attachments (images, videos, etc.)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mediaId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the media"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Type of media (e.g., image, video)",
+                  "enum": ["image", "video"]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the media content"
+                }
+              },
+              "required": [
+                "mediaId",
+                "type",
+                "url"
+              ]
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of post creation"
+          },
+          "likes": {
+            "type": "integer",
+            "description": "Number of likes the post has received"
+          },
+          "reposts": {
+            "type": "integer",
+            "description": "Number of times the post has been reposted"
+          },
+          "comments": {
+            "type": "array",
+            "description": "List of comments on the post",
+            "items": {
+              "type": "object",
+              "properties": {
+                "commentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the comment"
+                },
+                "authorId": {
+                  "type": "string",
+                  "description": "User ID of the comment's author"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Text content of the comment",
+                  "maxLength": 500
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of comment creation"
+                }
+              },
+              "required": [
+                "commentId",
+                "authorId",
+                "content",
+                "createdAt"
+              ]
+            }
+          },
+          "inReplyTo": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the post this post is in reply to (optional)"
+          },
+          "isQuotePost": {
+            "type": "boolean",
+            "description": "Indicates if the post is a quote post"
+          },
+          "quotedPostId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the post being quoted (if isQuotePost is true)"
+          },
+          "poll": {
+            "type": "object",
+            "description": "Poll embedded in the post (optional)",
+            "properties": {
+              "options": {
+                "type": "array",
+                "description": "List of poll options",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "optionId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the option"
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "Text of the poll option",
+                      "maxLength": 25
+                    },
+                    "votes": {
+                      "type": "integer",
+                      "description": "Number of votes for this option",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "optionId",
+                    "text"
+                  ]
+                },
+                "minItems": 2,
+                "maxItems": 4
+              },
+              "endsAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the poll ends"
+              }
+            },
+            "required": [
+              "options",
+              "endsAt"
+            ]
+          }
+        },
+        "required": [
+          "postId",
+          "authorId",
+          "content",
+          "createdAt"
+        ]
+      }
+    },
+    "directMessages": {
+      "type": "array",
+      "description": "List of direct message conversations",
+      "items": {
+        "type": "object",
+        "properties": {
+          "conversationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the conversation"
+          },
+          "participants": {
+            "type": "array",
+            "description": "List of participants in the conversation",
+            "items": {
+              "type": "string",
+              "description": "User ID of a participant"
+            },
+            "minItems": 2
+          },
+          "messages": {
+            "type": "array",
+            "description": "List of messages in the conversation",
+            "items": {
+              "type": "object",
+              "properties": {
+                "messageId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the message"
+                },
+                "senderId": {
+                  "type": "string",
+                  "description": "User ID of the message sender"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Text content of the message",
+                  "maxLength": 1000
+                },
+                "media": {
+                  "type": "array",
+                  "description": "List of media attachments (images, videos, etc.)",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "mediaId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Unique identifier for the media"
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Type of media (e.g., image, video)",
+                        "enum": ["image", "video"]
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "URL",
+                        "description": "URL to the media content"
+                      }
+                    },
+                    "required": [
+                      "mediaId",
+                      "type",
+                      "url"
+                    ]
+                  }
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp of message creation"
+                }
+              },
+              "required": [
+                "messageId",
+                "senderId",
+                "content",
+                "createdAt"
+              ]
+            }
+          }
+        },
+        "required": [
+          "conversationId",
+          "participants",
+          "messages"
+        ]
+      }
+    },
+    "spaces": {
+      "type": "array",
+      "description": "List of live audio spaces",
+      "items": {
+        "type": "object",
+        "properties": {
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the space"
+          },
+          "hostId": {
+            "type": "string",
+            "description": "User ID of the space host"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the space",
+            "maxLength": 100
+          },
+          "speakers": {
+            "type": "array",
+            "description": "List of users who are speaking in the space",
+            "items": {
+              "type": "string",
+              "description": "User ID of a speaker"
+            }
+          },
+          "listeners": {
+            "type": "array",
+            "description": "List of users who are listening to the space",
+            "items": {
+              "type": "string",
+              "description": "User ID of a listener"
+            }
+          },
+          "state": {
+            "type": "string",
+            "description": "Current state of the space (e.g., live, scheduled, ended)",
+            "enum": ["live", "scheduled", "ended"]
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the space started"
+          },
+          "scheduledStart": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the space is scheduled to start (if state is scheduled)"
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the space ended (if state is ended)"
+          }
+        },
+        "required": [
+          "spaceId",
+          "hostId",
+          "title",
+          "state"
+        ]
+      }
+    },
+    "communities": {
+      "type": "array",
+      "description": "List of communities",
+      "items": {
+        "type": "object",
+        "properties": {
+          "communityId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the community"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the community",
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the community",
+            "maxLength": 200
+          },
+          "members": {
+            "type": "array",
+            "description": "List of members in the community",
+            "items": {
+              "type": "string",
+              "description": "User ID of a member"
+            }
+          },
+          "admins": {
+            "type": "array",
+            "description": "List of administrators in the community",
+            "items": {
+              "type": "string",
+              "description": "User ID of an administrator"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of community creation"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Indicates if the community is public or private"
+          }
+        },
+        "required": [
+          "communityId",
+          "name",
+          "description",
+          "members",
+          "createdAt",
+          "isPublic"
+        ]
+      }
+    },
+    "trends": {
+      "type": "array",
+      "description": "List of trending topics",
+      "items": {
+        "type": "object",
+        "properties": {
+          "trend": {
+            "type": "string",
+            "description": "The trending topic"
+          },
+          "volume": {
+            "type": "integer",
+            "description": "Approximate number of posts related to the trend"
+          }
+        },
+        "required": [
+          "trend",
+          "volume"
+        ]
+      }
+    },
+    "payments": {
+      "type": "array",
+      "description": "List of payment methods",
+      "items": {
+        "type": "object",
+        "properties": {
+          "methodId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the payment method"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User ID that the payment method is linked to"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of payment method (e.g., credit_card, bank_account, crypto_wallet)",
+            "enum": [
+              "credit_card",
+              "bank_account",
+              "crypto_wallet"
+            ]
+          },
+          "details": {
+            "type": "object",
+            "description": "Details specific to the payment method type",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "brand": {
+                    "type": "string",
+                    "description": "Card brand (e.g., Visa, Mastercard)",
+                    "enum": ["Visa", "Mastercard", "Amex", "Discover"]
+                  },
+                  "last4": {
+                    "type": "string",
+                    "description": "Last 4 digits of the card number",
+                    "pattern": "^[0-9]{4}$"
+                  },
+                  "expMonth": {
+                    "type": "integer",
+                    "description": "Expiration month",
+                    "minimum": 1,
+                    "maximum": 12
+                  },
+                  "expYear": {
+                    "type": "integer",
+                    "description": "Expiration year",
+                    "minimum": 2023
+                  }
+                },
+                "required": [
+                  "brand",
+                  "last4",
+                  "expMonth",
+                  "expYear"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "bankName": {
+                    "type": "string",
+                    "description": "Name of the bank"
+                  },
+                  "accountType": {
+                    "type": "string",
+                    "description": "Type of bank account (e.g., checking, savings)",
+                    "enum": ["checking", "savings"]
+                  },
+                  "routingNumber": {
+                    "type": "string",
+                    "description": "Bank routing number"
+                  },
+                  "last4": {
+                    "type": "string",
+                    "description": "Last 4 digits of the account number"
+                  }
+                },
+                "required": [
+                  "bankName",
+                  "accountType",
+                  "routingNumber",
+                  "last4"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "cryptoType": {
+                    "type": "string",
+                    "description": "Type of cryptocurrency (e.g., BTC, ETH, DOGE)",
+                    "enum": ["BTC", "ETH", "DOGE", "X-COIN"]
+                  },
+                  "walletAddress": {
+                    "type": "string",
+                    "description": "Public address of the crypto wallet"
+                  }
+                },
+                "required": [
+                  "cryptoType",
+                  "walletAddress"
+                ]
+              }
+            ]
+          },
+          "isDefault": {
+            "type": "boolean",
+            "description": "Indicates if this is the user's default payment method",
+            "default": false
+          }
+        },
+        "required": [
+          "methodId",
+          "userId",
+          "type",
+          "details"
+        ]
+      }
+    },
+    "subscriptions": {
+      "type": "array",
+      "description": "List of user subscriptions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subscriberId": {
+            "type": "string",
+            "description": "User ID of the subscriber"
+          },
+          "creatorId": {
+            "type": "string",
+            "description": "User ID of the creator being subscribed to"
+          },
+          "tier": {
+            "type": "string",
+            "description": "Subscription tier",
+            "enum": ["basic", "premium", "gold"]
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start date of the subscription"
+          },
+          "renewalDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Next renewal date of the subscription"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the subscription",
+            "enum": ["active", "canceled", "expired"]
+          }
+        },
+        "required": [
+          "subscriberId",
+          "creatorId",
+          "tier",
+          "startDate",
+          "renewalDate",
+          "status"
+        ]
+      }
+    },
+    "commerce": {
+      "type": "object",
+      "description": "E-commerce functionalities",
+      "properties": {
+        "products": {
+          "type": "array",
+          "description": "List of products for sale",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier for the product"
+              },
+              "sellerId": {
+                "type": "string",
+                "description": "User ID of the seller"
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the product",
+                "maxLength": 100
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the product",
+                "maxLength": 500
+              },
+              "price": {
+                "type": "number",
+                "format": "float",
+                "description": "Price of the product"
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency of the price",
+                "enum": ["USD", "EUR", "JPY", "BTC", "DOGE", "X-COIN"]
+              },
+              "images": {
+                "type": "array",
+                "description": "List of product images",
+                "items": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to a product image"
+                }
+              },
+              "stock": {
+                "type": "integer",
+                "description": "Available stock of the product",
+                "minimum": 0
+              },
+              "category": {
+                "type": "string",
+                "description": "Category of the product (e.g., electronics, fashion, books)",
+                "enum": ["electronics", "fashion", "books", "home", "beauty", "other"]
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the product was added"
+              }
+            },
+            "required": [
+              "productId",
+              "sellerId",
+              "name",
+              "description",
+              "price",
+              "currency",
+              "stock"
+            ]
+          }
+        },
+        "orders": {
+          "type": "array",
+          "description": "List of orders placed",
+          "items": {
+            "type": "object",
+            "properties": {
+              "orderId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier for the order"
+              },
+              "buyerId": {
+                "type": "string",
+                "description": "User ID of the buyer"
+              },
+              "items": {
+                "type": "array",
+                "description": "List of items in the order",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productId": {
+                      "type": "string",
+                      "description": "ID of the product"
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "description": "Quantity of the product ordered",
+                      "minimum": 1
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Price per item at the time of order"
+                    }
+                  },
+                  "required": [
+                    "productId",
+                    "quantity",
+                    "price"
+                  ]
+                }
+              },
+              "totalAmount": {
+                "type": "number",
+                "format": "float",
+                "description": "Total amount of the order"
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency of the order total"
+              },
+              "orderDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the order was placed"
+              },
+              "status": {
+                "type": "string",
+                "description": "Status of the order (e.g., pending, processing, shipped, delivered, canceled)",
+                "enum": [
+                  "pending",
+                  "processing",
+                  "shipped",
+                  "delivered",
+                  "canceled"
+                ]
+              },
+              "shippingAddress": {
+                "type": "object",
+                "description": "Shipping address for the order",
+                "properties": {
+                  "street": {
+                    "type": "string",
+                    "description": "Street address"
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "City"
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "State or province"
+                  },
+                  "zipCode": {
+                    "type": "string",
+                    "description": "ZIP or postal code"
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "Country"
+                  }
+                },
+                "required": [
+                  "street",
+                  "city",
+                  "state",
+                  "zipCode",
+                  "country"
+                ]
+              }
+            },
+            "required": [
+              "orderId",
+              "buyerId",
+              "items",
+              "totalAmount",
+              "currency",
+              "orderDate",
+              "status"
+            ]
+          }
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "Application settings",
+      "properties": {
+        "defaultCurrency": {
+          "type": "string",
+          "description": "Default currency for the application",
+          "enum": ["USD", "EUR", "JPY", "BTC", "DOGE", "X-COIN"]
+        },
+        "supportedCurrencies": {
+          "type": "array",
+          "description": "List of supported currencies",
+          "items": {
+            "type": "string",
+            "enum": ["USD", "EUR", "JPY", "BTC", "DOGE", "X-COIN"]
+          }
+        },
+        "contentModeration": {
+          "type": "object",
+          "description": "Content moderation settings",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Indicates if content moderation is enabled"
+            },
+            "rules": {
+              "type": "array",
+              "description": "List of content moderation rules",
+              "items": {
+                "type": "string",
+                "description": "A content moderation rule (e.g., no hate speech, no spam)"
+              }
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "algorithm": {
+          "type": "object",
+          "description": "Algorithm settings",
+          "properties": {
+            "timeline": {
+              "type": "string",
+              "description": "Algorithm used for the main timeline",
+              "enum": ["chronological", "algorithmic"],
+              "default": "algorithmic"
+            },
+            "recommendations": {
+              "type": "string",
+              "description": "Algorithm used for content recommendations",
+              "enum": ["collaborative", "content-based", "hybrid"]
+            }
+          },
+          "required": [
+            "timeline",
+            "recommendations"
+          ]
+        },
+        "creatorMonetization": {
+          "type": "object",
+          "description": "Creator Monetization Settings",
+          "properties": {
+            "tipsEnabled": {
+              "type": "boolean",
+              "description": "Whether tipping is globally enabled",
+              "default": true
+            },
+            "subscriptionsEnabled": {
+              "type": "boolean",
+              "description": "Whether subscriptions are globally enabled",
+              "default": true
+            },
+            "platformFee": {
+              "type": "number",
+              "description": "Percentage fee the platform takes on creator earnings",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.1
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "users",
+    "posts"
+  ]
+}

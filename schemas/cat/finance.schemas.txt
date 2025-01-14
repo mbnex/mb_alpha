@@ -1,0 +1,4326 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AliPay Transaction",
+  "description": "JSON Schema for an AliPay transaction, covering common API interactions.",
+  "type": "object",
+  "definitions": {
+    "address": {
+      "type": "object",
+      "properties": {
+        "country_code": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code (e.g., CN, US)",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "state_or_province": {
+          "type": "string",
+          "description": "State or province"
+        },
+        "city": {
+          "type": "string",
+          "description": "City"
+        },
+        "district": {
+          "type": "string",
+          "description": "District or region within the city"
+        },
+        "street_address": {
+          "type": "string",
+          "description": "Street address line 1"
+        },
+        "street_address2": {
+          "type": "string",
+          "description": "Street address line 2 (optional)"
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "Postal or ZIP code"
+        }
+      },
+      "required": [
+        "country_code",
+        "city",
+        "street_address"
+      ]
+    },
+    "product": {
+      "type": "object",
+      "properties": {
+        "product_code": {
+          "type": "string",
+          "description": "Merchant's product code"
+        },
+        "product_name": {
+          "type": "string",
+          "description": "Name of the product"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Quantity of the product",
+          "minimum": 1
+        },
+        "unit_price": {
+          "type": "number",
+          "description": "Price per unit",
+          "minimum": 0
+        },
+        "product_description": {
+          "type": "string",
+          "description": "Optional description"
+        }
+      },
+      "required": [
+        "product_code",
+        "product_name",
+        "quantity",
+        "unit_price"
+      ]
+    },
+    "buyer": {
+      "type": "object",
+      "properties": {
+        "buyer_id": {
+          "type": "string",
+          "description": "AliPay user ID"
+        },
+        "buyer_logon_id": {
+          "type": "string",
+          "description": "AliPay user login ID (e.g., email or phone)"
+        },
+        "buyer_name": {
+          "type": "string",
+          "description": "Name of the buyer"
+        }
+      },
+      "required": [
+        "buyer_id"
+      ]
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code (e.g., CNY, USD)",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method type.",
+      "enum": [
+        "QR_CODE",
+        "BAR_CODE",
+        "WEB",
+        "APP",
+        "IN_APP_MINI_PROGRAM"
+      ]
+    }
+  },
+  "properties": {
+    "request": {
+      "type": "object",
+      "description": "Details of the transaction request",
+      "oneOf": [
+        {
+          "title": "Create Payment/Order",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.create",
+                "alipay.trade.app.pay",
+                "alipay.trade.wap.pay",
+                "alipay.trade.page.pay",
+                "alipay.trade.precreate"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number",
+              "maxLength": 64
+            },
+            "total_amount": {
+              "type": "number",
+              "description": "Total amount of the transaction",
+              "minimum": 0.01
+            },
+            "currency": {
+              "$ref": "#/definitions/currency"
+            },
+            "subject": {
+              "type": "string",
+              "description": "Brief description of the transaction"
+            },
+            "body": {
+              "type": "string",
+              "description": "Detailed description of the transaction"
+            },
+            "product_code": {
+              "type": "string",
+              "description": "Specific product code for different AliPay services",
+              "enum": [
+                "FAST_INSTANT_TRADE_PAY",
+                "QUICK_MSECURITY_PAY",
+                "QUICK_WAP_WAY"
+              ]
+            },
+            "timeout_express": {
+              "type": "string",
+              "description": "Order timeout period (e.g., 15m, 1h, 1d)",
+              "pattern": "^\\d+[mhdw]$"
+            },
+            "goods_detail": {
+              "type": "array",
+              "description": "List of goods included in the order",
+              "items": {
+                "$ref": "#/definitions/product"
+              }
+            },
+            "extend_params": {
+              "type": "object",
+              "description": "Additional parameters",
+              "properties": {
+                "sys_service_provider_id": {
+                  "type": "string",
+                  "description": "System service provider ID (for ISVs)"
+                },
+                "hb_fq_num":{
+                  "type": "string",
+                  "description": "Number of Huabei Fenqi (installments). For example: 3, 6, 12"
+                },
+                "hb_fq_seller_percent": {
+                  "type": "string",
+                  "description": "Percentage of the installment fee borne by the seller. '0' for buyer pays all, '100' for seller pays all. Between 0 and 100."
+                }
+
+              },
+              "additionalProperties": true
+            },
+            "passback_params": {
+              "type": "string",
+              "description": "Custom parameters that will be returned in the response",
+              "maxLength": 512
+            },
+            "notify_url": {
+              "type": "string",
+              "description": "URL for asynchronous notifications",
+              "format": "URL"
+            },
+            "return_url": {
+              "type": "string",
+              "description": "URL for synchronous redirect after payment (for web)",
+              "format": "URL"
+            },
+            "show_url": {
+              "type": "string",
+              "description": "URL of product display page (for web)",
+              "format": "URL"
+            },
+            "payment_method": {
+              "$ref": "#/definitions/payment_method"
+            },
+            "store_id": {
+              "type": "string",
+              "description": "Store ID."
+            },
+            "merchant_order_no": {
+              "type": "string",
+              "description": "Merchant order number. This is the same as `out_trade_no`"
+            }
+          },
+          "required": [
+            "method",
+            "out_trade_no",
+            "total_amount",
+            "currency",
+            "subject"
+          ]
+        },
+        {
+          "title": "Query Order",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.query"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            }
+          },
+          "required": [
+            "method"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "out_trade_no"
+              ]
+            },
+            {
+              "required": [
+                "trade_no"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Refund",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.refund"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "refund_amount": {
+              "type": "number",
+              "description": "Amount to be refunded",
+              "minimum": 0.01
+            },
+            "out_request_no": {
+              "type": "string",
+              "description": "Unique refund request number (for partial refunds)"
+            },
+            "refund_reason": {
+              "type": "string",
+              "description": "Reason for the refund"
+            }
+          },
+          "required": [
+            "method",
+            "refund_amount"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "out_trade_no"
+              ]
+            },
+            {
+              "required": [
+                "trade_no"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Cancel Order",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.cancel"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            }
+          },
+          "required": [
+            "method"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "out_trade_no"
+              ]
+            },
+            {
+              "required": [
+                "trade_no"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Close Order",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "alipay.trade.close"
+              ],
+              "description": "AliPay API method"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            }
+          },
+          "required": [
+            "method"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "out_trade_no"
+              ]
+            },
+            {
+              "required": [
+                "trade_no"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "response": {
+      "type": "object",
+      "description": "Details of the transaction response",
+      "oneOf": [
+        {
+          "title": "Create Payment/Order Response",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Response code (e.g., 10000 for success)",
+              "enum": [
+                "10000",
+                "20000",
+                "20001",
+                "40001",
+                "40002",
+                "40003",
+                "40004",
+                "40006"
+              ]
+            },
+            "msg": {
+              "type": "string",
+              "description": "Response message (e.g., Success)"
+            },
+            "sub_code": {
+              "type": "string",
+              "description": "Sub-error code (e.g., ACQ.TRADE_HAS_SUCCESS)"
+            },
+            "sub_msg": {
+              "type": "string",
+              "description": "Sub-error message"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "qr_code": {
+              "type": "string",
+              "description": "QR code URL (for QR code payments)"
+            },
+            "code_url": {
+              "type": "string",
+              "description": "URL to redirect to for payment (for web)",
+              "format": "URL"
+            }
+          },
+          "required": [
+            "code",
+            "msg"
+          ]
+        },
+        {
+          "title": "Query Order Response",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Response code",
+              "enum": [
+                "10000",
+                "20000",
+                "20001",
+                "40001",
+                "40002",
+                "40003",
+                "40004",
+                "40006"
+              ]
+            },
+            "msg": {
+              "type": "string",
+              "description": "Response message"
+            },
+            "sub_code": {
+              "type": "string",
+              "description": "Sub-error code"
+            },
+            "sub_msg": {
+              "type": "string",
+              "description": "Sub-error message"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "buyer_logon_id": {
+              "type": "string",
+              "description": "AliPay user login ID"
+            },
+            "trade_status": {
+              "type": "string",
+              "description": "Transaction status",
+              "enum": [
+                "WAIT_BUYER_PAY",
+                "TRADE_CLOSED",
+                "TRADE_SUCCESS",
+                "TRADE_FINISHED"
+              ]
+            },
+            "total_amount": {
+              "type": "number",
+              "description": "Total amount of the transaction"
+            },
+            "send_pay_date": {
+              "type": "string",
+              "description": "Date and time of payment",
+              "format": "date-time"
+            },
+            "buyer_user_id": {
+              "type": "string",
+              "description": "AliPay user ID"
+            },
+            "receipt_amount": {
+              "type": "number",
+              "description": "Amount received by the seller."
+            },
+            "point_amount": {
+              "type": "number",
+              "description": "Amount paid with points."
+            },
+            "invoice_amount": {
+              "type": "number",
+              "description": "Amount on the invoice."
+            },
+            "buyer_pay_amount": {
+              "type": "number",
+              "description": "Amount paid by the buyer"
+            }
+          },
+          "required": [
+            "code",
+            "msg"
+          ]
+        },
+        {
+          "title": "Refund Response",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Response code",
+              "enum": [
+                "10000",
+                "20000",
+                "20001",
+                "40001",
+                "40002",
+                "40003",
+                "40004",
+                "40006"
+              ]
+            },
+            "msg": {
+              "type": "string",
+              "description": "Response message"
+            },
+            "sub_code": {
+              "type": "string",
+              "description": "Sub-error code"
+            },
+            "sub_msg": {
+              "type": "string",
+              "description": "Sub-error message"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "refund_fee": {
+              "type": "number",
+              "description": "Refunded amount"
+            },
+            "gmt_refund_pay": {
+              "type": "string",
+              "description": "Date and time of refund",
+              "format": "date-time"
+            },
+            "buyer_logon_id": {
+              "type": "string",
+              "description": "AliPay user login ID"
+            },
+            "fund_change": {
+              "type": "string",
+              "description": "Indicates whether the refund caused a fund change (Y/N)",
+              "enum": ["Y", "N"]
+            }
+          },
+          "required": [
+            "code",
+            "msg"
+          ]
+        },
+        {
+          "title": "Cancel/Close Order Response",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Response code",
+              "enum": [
+                "10000",
+                "20000",
+                "20001",
+                "40001",
+                "40002",
+                "40003",
+                "40004",
+                "40006"
+              ]
+            },
+            "msg": {
+              "type": "string",
+              "description": "Response message"
+            },
+            "sub_code": {
+              "type": "string",
+              "description": "Sub-error code"
+            },
+            "sub_msg": {
+              "type": "string",
+              "description": "Sub-error message"
+            },
+            "out_trade_no": {
+              "type": "string",
+              "description": "Merchant's unique order number"
+            },
+            "trade_no": {
+              "type": "string",
+              "description": "AliPay's unique transaction number"
+            },
+            "action": {
+              "type": "string",
+              "description": "For alipay.trade.close it indicates whether to retry closing the order. For alipay.trade.cancel this field is not present.",
+              "enum": ["retry", "close"]
+            }
+          },
+          "required": [
+            "code",
+            "msg"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "request"
+  ]
+}{
+  "type": "object",
+  "title": "Binance API Schema",
+  "description": "A comprehensive JSON Schema representing the Binance API, covering common endpoints and data structures. Note: This schema is a simplified representation and might not include every single endpoint or field. For complete and up-to-date information, refer to the official Binance API documentation.",
+  "properties": {
+    "exchangeInfo": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/exchangeInfo",
+      "properties": {
+        "timezone": { "type": "string", "example": "UTC" },
+        "serverTime": { "type": "integer", "format": "int64", "description": "Timestamp in milliseconds" },
+        "rateLimits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rateLimitType": { "type": "string", "enum": ["REQUEST_WEIGHT", "ORDERS", "RAW_REQUESTS"] },
+              "interval": { "type": "string", "enum": ["SECOND", "MINUTE", "DAY"] },
+              "intervalNum": { "type": "integer" },
+              "limit": { "type": "integer" }
+            },
+            "required": ["rateLimitType", "interval", "intervalNum", "limit"]
+          }
+        },
+        "exchangeFilters": { "type": "array", "items": { "type": "object" } },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": { "type": "string", "example": "BTCUSDT" },
+              "status": { "type": "string", "enum": ["PRE_TRADING", "TRADING", "POST_TRADING", "END_OF_DAY", "HALT", "AUCTION_MATCH", "BREAK"] },
+              "baseAsset": { "type": "string", "example": "BTC" },
+              "baseAssetPrecision": { "type": "integer" },
+              "quoteAsset": { "type": "string", "example": "USDT" },
+              "quotePrecision": { "type": "integer" },
+              "quoteAssetPrecision": { "type": "integer" },
+              "baseCommissionPrecision": { "type": "integer" },
+              "quoteCommissionPrecision": { "type": "integer" },
+              "orderTypes": {
+                "type": "array",
+                "items": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] }
+              },
+              "icebergAllowed": { "type": "boolean" },
+              "ocoAllowed": { "type": "boolean" },
+              "quoteOrderQtyMarketAllowed": { "type": "boolean" },
+              "allowTrailingStop": { "type": "boolean" },
+              "cancelReplaceAllowed": { "type": "boolean" },
+              "isSpotTradingAllowed": { "type": "boolean" },
+              "isMarginTradingAllowed": { "type": "boolean" },
+              "filters": { "type": "array", "items": { "type": "object" } },
+              "permissions": { "type": "array", "items": { "type": "string", "enum": ["SPOT", "MARGIN", "LEVERAGED", "TRD_GRP_002", "TRD_GRP_003", "TRD_GRP_004", "TRD_GRP_005"] } }
+            },
+            "required": [
+              "symbol",
+              "status",
+              "baseAsset",
+              "baseAssetPrecision",
+              "quoteAsset",
+              "quotePrecision",
+              "quoteAssetPrecision",
+              "baseCommissionPrecision",
+              "quoteCommissionPrecision",
+              "orderTypes",
+              "icebergAllowed",
+              "ocoAllowed",
+              "quoteOrderQtyMarketAllowed",
+              "allowTrailingStop",
+              "cancelReplaceAllowed",
+              "isSpotTradingAllowed",
+              "isMarginTradingAllowed",
+              "filters",
+              "permissions"
+            ]
+          }
+        }
+      },
+      "required": [
+        "timezone",
+        "serverTime",
+        "rateLimits",
+        "exchangeFilters",
+        "symbols"
+      ]
+    },
+    "orderBook": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/depth",
+      "properties": {
+        "lastUpdateId": { "type": "integer", "format": "int64" },
+        "bids": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              { "type": "string", "format": "decimal", "description": "Price" },
+              { "type": "string", "format": "decimal", "description": "Quantity" }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "asks": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              { "type": "string", "format": "decimal", "description": "Price" },
+              { "type": "string", "format": "decimal", "description": "Quantity" }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      },
+      "required": [
+        "lastUpdateId",
+        "bids",
+        "asks"
+      ]
+    },
+    "recentTrades": {
+      "type": "array",
+      "description": "Endpoint: /api/v3/trades",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "price": { "type": "string", "format": "decimal" },
+          "qty": { "type": "string", "format": "decimal" },
+          "quoteQty": { "type": "string", "format": "decimal" },
+          "time": { "type": "integer", "format": "int64", "description": "Timestamp in milliseconds" },
+          "isBuyerMaker": { "type": "boolean" },
+          "isBestMatch": { "type": "boolean" }
+        },
+        "required": [
+          "id",
+          "price",
+          "qty",
+          "quoteQty",
+          "time",
+          "isBuyerMaker",
+          "isBestMatch"
+        ]
+      }
+    },
+    "historicalTrades": {
+      "type": "array",
+      "description": "Endpoint: /api/v3/historicalTrades",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "price": { "type": "string", "format": "decimal" },
+          "qty": { "type": "string", "format": "decimal" },
+          "quoteQty": { "type": "string", "format": "decimal" },
+          "time": { "type": "integer", "format": "int64", "description": "Timestamp in milliseconds" },
+          "isBuyerMaker": { "type": "boolean" },
+          "isBestMatch": { "type": "boolean" }
+        },
+        "required": [
+          "id",
+          "price",
+          "qty",
+          "quoteQty",
+          "time",
+          "isBuyerMaker",
+          "isBestMatch"
+        ]
+      }
+    },
+    "accountInformation": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/account",
+      "properties": {
+        "makerCommission": { "type": "integer" },
+        "takerCommission": { "type": "integer" },
+        "buyerCommission": { "type": "integer" },
+        "sellerCommission": { "type": "integer" },
+        "canTrade": { "type": "boolean" },
+        "canWithdraw": { "type": "boolean" },
+        "canDeposit": { "type": "boolean" },
+        "brokered": { "type": "boolean" },
+        "updateTime": { "type": "integer", "format": "int64" },
+        "accountType": { "type": "string", "enum": ["SPOT", "MARGIN", "FUTURES", "LEVERAGED", "TRD_GRP_002", "TRD_GRP_003", "TRD_GRP_004", "TRD_GRP_005"] },
+        "balances": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "asset": { "type": "string", "example": "BTC" },
+              "free": { "type": "string", "format": "decimal" },
+              "locked": { "type": "string", "format": "decimal" }
+            },
+            "required": [
+              "asset",
+              "free",
+              "locked"
+            ]
+          }
+        },
+        "permissions": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "makerCommission",
+        "takerCommission",
+        "buyerCommission",
+        "sellerCommission",
+        "canTrade",
+        "canWithdraw",
+        "canDeposit",
+        "brokered",
+        "updateTime",
+        "accountType",
+        "balances",
+        "permissions"
+      ]
+    },
+    "newOrder": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/order",
+      "properties": {
+        "symbol": { "type": "string" },
+        "orderId": { "type": "integer", "format": "int64" },
+        "orderListId": { "type": "integer", "format": "int64" },
+        "clientOrderId": { "type": "string" },
+        "transactTime": { "type": "integer", "format": "int64" },
+        "price": { "type": "string", "format": "decimal" },
+        "origQty": { "type": "string", "format": "decimal" },
+        "executedQty": { "type": "string", "format": "decimal" },
+        "cummulativeQuoteQty": { "type": "string", "format": "decimal" },
+        "status": { "type": "string", "enum": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELED", "PENDING_CANCEL", "REJECTED", "EXPIRED"] },
+        "timeInForce": { "type": "string", "enum": ["GTC", "IOC", "FOK"] },
+        "type": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] },
+        "side": { "type": "string", "enum": ["BUY", "SELL"] },
+        "fills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "price": { "type": "string", "format": "decimal" },
+              "qty": { "type": "string", "format": "decimal" },
+              "commission": { "type": "string", "format": "decimal" },
+              "commissionAsset": { "type": "string" }
+            },
+            "required": [
+              "price",
+              "qty",
+              "commission",
+              "commissionAsset"
+            ]
+          }
+        }
+      },
+      "required": [
+        "symbol",
+        "orderId",
+        "orderListId",
+        "clientOrderId",
+        "transactTime"
+      ]
+    },
+    "cancelOrder": {
+      "type": "object",
+      "description": "Endpoint: /api/v3/order",
+      "properties": {
+        "symbol": { "type": "string" },
+        "origClientOrderId": { "type": "string" },
+        "orderId": { "type": "integer", "format": "int64" },
+        "orderListId": { "type": "integer", "format": "int64" },
+        "clientOrderId": { "type": "string" },
+        "price": { "type": "string", "format": "decimal" },
+        "origQty": { "type": "string", "format": "decimal" },
+        "executedQty": { "type": "string", "format": "decimal" },
+        "cummulativeQuoteQty": { "type": "string", "format": "decimal" },
+        "status": { "type": "string", "enum": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELED", "PENDING_CANCEL", "REJECTED", "EXPIRED"] },
+        "timeInForce": { "type": "string", "enum": ["GTC", "IOC", "FOK"] },
+        "type": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] },
+        "side": { "type": "string", "enum": ["BUY", "SELL"] }
+      },
+      "required": [
+        "symbol",
+        "origClientOrderId",
+        "orderId",
+        "orderListId",
+        "clientOrderId",
+        "price",
+        "origQty",
+        "executedQty",
+        "cummulativeQuoteQty",
+        "status",
+        "timeInForce",
+        "type",
+        "side"
+      ]
+    },
+    "openOrders": {
+      "type": "array",
+      "description": "Endpoint: /api/v3/openOrders",
+      "items": {
+        "type": "object",
+        "properties": {
+          "symbol": { "type": "string" },
+          "orderId": { "type": "integer", "format": "int64" },
+          "orderListId": { "type": "integer", "format": "int64" },
+          "clientOrderId": { "type": "string" },
+          "price": { "type": "string", "format": "decimal" },
+          "origQty": { "type": "string", "format": "decimal" },
+          "executedQty": { "type": "string", "format": "decimal" },
+          "cummulativeQuoteQty": { "type": "string", "format": "decimal" },
+          "status": { "type": "string", "enum": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELED", "PENDING_CANCEL", "REJECTED", "EXPIRED"] },
+          "timeInForce": { "type": "string", "enum": ["GTC", "IOC", "FOK"] },
+          "type": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] },
+          "side": { "type": "string", "enum": ["BUY", "SELL"] },
+          "stopPrice": { "type": "string", "format": "decimal" },
+          "icebergQty": { "type": "string", "format": "decimal" },
+          "time": { "type": "integer", "format": "int64" },
+          "updateTime": { "type": "integer", "format": "int64" },
+          "isWorking": { "type": "boolean" },
+          "origQuoteOrderQty": { "type": "string", "format": "decimal" }
+        },
+        "required": [
+          "symbol",
+          "orderId",
+          "orderListId",
+          "clientOrderId",
+          "price",
+          "origQty",
+          "executedQty",
+          "cummulativeQuoteQty",
+          "status",
+          "timeInForce",
+          "type",
+          "side",
+          "stopPrice",
+          "icebergQty",
+          "time",
+          "updateTime",
+          "isWorking",
+          "origQuoteOrderQty"
+        ]
+      }
+    },
+    "allOrders": {
+      "type": "array",
+      "description": "Endpoint: /api/v3/allOrders",
+      "items": {
+        "type": "object",
+        "properties": {
+          "symbol": { "type": "string" },
+          "orderId": { "type": "integer", "format": "int64" },
+          "orderListId": { "type": "integer", "format": "int64" },
+          "clientOrderId": { "type": "string" },
+          "price": { "type": "string", "format": "decimal" },
+          "origQty": { "type": "string", "format": "decimal" },
+          "executedQty": { "type": "string", "format": "decimal" },
+          "cummulativeQuoteQty": { "type": "string", "format": "decimal" },
+          "status": { "type": "string", "enum": ["NEW", "PARTIALLY_FILLED", "FILLED", "CANCELED", "PENDING_CANCEL", "REJECTED", "EXPIRED"] },
+          "timeInForce": { "type": "string", "enum": ["GTC", "IOC", "FOK"] },
+          "type": { "type": "string", "enum": ["LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"] },
+          "side": { "type": "string", "enum": ["BUY", "SELL"] },
+          "stopPrice": { "type": "string", "format": "decimal" },
+          "icebergQty": { "type": "string", "format": "decimal" },
+          "time": { "type": "integer", "format": "int64" },
+          "updateTime": { "type": "integer", "format": "int64" },
+          "isWorking": { "type": "boolean" },
+          "origQuoteOrderQty": { "type": "string", "format": "decimal" }
+        },
+        "required": [
+          "symbol",
+          "orderId",
+          "orderListId",
+          "clientOrderId",
+          "price",
+          "origQty",
+          "executedQty",
+          "cummulativeQuoteQty",
+          "status",
+          "timeInForce",
+          "type",
+          "side",
+          "stopPrice",
+          "icebergQty",
+          "time",
+          "updateTime",
+          "isWorking",
+          "origQuoteOrderQty"
+        ]
+      }
+    },
+    "error": {
+      "type": "object",
+      "description": "Error response from the Binance API",
+      "properties": {
+        "code": { "type": "integer", "description": "Error code" },
+        "msg": { "type": "string", "description": "Error message" }
+      },
+      "required": [
+        "code",
+        "msg"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bitfinex API Schema",
+  "description": "A JSON Schema describing the data structures used in the Bitfinex API (v2). This schema covers common request and response objects. It does not include every single endpoint and parameter but aims to provide a good overview and structure for many frequent uses.",
+  "type": "object",
+  "definitions": {
+    "orderStatus": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "EXECUTED",
+        "PARTIALLY FILLED",
+        "CANCELED"
+      ]
+    },
+    "orderType": {
+      "type": "string",
+      "enum": [
+        "MARKET",
+        "EXCHANGE MARKET",
+        "LIMIT",
+        "EXCHANGE LIMIT",
+        "STOP",
+        "EXCHANGE STOP",
+        "TRAILING STOP",
+        "EXCHANGE TRAILING STOP",
+        "FOK",
+        "EXCHANGE FOK",
+        "STOP LIMIT",
+        "EXCHANGE STOP LIMIT"
+      ]
+    },
+    "tickerSymbol": {
+      "type": "string",
+      "pattern": "^t[A-Z0-9]+:[A-Z0-9]+$|^t[A-Z0-9]+$|^f[A-Z0-9]+$"
+    },
+    "fundingSymbol": {
+      "type": "string",
+      "pattern": "^f[A-Z0-9]+$"
+    },
+    "tradingPairSymbol": {
+      "type": "string",
+      "pattern": "^t[A-Z0-9]+:[A-Z0-9]+$|^t[A-Z0-9]+$"
+    },
+    "walletType": {
+      "type": "string",
+      "enum": [
+        "exchange",
+        "margin",
+        "funding"
+      ]
+    },
+    "numberArray": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "stringOrNumber": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "number" }
+      ]
+    },
+    "ticker": {
+      "type": "array",
+      "items": [
+        { "$ref": "#/definitions/tickerSymbol" },
+        { "$ref": "#/definitions/numberArray" }
+      ],
+      "description": "Ticker data. [SYMBOL, BID, BID_SIZE, ASK, ASK_SIZE, DAILY_CHANGE, DAILY_CHANGE_RELATIVE, LAST_PRICE, VOLUME, HIGH, LOW]",
+      "minItems": 11,
+      "maxItems": 11
+    },
+    "bookEntry": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 4,
+      "description": "Order book entry. [PRICE, COUNT, AMOUNT] or [PERIOD, RATE, AMOUNT] for funding books"
+    },
+    "orderBook": {
+      "type": "object",
+      "properties": {
+        "bids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/bookEntry"
+          }
+        },
+        "asks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/bookEntry"
+          }
+        }
+      },
+      "required": ["bids", "asks"]
+    },
+    "trade": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Trade ID" },
+        { "type": "integer", "description": "MTS (millisecond timestamp)" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Price" },
+        { "type": "number", "optional": true, "description": "Rate (for funding trades)"},
+        { "type": "integer", "optional": true, "description": "Period (for funding trades)"}
+      ],
+      "minItems": 4,
+      "maxItems": 6,
+      "description": "Public trade data. [ID, MTS, AMOUNT, PRICE] or [ID, MTS, AMOUNT, PRICE, RATE, PERIOD] for funding trades"
+    },
+    "candle": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 6,
+      "maxItems": 6,
+      "description": "Candle data. [MTS, OPEN, CLOSE, HIGH, LOW, VOLUME]"
+    },
+    "wallet": {
+      "type": "array",
+      "items": [
+        { "$ref": "#/definitions/walletType" },
+        { "type": "string", "description": "Currency" },
+        { "type": "number", "description": "Balance" },
+        { "type": "number", "description": "Unsettled Interest" },
+        { "type": "number", "description": "Balance Available", "optional": true },
+        { "type": "string", "description": "Last change description", "optional": true},
+        { "type": "object", "optional": true, "description": "Meta information"}
+
+      ],
+      "minItems": 4,
+      "maxItems": 7,
+      "description": "Wallet information. [WALLET_TYPE, CURRENCY, BALANCE, UNSETTLED_INTEREST, BALANCE_AVAILABLE, LAST_CHANGE, META]"
+    },
+    "order": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Order ID" },
+        { "type": "integer", "description": "Group ID (optional)" },
+        { "type": "integer", "description": "Client Order ID (optional)" },
+        { "$ref": "#/definitions/tickerSymbol" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Amount Original" },
+        { "$ref": "#/definitions/orderType" },
+        { "type": "string", "description": "Previous Order Type" },
+        { "type": "integer", "optional": true, "description": "MTS TIF"},
+        { "type": "integer", "optional": true, "description": "Flags" },
+        { "$ref": "#/definitions/orderStatus" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Price" },
+        { "type": "number", "description": "Price Average" },
+        { "type": "number", "description": "Price Trailing" },
+        { "type": "number", "description": "Price Auxiliary Limit" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "integer", "description": "Hidden (0 or 1)" },
+        { "type": "integer", "description": "Place ID if Place ID was assigned" },
+        { "type": "integer", "optional": true, "description": "GRCL required (0 or 1)"},
+        { "type": "number", "optional": true, "description": "Leverage"},
+        { "type": "string", "optional": true, "description": "Order meta information"},
+        { "type": "integer", "optional": true, "description": "Reduce Only (0 or 1)"},
+        { "type": "integer", "optional": true, "description": "Post Only (0 or 1)"},
+        { "type": "integer", "optional": true, "description": "OCO (0 or 1)"},
+        { "type": "integer", "optional": true, "description": "OCO Cancel Amount"},
+        { "type": "integer", "optional": true, "description": "Time In Force: 0 = GTC, 1 = IOC, 2 = FOK, 3 = PO, 4 = EXPIRED"},
+        { "type": "string", "optional": true, "description": "VT"},
+        { "type": "string", "optional": true, "description": "VT_Reason"}
+      ],
+      "minItems": 26,
+      "maxItems": 35,
+      "description": "Order details. Refer to the documentation for detailed field descriptions."
+    },
+    "position": {
+      "type": "array",
+      "items": [
+        { "$ref": "#/definitions/tradingPairSymbol" },
+        { "type": "string", "description": "Status" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Base Price" },
+        { "type": "number", "description": "Margin Funding" },
+        { "type": "number", "description": "Margin Funding Type" },
+        { "type": "number", "description": "PL" },
+        { "type": "number", "description": "PL (%)" },
+        { "type": "number", "description": "Price Liquidation" },
+        { "type": "number", "description": "Leverage" },
+        { "type": "null" },
+        { "type": "integer", "description": "Position ID" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "type": "null" },
+        { "type": "number", "description": "Collateral" },
+        { "type": "number", "description": "Collateral Minimum" },
+        { "type": "object", "description": "Meta", "optional": true }
+      ],
+      "minItems": 18,
+      "maxItems": 19,
+      "description": "Position details. Refer to the documentation for detailed field descriptions."
+    },
+    "fundingOffer": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Offer ID" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "$ref": "#/definitions/fundingSymbol" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Amount Original" },
+        { "type": "string", "description": "Offer Type" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "integer", "description": "Flags" },
+        { "type": "string", "description": "Status" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate" },
+        { "type": "integer", "description": "Period" },
+        { "type": "integer", "description": "Notify (0 or 1)" },
+        { "type": "integer", "description": "Hidden (0 or 1)" },
+        { "type": "null" },
+        { "type": "number", "description": "Renew (0 or 1)" },
+        { "type": "number", "description": "Rate Real" }
+      ],
+      "minItems": 21,
+      "maxItems": 21,
+      "description": "Funding Offer details. Refer to the documentation for detailed field descriptions."
+    },
+    "fundingCredit": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Credit ID" },
+        { "$ref": "#/definitions/fundingSymbol" },
+        { "type": "string", "description": "Side" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "type": "number", "description": "Amount" },
+        { "type": "integer", "description": "Flags" },
+        { "type": "string", "description": "Status" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate" },
+        { "type": "integer", "description": "Period" },
+        { "type": "integer", "description": "MTS Opened" },
+        { "type": "integer", "description": "MTS Last Payout" },
+        { "type": "integer", "description": "Notify (0 or 1)" },
+        { "type": "integer", "description": "Hidden (0 or 1)" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate Real" },
+        { "type": "number", "description": "No Close (0 or 1)" },
+        { "type": "object", "description": "Position Pair", "optional": true }
+      ],
+      "minItems": 20,
+      "maxItems": 21,
+      "description": "Funding Credit details. Refer to the documentation for detailed field descriptions."
+    },
+    "fundingLoan": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Loan ID" },
+        { "$ref": "#/definitions/fundingSymbol" },
+        { "type": "string", "description": "Side" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "MTS Update" },
+        { "type": "number", "description": "Amount" },
+        { "type": "integer", "description": "Flags" },
+        { "type": "string", "description": "Status" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate" },
+        { "type": "integer", "description": "Period" },
+        { "type": "integer", "description": "MTS Opened" },
+        { "type": "integer", "description": "MTS Last Payout" },
+        { "type": "integer", "description": "Notify (0 or 1)" },
+        { "type": "integer", "description": "Hidden (0 or 1)" },
+        { "type": "null" },
+        { "type": "null" },
+        { "type": "number", "description": "Rate Real" },
+        { "type": "number", "description": "No Close (0 or 1)" }
+      ],
+      "minItems": 20,
+      "maxItems": 20,
+      "description": "Funding Loan details. Refer to the documentation for detailed field descriptions."
+    },
+    "fundingTrade": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "Trade ID" },
+        { "$ref": "#/definitions/fundingSymbol" },
+        { "type": "integer", "description": "MTS Create" },
+        { "type": "integer", "description": "Offer ID" },
+        { "type": "number", "description": "Amount" },
+        { "type": "number", "description": "Rate" },
+        { "type": "integer", "description": "Period" },
+        { "type": "integer", "description": "Maker (0 or 1)" }
+      ],
+      "minItems": 8,
+      "maxItems": 8,
+      "description": "Funding Trade details. Refer to the documentation for detailed field descriptions."
+    },
+    "notification": {
+      "type": "array",
+      "items": [
+        { "type": "integer", "description": "MTS" },
+        { "type": "string", "description": "Type" },
+        { "type": "integer", "description": "Message ID" },
+        { "type": "null" },
+        {
+          "oneOf": [
+            { "$ref": "#/definitions/order" },
+            { "$ref": "#/definitions/position" },
+            { "$ref": "#/definitions/fundingOffer" },
+            { "$ref": "#/definitions/fundingCredit" },
+            { "$ref": "#/definitions/fundingLoan" },
+            { "$ref": "#/definitions/wallet" },
+            { "type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 1 }
+          ],
+          "description": "Data associated with the notification"
+        },
+        { "type": "integer", "description": "Code" },
+        { "type": "integer", "description": "Status (0 or 1)" },
+        { "type": "string", "description": "Text" }
+      ],
+      "minItems": 8,
+      "maxItems": 8,
+      "description": "Notification details. Refer to the documentation for detailed field descriptions."
+    },
+    "authResponse": {
+      "type": "array",
+      "items": [
+        { "type": "string", "description": "Status (OK or ERROR)" },
+        { "type": "integer", "description": "MTS" },
+        { "type": "string", "description": "Type (AUTH)" },
+        { "type": "null" },
+        { "type": "integer", "description": "Code" },
+        { "type": "string", "description": "Message" },
+        { "type": "object", "description": "Auth_Payload" }
+      ],
+      "minItems": 7,
+      "maxItems": 7,
+      "description": "Authentication response from the server."
+    },
+    "websocketEvent": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string"
+        },
+        "channel": {
+          "type": "string",
+          "optional": true
+        },
+        "chanId": {
+          "type": "integer",
+          "optional": true
+        },
+        "symbol": {
+          "$ref": "#/definitions/tickerSymbol",
+          "optional": true
+        },
+        "prec": {
+          "type": "string",
+          "optional": true
+        },
+        "freq": {
+          "type": "string",
+          "optional": true
+        },
+        "key": {
+          "type": "string",
+          "optional": true
+        },
+        "len": {
+          "type": "string",
+          "optional": true
+        },
+        "pair": {
+          "type": "string",
+          "optional": true
+        },
+        "code": {
+          "type": "integer",
+          "optional": true
+        },
+        "msg": {
+          "type": "string",
+          "optional": true
+        },
+        "status": {
+          "type": "string",
+          "optional": true
+        },
+        "userId": {
+          "type": "integer",
+          "optional": true
+        },
+        "subId": {
+          "type": "string",
+          "optional": true
+        },
+        "version": {
+          "type": "integer",
+          "optional": true
+        },
+        "platform": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "integer" }
+          },
+          "required": ["status"],
+          "optional": true
+        },
+        "apiKey": {
+          "type": "string",
+          "optional": true
+        },
+        "eventTime": {
+          "type": "integer",
+          "optional": true
+        },
+        "soc": {
+          "type": "integer",
+          "optional": true
+        },
+        "wallet_type": {
+          "$ref": "#/definitions/walletType",
+          "optional": true
+        },
+        "order_id": {
+          "type": "integer",
+          "optional": true
+        },
+        "order_type": {
+          "$ref": "#/definitions/orderType",
+          "optional": true
+        },
+        "order_cid": {
+          "type": "integer",
+          "optional": true
+        }
+      },
+      "required": [
+        "event"
+      ]
+    }
+  },
+  "properties": {
+    "websocket": {
+      "type": "array",
+      "description": "WebSocket message format. The first element is always the channel ID.",
+      "items": [
+        {
+          "type": "integer",
+          "description": "Channel ID"
+        },
+        {
+          "oneOf": [
+            { "$ref": "#/definitions/ticker" },
+            { "$ref": "#/definitions/orderBook" },
+            { "$ref": "#/definitions/trade" },
+            { "$ref": "#/definitions/candle" },
+            { "$ref": "#/definitions/wallet" },
+            { "$ref": "#/definitions/order" },
+            { "$ref": "#/definitions/position" },
+            { "$ref": "#/definitions/fundingOffer" },
+            { "$ref": "#/definitions/fundingCredit" },
+            { "$ref": "#/definitions/fundingLoan" },
+            { "$ref": "#/definitions/fundingTrade" },
+            { "$ref": "#/definitions/notification" },
+            { "$ref": "#/definitions/authResponse" },
+            { "type": "string", "description": "Snapshot/Heartbeat/Update message type indicator (hb, ws, os, ps, etc.)" },
+            { "type": "array", "items": { "oneOf": [
+              { "$ref": "#/definitions/orderBook" },
+              { "$ref": "#/definitions/trade" },
+              { "$ref": "#/definitions/candle" },
+              { "$ref": "#/definitions/wallet" },
+              { "$ref": "#/definitions/order" },
+              { "$ref": "#/definitions/position" },
+              { "$ref": "#/definitions/fundingOffer" },
+              { "$ref": "#/definitions/fundingCredit" },
+              { "$ref": "#/definitions/fundingLoan" },
+              { "$ref": "#/definitions/fundingTrade" }
+            ]}}
+          ]
+        }
+      ],
+      "minItems": 2
+    },
+    "websocketEvent": {
+      "$ref": "#/definitions/websocketEvent"
+    }
+  }
+}{
+  "type": "object",
+  "title": "CashApp",
+  "description": "JSON Schema for a simplified CashApp implementation",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of CashApp users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the user"
+          },
+          "cashtag": {
+            "type": "string",
+            "description": "User's unique CashApp identifier",
+            "pattern": "^\\$[a-zA-Z0-9._]{1,20}$",
+            "example": "$johnDoe123"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's full name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "User's phone number",
+            "pattern": "^\\+?[1-9]\\d{1,14}$"
+          },
+          "balance": {
+            "type": "number",
+            "format": "float",
+            "description": "Current balance of the user",
+            "minimum": 0
+          },
+          "linkedAccounts": {
+            "type": "array",
+            "description": "List of linked bank accounts or debit cards",
+            "items": {
+              "type": "object",
+              "properties": {
+                "accountType": {
+                  "type": "string",
+                  "enum": ["bank", "debitCard"],
+                  "description": "Type of linked account"
+                },
+                "accountNumber": {
+                  "type": "string",
+                  "description": "Bank account or card number (masked for security)",
+                  "example": "**** **** **** 1234"
+                },
+                "institutionName": {
+                  "type": "string",
+                  "description": "Name of the bank or card issuer"
+                }
+              },
+              "required": [
+                "accountType",
+                "accountNumber"
+              ]
+            }
+          },
+          "transactionHistory": {
+            "type": "array",
+            "description": "History of user's transactions",
+            "items": {
+              "type": "object",
+              "properties": {
+                "transactionId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the transaction"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["payment", "request", "deposit", "withdrawal"],
+                  "description": "Type of transaction"
+                },
+                "amount": {
+                  "type": "number",
+                  "format": "float",
+                  "description": "Amount of the transaction"
+                },
+                "counterparty": {
+                  "type": "string",
+                  "description": "Cashtag of the other party involved (if applicable)"
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time of the transaction"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["pending", "completed", "failed", "canceled"],
+                  "description": "Status of the transaction"
+                },
+                "note": {
+                  "type": "string",
+                  "description": "Optional note associated with the transaction"
+                }
+              },
+              "required": [
+                "transactionId",
+                "type",
+                "amount",
+                "timestamp",
+                "status"
+              ]
+            }
+          }
+        },
+        "required": [
+          "userId",
+          "cashtag",
+          "name",
+          "balance"
+        ]
+      }
+    },
+    "payments": {
+      "type": "array",
+      "description": "List of all payment transactions within the system",
+      "items": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique ID for the payment"
+          },
+          "senderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UserID of the sender"
+          },
+          "recipientId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UserID of the recipient"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "The payment amount"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Payment timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed", "canceled"],
+            "description": "Payment status"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note for the payment"
+          }
+        },
+        "required": [
+          "paymentId",
+          "senderId",
+          "recipientId",
+          "amount",
+          "timestamp",
+          "status"
+        ]
+      }
+    },
+    "requests": {
+      "type": "array",
+      "description": "List of all money requests within the system",
+      "items": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique ID for the request"
+          },
+          "requesterId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UserID of the requester"
+          },
+          "requestedFromId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UserID of the user the money is requested from"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "The requested amount"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Request timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "fulfilled", "declined", "canceled"],
+            "description": "Request status"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note for the request"
+          }
+        },
+        "required": [
+          "requestId",
+          "requesterId",
+          "requestedFromId",
+          "amount",
+          "timestamp",
+          "status"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users"
+  ]
+}{
+  "type": "object",
+  "title": "Coinbase API Schema",
+  "description": "JSON Schema representation of key Coinbase API endpoints and data structures.",
+  "properties": {
+    "accounts": {
+      "type": "object",
+      "description": "Represents user accounts.",
+      "properties": {
+        "list": {
+          "type": "object",
+          "description": "List all accounts.",
+          "properties": {
+            "response": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/account"
+              }
+            }
+          },
+          "required": [
+            "response"
+          ]
+        },
+        "show": {
+          "type": "object",
+          "description": "Get a specific account.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account."
+                }
+              },
+              "required": [
+                "account_id"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/account"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        }
+      },
+      "required": [
+        "list",
+        "show"
+      ]
+    },
+    "transactions": {
+      "type": "object",
+      "description": "Represents transactions.",
+      "properties": {
+        "list": {
+          "type": "object",
+          "description": "List transactions for an account.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account."
+                }
+              },
+              "required": [
+                "account_id"
+              ]
+            },
+            "response": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/transaction"
+              }
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "show": {
+          "type": "object",
+          "description": "Get a specific transaction.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account."
+                },
+                "transaction_id": {
+                  "type": "string",
+                  "description": "The ID of the transaction."
+                }
+              },
+              "required": [
+                "account_id",
+                "transaction_id"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/transaction"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "send": {
+          "type": "object",
+          "description": "Send funds.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account to send from."
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "send"
+                  ],
+                  "description": "Transaction type (must be 'send')."
+                },
+                "to": {
+                  "type": "string",
+                  "description": "Destination address or email."
+                },
+                "amount": {
+                  "type": "string",
+                  "description": "Amount to send (in the currency of the account)."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code (e.g., 'BTC', 'ETH')."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Optional description."
+                }
+              },
+              "required": [
+                "account_id",
+                "type",
+                "to",
+                "amount",
+                "currency"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/transaction"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "request": {
+          "type": "object",
+          "description": "Request funds.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "account_id": {
+                  "type": "string",
+                  "description": "The ID of the account to request funds to."
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "request"
+                  ],
+                  "description": "Transaction type (must be 'request')."
+                },
+                "from": {
+                  "type": "string",
+                  "description": "Email of the person to request funds from."
+                },
+                "amount": {
+                  "type": "string",
+                  "description": "Amount to request (in the currency of the account)."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Optional description."
+                }
+              },
+              "required": [
+                "account_id",
+                "type",
+                "from",
+                "amount",
+                "currency"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/transaction"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        }
+      },
+      "required": [
+        "list",
+        "show",
+        "send"
+      ]
+    },
+    "prices": {
+      "type": "object",
+      "description": "Represents cryptocurrency prices.",
+      "properties": {
+        "buy": {
+          "type": "object",
+          "description": "Get the buy price for a cryptocurrency.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "currency_pair": {
+                  "type": "string",
+                  "description": "Currency pair (e.g., 'BTC-USD')."
+                }
+              },
+              "required": [
+                "currency_pair"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/price"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "sell": {
+          "type": "object",
+          "description": "Get the sell price for a cryptocurrency.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "currency_pair": {
+                  "type": "string",
+                  "description": "Currency pair (e.g., 'BTC-USD')."
+                }
+              },
+              "required": [
+                "currency_pair"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/price"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        },
+        "spot": {
+          "type": "object",
+          "description": "Get the spot price for a cryptocurrency.",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "currency_pair": {
+                  "type": "string",
+                  "description": "Currency pair (e.g., 'BTC-USD')."
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Optional date for historical price."
+                }
+              },
+              "required": [
+                "currency_pair"
+              ]
+            },
+            "response": {
+              "$ref": "#/definitions/price"
+            }
+          },
+          "required": [
+            "parameters",
+            "response"
+          ]
+        }
+      },
+      "required": [
+        "buy",
+        "sell",
+        "spot"
+      ]
+    },
+    "user": {
+      "type": "object",
+      "description": "Represents user information.",
+      "properties": {
+        "show": {
+          "type": "object",
+          "description": "Get current user's information.",
+          "properties": {
+            "response": {
+              "$ref": "#/definitions/user"
+            }
+          },
+          "required": [
+            "response"
+          ]
+        }
+      },
+      "required": [
+        "show"
+      ]
+    }
+  },
+  "required": [
+    "accounts",
+    "transactions",
+    "prices",
+    "user"
+  ],
+  "definitions": {
+    "account": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Account ID."
+        },
+        "name": {
+          "type": "string",
+          "description": "Account name."
+        },
+        "balance": {
+          "$ref": "#/definitions/money"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., 'BTC', 'USD')."
+        },
+        "type": {
+          "type": "string",
+          "description": "Account type (e.g., 'wallet', 'fiat')."
+        },
+        "primary": {
+          "type": "boolean",
+          "description": "Whether this is the user's primary account."
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether this account is active."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "balance",
+        "currency"
+      ]
+    },
+    "transaction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Transaction ID."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "send",
+            "request",
+            "transfer",
+            "buy",
+            "sell",
+            "fiat_deposit",
+            "fiat_withdrawal",
+            "exchange_deposit",
+            "exchange_withdrawal",
+            "vault_withdrawal"
+          ],
+          "description": "Transaction type."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "completed",
+            "failed",
+            "expired",
+            "canceled",
+            "waiting_for_signature",
+            "waiting_for_clearing"
+          ],
+          "description": "Transaction status."
+        },
+        "amount": {
+          "$ref": "#/definitions/money"
+        },
+        "native_amount": {
+          "$ref": "#/definitions/money"
+        },
+        "description": {
+          "type": "string",
+          "description": "Transaction description."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "to": {
+          "$ref": "#/definitions/resource"
+        },
+        "from": {
+          "$ref": "#/definitions/resource"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "status",
+        "amount",
+        "native_amount"
+      ]
+    },
+    "price": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "description": "Price amount."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., 'USD')."
+        },
+        "base": {
+          "type": "string",
+          "description": "Base currency code."
+        }
+      },
+      "required": [
+        "amount",
+        "currency",
+        "base"
+      ]
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User ID."
+        },
+        "name": {
+          "type": "string",
+          "description": "User's name."
+        },
+        "username": {
+          "type": "string",
+          "description": "Username."
+        },
+        "profile_location": {
+          "type": "string",
+          "description": "Profile location."
+        },
+        "profile_bio": {
+          "type": "string",
+          "description": "Profile bio."
+        },
+        "profile_url": {
+          "type": "string",
+          "description": "Profile URL."
+        },
+        "avatar_url": {
+          "type": "string",
+          "description": "Avatar URL."
+        },
+        "resource": {
+          "type": "string",
+          "description": "Resource type (should be 'user')."
+        },
+        "resource_path": {
+          "type": "string",
+          "description": "Resource path."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email."
+        },
+        "legacy_id": {
+          "type": "string",
+          "description": "Legacy ID."
+        },
+        "time_zone": {
+          "type": "string",
+          "description": "Time zone."
+        },
+        "native_currency": {
+          "type": "string",
+          "description": "Native currency."
+        },
+        "bitcoin_unit": {
+          "type": "string",
+          "description": "Bitcoin unit."
+        },
+        "state": {
+          "type": "string",
+          "description": "State."
+        },
+        "country": {
+          "$ref": "#/definitions/country"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tiers": {
+          "type": "object",
+          "properties": {
+            "completed_description": {
+              "type": "string"
+            }
+          },
+          "required": ["completed_description"]
+        }
+      },
+      "required": [
+        "id",
+        "resource",
+        "resource_path"
+      ]
+    },
+    "money": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "description": "Amount as string."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code."
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Resource ID."
+        },
+        "resource": {
+          "type": "string",
+          "description": "Resource type."
+        },
+        "resource_path": {
+          "type": "string",
+          "description": "Resource path."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address (for user resources)."
+        }
+      },
+      "required": [
+        "id",
+        "resource",
+        "resource_path"
+      ]
+    },
+    "country": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Country code (e.g., 'US')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Country name."
+        }
+      },
+      "required": [
+        "code",
+        "name"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GiveSendGo App",
+  "description": "JSON Schema for a simplified GiveSendGo-like application.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "Unique identifier for the user",
+            "readOnly": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (hashed in a real application)",
+            "writeOnly": true
+          },
+          "first_name": {
+            "type": "string",
+            "description": "User's first name"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "User's last name"
+          },
+          "profile_picture_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to user's profile picture"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "first_name",
+          "last_name"
+        ]
+      }
+    },
+    "campaigns": {
+      "type": "array",
+      "description": "List of fundraising campaigns",
+      "items": {
+        "type": "object",
+        "properties": {
+          "campaign_id": {
+            "type": "integer",
+            "description": "Unique identifier for the campaign",
+            "readOnly": true
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user who created the campaign"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the campaign",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the campaign"
+          },
+          "goal_amount": {
+            "type": "number",
+            "format": "float",
+            "description": "Target amount to be raised",
+            "minimum": 0
+          },
+          "amount_raised": {
+            "type": "number",
+            "format": "float",
+            "description": "Current amount raised",
+            "minimum": 0,
+            "readOnly": true
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the campaign (e.g., Medical, Memorial, Mission)",
+            "enum": [
+              "Medical",
+              "Memorial",
+              "Mission",
+              "Emergency",
+              "Nonprofit",
+              "Education",
+              "Adoption",
+              "Other"
+            ]
+          },
+          "location": {
+            "type": "string",
+            "description": "Location related to the campaign (e.g., city, state)"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the campaign was started",
+            "readOnly": true
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the campaign is scheduled to end (optional)"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the main image for the campaign"
+          },
+          "video_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to a video related to the campaign (optional)"
+          },
+          "updates": {
+            "type": "array",
+            "description": "List of updates for the campaign",
+            "items": {
+              "type": "object",
+              "properties": {
+                "update_id": {
+                  "type": "integer",
+                  "description": "Unique identifier for the update",
+                  "readOnly": true
+                },
+                "campaign_id": {
+                  "type": "integer",
+                  "description": "Campaign that this update belongs to",
+                  "readOnly": true
+                },
+                "user_id": {
+                  "type": "integer",
+                  "description": "ID of user that posted the update",
+                  "readOnly": true
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title of the update",
+                  "maxLength": 255
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Content of the update"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time when the update was created",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "campaign_id",
+                "user_id",
+                "title",
+                "content"
+              ]
+            }
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Indicates if the campaign is currently active",
+            "default": true
+          }
+        },
+        "required": [
+          "user_id",
+          "title",
+          "description",
+          "goal_amount",
+          "category"
+        ]
+      }
+    },
+    "donations": {
+      "type": "array",
+      "description": "List of donations made",
+      "items": {
+        "type": "object",
+        "properties": {
+          "donation_id": {
+            "type": "integer",
+            "description": "Unique identifier for the donation",
+            "readOnly": true
+          },
+          "campaign_id": {
+            "type": "integer",
+            "description": "ID of the campaign being donated to"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user making the donation (optional if anonymous)"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "Amount donated",
+            "minimum": 0.01
+          },
+          "donation_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the donation was made",
+            "readOnly": true
+          },
+          "is_anonymous": {
+            "type": "boolean",
+            "description": "Indicates if the donation is anonymous",
+            "default": false
+          },
+          "comment": {
+            "type": "string",
+            "description": "Optional comment from the donor"
+          },
+          "payment_method": {
+            "type": "string",
+            "description": "Information about the payment method used (e.g., Credit Card, PayPal)",
+            "enum": [
+              "Credit Card",
+              "Debit Card",
+              "PayPal",
+              "Other"
+            ]
+          },
+          "transaction_id": {
+            "type": "string",
+            "description": "Unique identifier for transaction provided by the payment processor"
+          }
+        },
+        "required": [
+          "campaign_id",
+          "amount",
+          "payment_method",
+          "transaction_id"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "campaigns",
+    "donations"
+  ]
+}{
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "password": "hashed_password",
+      "address": {
+        "street": "123 Main St",
+        "city": "Anytown",
+        "state": "CA",
+        "zipCode": "90210",
+        "country": "USA"
+      },
+      "phoneNumber": "555-123-4567",
+      "paymentMethods": [
+        {
+          "type": "credit_card",
+          "token": "cc_token_123",
+          "isDefault": true
+        }
+      ]
+    }
+  ],
+  "deals": [
+    {
+      "id": 101,
+      "merchantId": 5,
+      "title": "50% Off at The Pizza Place",
+      "description": "Enjoy a delicious pizza at half the price!",
+      "originalPrice": 20.0,
+      "discountedPrice": 10.0,
+      "startDate": "2024-03-15T10:00:00Z",
+      "endDate": "2024-03-31T23:59:59Z",
+      "quantityAvailable": 100,
+      "quantitySold": 25,
+      "images": [
+        "https://example.com/images/pizza1.jpg",
+        "https://example.com/images/pizza2.jpg"
+      ],
+      "categories": [1, 2],
+      "location": {
+        "latitude": 34.0522,
+        "longitude": -118.2437
+      },
+      "redemptionInstructions": "Present this voucher at the restaurant.",
+      "termsAndConditions": "Valid for dine-in only. Cannot be combined with other offers."
+    }
+  ],
+  "merchants": [
+    {
+      "id": 5,
+      "name": "The Pizza Place",
+      "description": "Best pizza in town!",
+      "address": {
+        "street": "456 Oak Ave",
+        "city": "Anytown",
+        "state": "CA",
+        "zipCode": "90210",
+        "country": "USA"
+      },
+      "phoneNumber": "555-987-6543",
+      "website": "https://www.thepizzaplace.com",
+      "logo": "https://example.com/logos/pizza_place.png"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Food & Drink",
+      "description": "Deals on restaurants, cafes, and bars.",
+      "icon": "https://example.com/icons/food.png"
+    },
+    {
+      "id": 2,
+      "name": "Pizza",
+      "description": "Deals for pizza places.",
+      "icon": "https://example.com/icons/pizza_slice.png"
+    }
+  ],
+  "orders": [],
+  "reviews": []
+}{
+  "type": "object",
+  "title": "Kickstarter Project",
+  "description": "Schema for a Kickstarter project and related data.",
+  "properties": {
+    "project": {
+      "type": "object",
+      "description": "Core details of the Kickstarter project.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the project.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the project.",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "blurb": {
+          "type": "string",
+          "description": "Short description of the project.",
+          "minLength": 1,
+          "maxLength": 135
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the project.",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "description": "Main category of the project.",
+          "enum": [
+            "Art",
+            "Comics",
+            "Crafts",
+            "Dance",
+            "Design",
+            "Fashion",
+            "Film & Video",
+            "Food",
+            "Games",
+            "Journalism",
+            "Music",
+            "Photography",
+            "Publishing",
+            "Technology",
+            "Theater"
+          ]
+        },
+        "subcategory": {
+          "type": "string",
+          "description": "Subcategory of the project (more specific).",
+          "examples": [
+            "Graphic Novels",
+            "Webcomics",
+            "Tabletop Games",
+            "Video Games",
+            "Documentary",
+            "Narrative Film",
+            "Indie Rock",
+            "Pop",
+            "Wearables",
+            "Gadgets"
+          ]
+        },
+        "location": {
+          "type": "object",
+          "description": "Location associated with the project (city, state/province, country).",
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string",
+              "description": "ISO 3166-1 alpha-2 country code (e.g., US, CA, GB).",
+              "pattern": "^[A-Z]{2}$"
+            }
+          },
+          "required": [
+            "city",
+            "country"
+          ]
+        },
+        "creator": {
+          "type": "object",
+          "description": "Information about the project creator.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Unique identifier of the creator.",
+              "readOnly": true
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the creator (user or organization)."
+            },
+            "profile_url": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the creator's profile on Kickstarter"
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ]
+        },
+        "funding_goal": {
+          "type": "number",
+          "description": "The funding goal (amount) of the project.",
+          "format": "float",
+          "minimum": 1
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code for the funding goal and pledges (e.g., USD, EUR, GBP).",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "pledged_amount": {
+          "type": "number",
+          "description": "The current amount of money pledged to the project.",
+          "format": "float",
+          "readOnly": true,
+          "minimum": 0
+        },
+        "backers_count": {
+          "type": "integer",
+          "description": "The number of backers who have pledged to the project.",
+          "readOnly": true,
+          "minimum": 0
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The deadline for reaching the funding goal."
+        },
+        "launched_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time the project was launched."
+        },
+        "state": {
+          "type": "string",
+          "description": "Current state of the project.",
+          "enum": [
+            "live",
+            "successful",
+            "failed",
+            "canceled",
+            "suspended"
+          ],
+          "readOnly": true
+        },
+        "photo": {
+          "type": "object",
+          "description": "Main project image.",
+          "properties": {
+            "full": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the full-sized image"
+            },
+            "med": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to a medium-sized image"
+            },
+            "small": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to a small-sized image"
+            }
+          },
+          "required": ["full"]
+        },
+        "video": {
+          "type": "object",
+          "description": "Project video (if available).",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the video (e.g., on Vimeo or YouTube)."
+            },
+            "thumbnail": {
+              "type": "string",
+              "format": "URL",
+              "description": "URL to the video thumbnail image"
+            }
+          },
+          "required": ["url"]
+        },
+        "urls": {
+          "type": "object",
+          "description": "URLs associated with the project",
+          "properties": {
+            "web": {
+              "type": "object",
+              "properties": {
+                "project": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the project page on Kickstarter"
+                },
+                "rewards": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the project's rewards page"
+                }
+              },
+              "required": ["project"]
+            }
+          },
+          "required": ["web"]
+        }
+      },
+      "required": [
+        "name",
+        "blurb",
+        "description",
+        "category",
+        "location",
+        "creator",
+        "funding_goal",
+        "currency",
+        "deadline",
+        "launched_at",
+        "photo",
+        "urls"
+      ]
+    },
+    "rewards": {
+      "type": "array",
+      "description": "List of rewards offered by the project.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the reward.",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project this reward belongs to."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the reward.",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number",
+            "description": "Minimum pledge amount required to receive this reward.",
+            "format": "float",
+            "minimum": 1
+          },
+          "estimated_delivery": {
+            "type": "string",
+            "format": "date",
+            "description": "Estimated delivery date for the reward (month and year)."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of backers that can claim this reward (if limited).",
+            "minimum": 1
+          },
+          "backers_count": {
+            "type": "integer",
+            "description": "Number of backers who have chosen this reward.",
+            "readOnly": true,
+            "minimum": 0
+          },
+          "shipping_type": {
+            "type": "string",
+            "description": "Type of shipping for the reward.",
+            "enum": ["anywhere", "limited", "digital", "none"]
+          },
+          "shipping_destinations": {
+            "type": "array",
+            "description": "If shipping_type is 'limited', the allowed shipping destinations (ISO 3166-1 alpha-2 country codes).",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            }
+          }
+        },
+        "required": [
+          "project_id",
+          "description",
+          "amount"
+        ]
+      }
+    },
+    "updates": {
+      "type": "array",
+      "description": "List of updates posted by the project creator.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the update.",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project this update belongs to."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the update.",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "body": {
+            "type": "string",
+            "description": "Content of the update.",
+            "minLength": 1
+          },
+          "author": {
+            "type": "object",
+            "description": "Author of the update (project creator).",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "User ID of the author.",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the author."
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the update was published."
+          },
+          "visible": {
+            "type": "boolean",
+            "description": "If true, the update is public, otherwise it's only visible to backers."
+          }
+        },
+        "required": [
+          "project_id",
+          "title",
+          "body",
+          "author",
+          "published_at"
+        ]
+      }
+    },
+    "comments": {
+      "type": "array",
+      "description": "List of comments on the project.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the comment.",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project this comment belongs to."
+          },
+          "body": {
+            "type": "string",
+            "description": "Content of the comment.",
+            "minLength": 1
+          },
+          "author": {
+            "type": "object",
+            "description": "Author of the comment.",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "User ID of the author.",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the author."
+              },
+              "is_backer": {
+                "type": "boolean",
+                "description": "Whether the author is a backer of the project"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the comment was created."
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "If true, the comment has been deleted."
+          }
+        },
+        "required": [
+          "project_id",
+          "body",
+          "author",
+          "created_at"
+        ]
+      }
+    },
+    "faqs": {
+      "type": "array",
+      "description": "List of frequently asked questions about the project.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the FAQ.",
+            "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "ID of the project this FAQ belongs to."
+          },
+          "question": {
+            "type": "string",
+            "description": "The FAQ question.",
+            "minLength": 1
+          },
+          "answer": {
+            "type": "string",
+            "description": "The answer to the FAQ question.",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the FAQ was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the FAQ was last updated."
+          }
+        },
+        "required": [
+          "project_id",
+          "question",
+          "answer"
+        ]
+      }
+    }
+  },
+  "required": [
+    "project",
+    "rewards"
+  ]
+}{
+  "users": [
+    {
+      "id": 1,
+      "username": "awesomecreator",
+      "email": "creator@example.com",
+      "full_name": "Awesome Creator",
+      "is_creator": true,
+      "created_at": "2023-01-15T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "username": "loyalpatron",
+      "email": "patron@example.com",
+      "full_name": "Loyal Patron",
+      "is_creator": false,
+      "created_at": "2023-02-20T14:30:00Z"
+    }
+  ],
+  "creators": [
+    {
+      "user_id": 1,
+      "campaign_id": 1
+    }
+  ],
+  "campaigns": [
+    {
+      "id": 1,
+      "creator_id": 1,
+      "title": "Support My Art",
+      "description": "Help me create amazing art!",
+      "funding_goal": 1000.00,
+      "current_funding": 250.00,
+      "created_at": "2023-03-01T09:00:00Z"
+    }
+  ],
+  // ... (tiers, pledges, posts, etc.)
+}{
+  "type": "object",
+  "title": "PayPal App",
+  "description": "JSON Schema for a simplified PayPal application",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of registered users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique user identifier (UUID)"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (should be hashed in a real system)"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name"
+          },
+          "balance": {
+            "type": "number",
+            "format": "float",
+            "description": "User's account balance",
+            "minimum": 0
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Indicates if the user's account is verified"
+          },
+          "addresses": {
+            "type": "array",
+            "description": "List of user's addresses",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string",
+                  "description": "Street address"
+                },
+                "city": {
+                  "type": "string",
+                  "description": "City"
+                },
+                "state": {
+                  "type": "string",
+                  "description": "State/Province"
+                },
+                "zipCode": {
+                  "type": "string",
+                  "description": "Zip/Postal code"
+                },
+                "country": {
+                  "type": "string",
+                  "description": "Country code (e.g., US, CA)"
+                }
+              },
+              "required": [
+                "street",
+                "city",
+                "zipCode",
+                "country"
+              ]
+            }
+          },
+          "paymentMethods": {
+            "type": "array",
+            "description": "List of user's linked payment methods",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "credit_card",
+                    "bank_account",
+                    "paypal_balance"
+                  ],
+                  "description": "Type of payment method"
+                },
+                "cardNumber": {
+                  "type": "string",
+                  "description": "Credit card number (masked in a real system)"
+                },
+                "expiryDate": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Credit card expiry date (MM/YY format)"
+                },
+                "cvv": {
+                  "type": "string",
+                  "description": "Credit card security code (CVV)"
+                },
+                "bankAccountNumber": {
+                  "type": "string",
+                  "description": "Bank account number"
+                },
+                "routingNumber": {
+                  "type": "string",
+                  "description": "Bank routing number"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "oneOf": [
+                {
+                  "required": [
+                    "cardNumber",
+                    "expiryDate",
+                    "cvv"
+                  ]
+                },
+                {
+                  "required": [
+                    "bankAccountNumber",
+                    "routingNumber"
+                  ]
+                },
+                {
+                  "properties": {
+                    "type": {
+                      "const": "paypal_balance"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "password",
+          "balance"
+        ]
+      }
+    },
+    "transactions": {
+      "type": "array",
+      "description": "List of transactions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique transaction identifier (UUID)"
+          },
+          "senderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the sender"
+          },
+          "receiverId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the receiver"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "Transaction amount",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code (e.g., USD, EUR)",
+            "default": "USD"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Transaction timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "completed",
+              "failed",
+              "refunded"
+            ],
+            "description": "Transaction status"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional transaction description"
+          }
+        },
+        "required": [
+          "id",
+          "senderId",
+          "receiverId",
+          "amount",
+          "currency",
+          "timestamp",
+          "status"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "transactions"
+  ]
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Robinhood API Schema",
+  "description": "A JSON Schema representing a simplified model of key Robinhood API entities and their relationships.",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "object",
+      "description": "Represents a Robinhood user account.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "User's login username."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "account_number": {
+          "type": "string",
+          "description": "User's Robinhood account number."
+        },
+        "buying_power": {
+          "type": "number",
+          "format": "float",
+          "description": "Amount of money available for trading."
+        },
+        "cash": {
+          "type": "number",
+          "format": "float",
+          "description": "Amount of cash in the account"
+        },
+        "portfolio_cash":{
+          "type": "number",
+          "format": "float",
+          "description": "The user's total portfolio cash"
+        },
+        "portfolio_value": {
+          "type": "number",
+          "format": "float",
+          "description": "The total value of the user's portfolio"
+        },
+        "portfolio": {
+          "type": "object",
+          "description": "User's portfolio details.",
+          "$ref": "#/properties/portfolio"
+        },
+        "orders": {
+          "type": "array",
+          "description": "List of orders placed by the user.",
+          "items": {
+            "$ref": "#/properties/order"
+          }
+        },
+        "positions": {
+          "type": "array",
+          "description": "List of positions held by the user.",
+          "items": {
+            "$ref": "#/properties/position"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email",
+        "account_number"
+      ]
+    },
+    "portfolio":{
+      "type": "object",
+      "description": "Represents the state of a user's portfolio",
+      "properties": {
+        "equity": {
+          "type": "number",
+          "format": "float",
+          "description": "Equity"
+        },
+        "extended_hours_equity": {
+          "type": "number",
+          "format": "float",
+          "description": "Extended hours equity"
+        },
+        "market_value": {
+          "type": "number",
+          "format": "float",
+          "description": "Market value"
+        },
+        "extended_hours_market_value": {
+          "type": "number",
+          "format": "float",
+          "description": "Extended hours market value"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date that this portfolio's history begins"
+        },
+        "adjusted_equity_previous_close": {
+          "type": "number",
+          "format": "float",
+          "description": "Adjusted equity previous close"
+        },
+        "previous_close": {
+          "type": "number",
+          "format": "float",
+          "description": "Previous close"
+        }
+      }
+    },
+    "instrument": {
+      "type": "object",
+      "description": "Represents a financial instrument (e.g., stock, option).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the instrument."
+        },
+        "url": {
+          "type": "string",
+          "format": "url",
+          "description": "URL of the instrument on Robinhood."
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Ticker symbol of the instrument (e.g., AAPL)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the instrument (e.g., Apple Inc.)."
+        },
+        "simple_name": {
+          "type": "string",
+          "description": "Simple name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "stock",
+            "option",
+            "etf",
+            "crypto",
+            "adr"
+          ],
+          "description": "Type of the instrument."
+        },
+        "tradeable": {
+          "type": "boolean",
+          "description": "Whether the instrument is currently tradeable."
+        },
+        "fundamentals": {
+          "type": "object",
+          "description": "Fundamental data about the instrument",
+          "$ref": "#/properties/fundamentals"
+        },
+        "quote": {
+          "type": "object",
+          "description": "Current quote data for the instrument.",
+          "$ref": "#/properties/quote"
+        }
+      },
+      "required": [
+        "id",
+        "symbol",
+        "name",
+        "type"
+      ]
+    },
+    "fundamentals": {
+      "type": "object",
+      "description": "Holds fundamental data associated with a stock",
+      "properties": {
+        "open": {
+          "type": "number",
+          "format": "float",
+          "description": "The opening price of the stock for the current day"
+        },
+        "high": {
+          "type": "number",
+          "format": "float",
+          "description": "The highest price of the stock for the current day"
+        },
+        "low": {
+          "type": "number",
+          "format": "float",
+          "description": "The lowest price of the stock for the current day"
+        },
+        "volume": {
+          "type": "number",
+          "format": "float",
+          "description": "The volume of the stock"
+        },
+        "average_volume": {
+          "type": "number",
+          "format": "float",
+          "description": "Average volume of the stock"
+        },
+        "high_52_weeks": {
+          "type": "number",
+          "format": "float",
+          "description": "Highest price of the stock in the last 52 weeks"
+        },
+        "low_52_weeks": {
+          "type": "number",
+          "format": "float",
+          "description": "Lowest price of the stock in the last 52 weeks"
+        },
+        "market_cap": {
+          "type": "number",
+          "format": "float",
+          "description": "Market capitalization of the stock"
+        },
+        "dividend_yield": {
+          "type": "number",
+          "format": "float",
+          "description": "The dividend yield of the stock"
+        },
+        "pe_ratio": {
+          "type": "number",
+          "format": "float",
+          "description": "The price to earnings ratio of the stock"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the stock and the issuing company"
+        },
+        "instrument": {
+          "type": "string",
+          "description": "A url pointing to the instrument associated with these fundamentals"
+        }
+      }
+    },
+    "quote": {
+      "type": "object",
+      "description": "Represents current market data for an instrument.",
+      "properties": {
+        "ask_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Current ask price."
+        },
+        "ask_size": {
+          "type": "integer",
+          "description": "Number of shares at the ask price."
+        },
+        "bid_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Current bid price."
+        },
+        "bid_size": {
+          "type": "integer",
+          "description": "Number of shares at the bid price."
+        },
+        "last_trade_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price of the last trade."
+        },
+        "last_extended_hours_trade_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Price of the last trade during extended hours."
+        },
+        "previous_close": {
+          "type": "number",
+          "format": "float",
+          "description": "Previous closing price."
+        },
+        "adjusted_previous_close": {
+          "type": "number",
+          "format": "float",
+          "description": "Adjusted previous closing price."
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Ticker symbol of the instrument."
+        },
+        "trading_halted": {
+          "type": "boolean",
+          "description": "Whether trading is currently halted for this instrument."
+        },
+        "instrument": {
+          "type": "string",
+          "format": "url",
+          "description": "URL of the related instrument."
+        }
+      },
+      "required": [
+        "symbol",
+        "instrument"
+      ]
+    },
+    "order": {
+      "type": "object",
+      "description": "Represents an order to buy or sell an instrument.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the order."
+        },
+        "instrument": {
+          "type": "object",
+          "description": "The financial instrument associated with this order",
+          "$ref": "#/properties/instrument"
+        },
+        "account": {
+          "type": "string",
+          "format": "url",
+          "description": "The account that placed this order"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "market",
+            "limit"
+          ],
+          "description": "Type of order (market or limit)."
+        },
+        "side": {
+          "type": "string",
+          "enum": [
+            "buy",
+            "sell"
+          ],
+          "description": "Side of the order (buy or sell)."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Number of shares or contracts."
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "unconfirmed",
+            "confirmed",
+            "partially_filled",
+            "filled",
+            "rejected",
+            "canceled",
+            "failed"
+          ],
+          "description": "Current state of the order."
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Order price (for limit orders)."
+        },
+        "average_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Average price at which the order was filled."
+        },
+        "time_in_force": {
+          "type": "string",
+          "enum": [
+            "gfd",
+            "gtc",
+            "ioc",
+            "opg"
+          ],
+          "description": "Specifies how long the order will remain in effect"
+        },
+        "trigger": {
+          "type": "string",
+          "enum": [
+            "immediate",
+            "stop"
+          ],
+          "description": "Specifies whether the order should be triggered immediately or based on a certain condition"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the order was created."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the order was last updated."
+        }
+      },
+      "required": [
+        "id",
+        "instrument",
+        "type",
+        "side",
+        "quantity",
+        "state"
+      ]
+    },
+    "position": {
+      "type": "object",
+      "description": "Represents a user's position in a specific instrument.",
+      "properties": {
+        "instrument": {
+          "type": "string",
+          "format": "url",
+          "description": "URL of the instrument."
+        },
+        "account": {
+          "type": "string",
+          "format": "url",
+          "description": "URL of the account holding the position"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Number of shares or contracts held."
+        },
+        "average_buy_price": {
+          "type": "number",
+          "format": "float",
+          "description": "Average price at which the position was acquired."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time at which the position was created"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time at which the position was last updated"
+        }
+      },
+      "required": [
+        "instrument",
+        "quantity",
+        "average_buy_price"
+      ]
+    },
+    "market": {
+      "type": "object",
+      "description": "Represents data about a specific market",
+      "properties": {
+        "todays_hours": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the market's hours for today"
+        },
+        "url": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the market"
+        },
+        "website": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the market's website"
+        },
+        "country": {
+          "type": "string",
+          "description": "The country that this market is in"
+        },
+        "city": {
+          "type": "string",
+          "description": "The city that this market is in"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the market"
+        },
+        "mic": {
+          "type": "string",
+          "description": "The market identification code"
+        },
+        "acronym": {
+          "type": "string",
+          "description": "The market's acronym"
+        }
+      },
+      "required": [
+        "url", "country", "name", "mic"
+      ]
+    }
+  },
+  "definitions": {}
+}{
+  "type": "object",
+  "title": "Venmo App Schema",
+  "description": "JSON Schema representing the core data structures and functionalities of a simplified Venmo-like application.",
+  "definitions": {
+    "user": {
+      "type": "object",
+      "title": "User",
+      "description": "Represents a user in the Venmo system.",
+      "properties": {
+        "user_id": {
+          "type": "integer",
+          "description": "Unique identifier for the user.",
+          "readOnly": true
+        },
+        "username": {
+          "type": "string",
+          "description": "User's chosen username.",
+          "minLength": 3,
+          "maxLength": 30,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "phone_number": {
+          "type": "string",
+          "description": "User's phone number (optional).",
+          "pattern": "^\\+?[1-9]\\d{1,14}$"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "User's first name.",
+          "maxLength": 50
+        },
+        "last_name": {
+          "type": "string",
+          "description": "User's last name.",
+          "maxLength": 50
+        },
+        "profile_picture_url": {
+          "type": "string",
+          "description": "URL to the user's profile picture (optional).",
+          "format": "url"
+        },
+        "balance": {
+          "type": "number",
+          "description": "Current balance of the user's account.",
+          "default": 0,
+          "minimum": 0
+        },
+        "friends": {
+          "type": "array",
+          "description": "List of user IDs representing the user's friends.",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "date_joined": {
+          "type": "string",
+          "description": "Date the user joined the platform.",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "is_verified": {
+          "type": "boolean",
+          "description": "Whether the user has verified their account"
+        }
+      },
+      "required": [
+        "username",
+        "email",
+        "first_name",
+        "last_name"
+      ]
+    },
+    "transaction": {
+      "type": "object",
+      "title": "Transaction",
+      "description": "Represents a transaction between two users.",
+      "properties": {
+        "transaction_id": {
+          "type": "integer",
+          "description": "Unique identifier for the transaction.",
+          "readOnly": true
+        },
+        "sender_id": {
+          "type": "integer",
+          "description": "User ID of the sender."
+        },
+        "recipient_id": {
+          "type": "integer",
+          "description": "User ID of the recipient."
+        },
+        "amount": {
+          "type": "number",
+          "description": "Amount of the transaction.",
+          "exclusiveMinimum": 0
+        },
+        "note": {
+          "type": "string",
+          "description": "Note associated with the transaction.",
+          "maxLength": 255
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of the transaction.",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the transaction.",
+          "enum": [
+            "pending",
+            "completed",
+            "failed",
+            "canceled"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of Transaction",
+          "enum": [
+            "payment",
+            "request"
+          ]
+        }
+      },
+      "required": [
+        "sender_id",
+        "recipient_id",
+        "amount",
+        "note",
+        "status",
+        "type"
+      ]
+    },
+    "payment_method": {
+      "type": "object",
+      "title": "Payment Method",
+      "description": "Represents a user's linked payment method.",
+      "properties": {
+        "payment_method_id": {
+          "type": "integer",
+          "description": "Unique identifier for the payment method.",
+          "readOnly": true
+        },
+        "user_id": {
+          "type": "integer",
+          "description": "User ID associated with this payment method."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of payment method.",
+          "enum": [
+            "bank_account",
+            "credit_card",
+            "debit_card"
+          ]
+        },
+        "is_primary": {
+          "type": "boolean",
+          "description": "Whether this is the user's primary payment method."
+        },
+        "details": {
+          "type": "object",
+          "description": "Details specific to the payment method type.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/bank_account_details"
+            },
+            {
+              "$ref": "#/definitions/card_details"
+            }
+          ]
+        }
+      },
+      "required": [
+        "user_id",
+        "type",
+        "is_primary",
+        "details"
+      ]
+    },
+    "bank_account_details": {
+      "type": "object",
+      "title": "Bank Account Details",
+      "description": "Details for a bank account payment method.",
+      "properties": {
+        "account_number": {
+          "type": "string",
+          "description": "Bank account number (masked).",
+          "pattern": "^\\*+\\d{4}$"
+        },
+        "routing_number": {
+          "type": "string",
+          "description": "Bank routing number.",
+          "pattern": "^\\d{9}$"
+        },
+        "account_type": {
+          "type": "string",
+          "enum": [
+            "checking",
+            "savings"
+          ]
+        }
+      },
+      "required": [
+        "account_number",
+        "routing_number"
+      ]
+    },
+    "card_details": {
+      "type": "object",
+      "title": "Card Details",
+      "description": "Details for a credit/debit card payment method.",
+      "properties": {
+        "card_number": {
+          "type": "string",
+          "description": "Card number (masked).",
+          "pattern": "^\\*+\\d{4}$"
+        },
+        "expiration_date": {
+          "type": "string",
+          "description": "Card expiration date (MM/YY).",
+          "pattern": "^(0[1-9]|1[0-2])\\/([0-9]{2})$"
+        },
+        "card_type": {
+          "type": "string",
+          "enum": [
+            "Visa",
+            "Mastercard",
+            "Amex",
+            "Discover"
+          ]
+        }
+      },
+      "required": [
+        "card_number",
+        "expiration_date",
+        "card_type"
+      ]
+    },
+    "notification": {
+      "type": "object",
+      "title": "Notification",
+      "description": "Represents a notification sent to a user.",
+      "properties": {
+        "notification_id": {
+          "type": "integer",
+          "description": "Unique identifier for the notification.",
+          "readOnly": true
+        },
+        "user_id": {
+          "type": "integer",
+          "description": "User ID the notification is sent to."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of notification.",
+          "enum": [
+            "payment_received",
+            "payment_sent",
+            "request_received",
+            "request_completed",
+            "friend_request",
+            "friend_accepted",
+            "system_message"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Content of the notification."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of the notification.",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "is_read": {
+          "type": "boolean",
+          "description": "Whether the notification has been read.",
+          "default": false
+        },
+        "associated_transaction_id": {
+          "type": "integer",
+          "description": "Transaction ID linked to this notification (optional)."
+        },
+        "associated_user_id": {
+          "type": "integer",
+          "description": "Associated user ID, if applicable"
+        }
+      },
+      "required": [
+        "user_id",
+        "type",
+        "message",
+        "timestamp",
+        "is_read"
+      ]
+    }
+  },
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of all users in the system.",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "transactions": {
+      "type": "array",
+      "description": "List of all transactions.",
+      "items": {
+        "$ref": "#/definitions/transaction"
+      }
+    },
+    "payment_methods": {
+      "type": "array",
+      "description": "List of all payment methods.",
+      "items": {
+        "$ref": "#/definitions/payment_method"
+      }
+    },
+    "notifications": {
+      "type": "array",
+      "description": "List of all notifications.",
+      "items": {
+        "$ref": "#/definitions/notification"
+      }
+    }
+  }
+}

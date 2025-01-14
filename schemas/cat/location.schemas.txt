@@ -1,0 +1,1657 @@
+{
+  "type": "object",
+  "title": "Airbnb Schema",
+  "description": "JSON Schema for a simplified Airbnb application.",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique user ID",
+            "readOnly": true
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email address",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (hashed)",
+            "minLength": 8,
+            "writeOnly": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "User's phone number",
+            "pattern": "^\\+?[1-9]\\d{1,14}$"
+          },
+          "profilePicture": {
+            "type": "string",
+            "description": "URL to user's profile picture",
+            "format": "URL"
+          },
+          "aboutMe": {
+            "type": "string",
+            "description": "A short description about the user"
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "password"
+        ]
+      }
+    },
+    "listings": {
+      "type": "array",
+      "description": "List of property listings",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique listing ID",
+            "readOnly": true
+          },
+          "hostId": {
+            "type": "integer",
+            "description": "ID of the user who owns the listing",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the listing",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the listing"
+          },
+          "propertyType": {
+            "type": "string",
+            "description": "Type of property (e.g., Apartment, House, etc.)",
+            "enum": [
+              "Apartment",
+              "House",
+              "Condominium",
+              "Townhouse",
+              "Loft",
+              "Guesthouse",
+              "Bed & Breakfast",
+              "Bungalow",
+              "Villa",
+              "Cabin",
+              "Chalet",
+              "Other"
+            ]
+          },
+          "roomType": {
+            "type": "string",
+            "description": "Type of room (e.g., Entire home/apt, Private room, etc.)",
+            "enum": [
+              "Entire home/apt",
+              "Private room",
+              "Shared room",
+              "Hotel room"
+            ]
+          },
+          "address": {
+            "type": "object",
+            "description": "Address of the listing",
+            "properties": {
+              "streetAddress": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "zipCode": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "streetAddress",
+              "city",
+              "state",
+              "zipCode",
+              "country"
+            ]
+          },
+          "coordinates": {
+            "type": "object",
+            "description": "Geographic coordinates of the listing",
+            "properties": {
+              "latitude": {
+                "type": "number",
+                "format": "float"
+              },
+              "longitude": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            "required": [
+              "latitude",
+              "longitude"
+            ]
+          },
+          "amenities": {
+            "type": "array",
+            "description": "List of amenities offered",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Wifi",
+                "Kitchen",
+                "Heating",
+                "Air conditioning",
+                "Washer",
+                "Dryer",
+                "Free parking on premises",
+                "Paid parking on premises",
+                "TV",
+                "Pool",
+                "Gym",
+                "Breakfast",
+                "Indoor fireplace",
+                "Hot tub",
+                "Pets allowed",
+                "Smoking allowed",
+                "Events allowed",
+                "Other"
+              ]
+            }
+          },
+          "pricePerNight": {
+            "type": "number",
+            "description": "Price per night in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "cleaningFee": {
+            "type": "number",
+            "description": "Cleaning fee in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "serviceFee": {
+            "type": "number",
+            "description": "Service fee in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "maxGuests": {
+            "type": "integer",
+            "description": "Maximum number of guests allowed",
+            "minimum": 1
+          },
+          "bedrooms": {
+            "type": "integer",
+            "description": "Number of bedrooms",
+            "minimum": 0
+          },
+          "beds": {
+            "type": "integer",
+            "description": "Number of beds",
+            "minimum": 0
+          },
+          "bathrooms": {
+            "type": "number",
+            "description": "Number of bathrooms",
+            "format": "float",
+            "minimum": 0
+          },
+          "photos": {
+            "type": "array",
+            "description": "List of URLs to photos of the listing",
+            "items": {
+              "type": "string",
+              "format": "URL"
+            }
+          },
+          "availability": {
+            "type": "array",
+            "description": "Dates the listing is available (start and end)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date"
+                }
+              },
+              "required": ["startDate", "endDate"]
+            }
+          },
+          "rating": {
+            "type": "number",
+            "description": "Average rating of the listing (e.g., 4.5)",
+            "minimum": 0,
+            "maximum": 5,
+            "readOnly": true
+          },
+          "numberOfReviews": {
+            "type": "integer",
+            "description": "Total number of reviews for the listing",
+            "minimum": 0,
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "hostId",
+          "title",
+          "description",
+          "propertyType",
+          "roomType",
+          "address",
+          "coordinates",
+          "pricePerNight",
+          "maxGuests",
+          "bedrooms",
+          "beds",
+          "bathrooms"
+        ]
+      }
+    },
+    "bookings": {
+      "type": "array",
+      "description": "List of bookings made by users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique booking ID",
+            "readOnly": true
+          },
+          "listingId": {
+            "type": "integer",
+            "description": "ID of the listing being booked"
+          },
+          "guestId": {
+            "type": "integer",
+            "description": "ID of the user making the booking"
+          },
+          "checkInDate": {
+            "type": "string",
+            "description": "Check-in date",
+            "format": "date"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "description": "Check-out date",
+            "format": "date"
+          },
+          "numberOfGuests": {
+            "type": "integer",
+            "description": "Number of guests for the booking",
+            "minimum": 1
+          },
+          "totalPrice": {
+            "type": "number",
+            "description": "Total price of the booking in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the booking",
+            "enum": [
+              "pending",
+              "confirmed",
+              "cancelled",
+              "completed"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "listingId",
+          "guestId",
+          "checkInDate",
+          "checkOutDate",
+          "numberOfGuests",
+          "totalPrice",
+          "status"
+        ]
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "description": "List of reviews for listings",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique review ID",
+            "readOnly": true
+          },
+          "listingId": {
+            "type": "integer",
+            "description": "ID of the listing being reviewed"
+          },
+          "guestId": {
+            "type": "integer",
+            "description": "ID of the user writing the review"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Rating given (1-5)",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "comment": {
+            "type": "string",
+            "description": "Review text"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date the review was written",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "listingId",
+          "guestId",
+          "rating",
+          "comment",
+          "date"
+        ]
+      }
+    },
+    "payments": {
+      "type": "array",
+      "description": "Records of payment transactions.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique payment ID",
+            "readOnly": true
+          },
+          "bookingId": {
+            "type": "integer",
+            "description": "ID of the associated booking"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Payment amount in USD",
+            "format": "float",
+            "minimum": 0
+          },
+          "paymentMethod": {
+            "type": "string",
+            "description": "Payment method used (e.g., credit card, PayPal)",
+            "enum": [
+              "credit card",
+              "debit card",
+              "PayPal",
+              "other"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Payment status",
+            "enum": [
+              "pending",
+              "successful",
+              "failed"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Date and time of payment",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "bookingId",
+          "amount",
+          "paymentMethod",
+          "status",
+          "timestamp"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "listings",
+    "bookings"
+  ]
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pokemon Go App Data",
+  "description": "JSON Schema for the data used in the Pokemon Go mobile app.",
+  "type": "object",
+  "properties": {
+    "player": {
+      "type": "object",
+      "description": "Information about the player.",
+      "properties": {
+        "trainer_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the player."
+        },
+        "trainer_name": {
+          "type": "string",
+          "description": "Player's in-game name."
+        },
+        "team": {
+          "type": "string",
+          "enum": ["Mystic", "Valor", "Instinct", "None"],
+          "description": "Team the player belongs to."
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "description": "Player's current level."
+        },
+        "experience": {
+          "type": "integer",
+          "description": "Player's current experience points."
+        },
+        "stardust": {
+          "type": "integer",
+          "description": "Amount of stardust the player has."
+        },
+        "coins": {
+          "type": "integer",
+          "description": "Amount of Pokecoins the player has."
+        },
+        "inventory": {
+          "type": "array",
+          "description": "Items in the player's inventory.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item_id": {
+                "type": "string",
+                "description": "Unique identifier for the item."
+              },
+              "quantity": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Number of this item in the inventory."
+              }
+            },
+            "required": ["item_id", "quantity"]
+          }
+        },
+        "pokedex": {
+          "type": "array",
+          "description": "Pokemon species the player has seen and caught.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pokemon_id": {
+                "type": "integer",
+                "description": "Pokedex number of the Pokemon."
+              },
+              "seen": {
+                "type": "boolean",
+                "description": "Whether the player has seen this Pokemon."
+              },
+              "caught": {
+                "type": "boolean",
+                "description": "Whether the player has caught this Pokemon."
+              }
+            },
+            "required": ["pokemon_id", "seen", "caught"]
+          }
+        },
+        "pokemon_storage": {
+          "type": "array",
+          "description": "Pokemon currently in the player's storage.",
+          "items": {
+            "$ref": "#/definitions/pokemon"
+          }
+        },
+        "friends": {
+          "type": "array",
+          "description": "List of the player's friends.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "trainer_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Unique identifier of the friend."
+              },
+              "trainer_name": {
+                "type": "string",
+                "description": "Friend's in-game name."
+              },
+              "friendship_level": {
+                "type": "integer",
+                "enum": [0, 1, 2, 3, 4],
+                "description": "Current friendship level."
+              }
+            },
+            "required": ["trainer_id", "trainer_name", "friendship_level"]
+          }
+        },
+        "badges": {
+          "type": "array",
+          "description": "Badges earned by the player.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "badge_id": {
+                "type": "string",
+                "description": "Unique identifier for the badge."
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Current level of the badge (e.g., Bronze, Silver, Gold)."
+              }
+            },
+            "required": ["badge_id", "level"]
+          }
+        },
+        "settings": {
+          "type": "object",
+          "description": "Player's in-game settings.",
+          "properties": {
+            "music": {
+              "type": "boolean",
+              "description": "Whether music is enabled."
+            },
+            "sfx": {
+              "type": "boolean",
+              "description": "Whether sound effects are enabled."
+            },
+            "vibration": {
+              "type": "boolean",
+              "description": "Whether vibration is enabled."
+            },
+            "battery_saver": {
+              "type": "boolean",
+              "description": "Whether battery saver mode is enabled."
+            }
+          },
+          "required": ["music", "sfx", "vibration", "battery_saver"]
+        }
+      },
+      "required": [
+        "trainer_id",
+        "trainer_name",
+        "team",
+        "level",
+        "experience",
+        "stardust",
+        "coins",
+        "inventory",
+        "pokedex",
+        "pokemon_storage",
+        "friends",
+        "badges"
+      ]
+    },
+    "map_objects": {
+      "type": "array",
+      "description": "Objects on the game map.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["pokestop", "gym", "spawn_point"],
+            "description": "Type of the map object."
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the map object."
+          },
+          "latitude": {
+            "type": "number",
+            "format": "float",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Latitude of the map object."
+          },
+          "longitude": {
+            "type": "number",
+            "format": "float",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Longitude of the map object."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the Pokestop or Gym (if applicable)."
+          },
+          "image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the image associated with the Pokestop or Gym (if applicable)."
+          },
+          "team": {
+            "type": "string",
+            "enum": ["Mystic", "Valor", "Instinct", "None"],
+            "description": "Team controlling the Gym (if applicable)."
+          },
+          "gym_details": {
+            "type": "object",
+            "description": "Details about the Gym, if the object is a Gym.",
+            "properties": {
+              "pokemon": {
+                "type": "array",
+                "description": "Pokemon defending the Gym.",
+                "items": {
+                  "$ref": "#/definitions/pokemon"
+                }
+              },
+              "raid": {
+                "type": "object",
+                "description": "Raid details, if a Raid is active.",
+                "properties": {
+                  "raid_boss": {
+                    "$ref": "#/definitions/pokemon",
+                    "description": "The Pokemon that is the Raid Boss."
+                  },
+                  "level": {
+                    "type": "integer",
+                    "description": "Level of the Raid."
+                  },
+                  "start_time": {
+                    "type": "integer",
+                    "format": "unix-timestamp",
+                    "description": "Start time of the Raid."
+                  },
+                  "end_time": {
+                    "type": "integer",
+                    "format": "unix-timestamp",
+                    "description": "End time of the Raid."
+                  }
+                },
+                "required": ["raid_boss", "level", "start_time", "end_time"]
+              }
+            },
+            "required": ["pokemon"]
+          },
+          "nearby_pokemon": {
+            "type": "array",
+            "description": "Pokemon that are nearby a pokestop.",
+            "items": {
+              "$ref": "#/definitions/pokemon"
+            }
+          }
+        },
+        "required": ["type", "id", "latitude", "longitude"]
+      }
+    },
+    "pokemon_data": {
+      "type": "array",
+      "description": "Static data about all Pokemon species.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pokemon_id": {
+            "type": "integer",
+            "description": "Pokedex number of the Pokemon."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the Pokemon."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
+                "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
+                "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
+              ],
+              "description": "Type of the Pokemon."
+            },
+            "minItems": 1,
+            "maxItems": 2
+          },
+          "base_stats": {
+            "type": "object",
+            "properties": {
+              "hp": {
+                "type": "integer",
+                "description": "Base HP stat."
+              },
+              "attack": {
+                "type": "integer",
+                "description": "Base Attack stat."
+              },
+              "defense": {
+                "type": "integer",
+                "description": "Base Defense stat."
+              },
+              "special_attack": {
+                "type": "integer",
+                "description": "Base Special Attack stat."
+              },
+              "special_defense": {
+                "type": "integer",
+                "description": "Base Special Defense stat."
+              },
+              "speed": {
+                "type": "integer",
+                "description": "Base Speed stat."
+              }
+            },
+            "required": [
+              "hp",
+              "attack",
+              "defense",
+              "special_attack",
+              "special_defense",
+              "speed"
+            ]
+          },
+          "height": {
+            "type": "number",
+            "format": "float",
+            "description": "Average height of the Pokemon in meters."
+          },
+          "weight": {
+            "type": "number",
+            "format": "float",
+            "description": "Average weight of the Pokemon in kilograms."
+          },
+          "description": {
+            "type": "string",
+            "description": "Pokedex description of the Pokemon."
+          },
+          "evolutions": {
+            "type": "array",
+            "description": "IDs of Pokemon this Pokemon can evolve into.",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "moves": {
+            "type": "object",
+            "properties": {
+              "quick": {
+                "type": "array",
+                "description": "List of quick moves the Pokemon can learn.",
+                "items": {
+                  "$ref": "#/definitions/move"
+                }
+              },
+              "charged": {
+                "type": "array",
+                "description": "List of charged moves the Pokemon can learn.",
+                "items": {
+                  "$ref": "#/definitions/move"
+                }
+              }
+            },
+            "required": ["quick", "charged"]
+          },
+          "rarity": {
+            "type": "string",
+            "enum": ["Common", "Uncommon", "Rare", "Mythic", "Legendary"],
+            "description": "Rarity classification of the Pokemon."
+          },
+          "capture_rate": {
+            "type": "number",
+            "format": "float",
+            "description": "Base capture rate of the Pokemon."
+          },
+          "flee_rate": {
+            "type": "number",
+            "format": "float",
+            "description": "Base flee rate of the Pokemon."
+          }
+        },
+        "required": [
+          "pokemon_id",
+          "name",
+          "types",
+          "base_stats",
+          "height",
+          "weight",
+          "description"
+        ]
+      }
+    },
+    "item_data": {
+      "type": "array",
+      "description": "Static data about all items.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "description": "Unique identifier for the item."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the item."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the item."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Pokeball",
+              "Potion",
+              "Revive",
+              "Berry",
+              "Incense",
+              "Lure Module",
+              "Incubator",
+              "Special Item",
+              "Raid Pass",
+              "Camera",
+              "Gift"
+            ],
+            "description": "Category of the item."
+          },
+          "image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the image associated with the item."
+          }
+        },
+        "required": ["item_id", "name", "description", "type"]
+      }
+    },
+    "news_feed": {
+      "type": "array",
+      "description": "In-game news and announcements.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the news item."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the news item."
+          },
+          "content": {
+            "type": "string",
+            "description": "Content of the news item."
+          },
+          "image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the image associated with the news item."
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "unix-timestamp",
+            "description": "Timestamp of when the news item was published."
+          }
+        },
+        "required": ["id", "title", "content", "timestamp"]
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "In-game events.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the event."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the event."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the event."
+          },
+          "start_time": {
+            "type": "integer",
+            "format": "unix-timestamp",
+            "description": "Start time of the event."
+          },
+          "end_time": {
+            "type": "integer",
+            "format": "unix-timestamp",
+            "description": "End time of the event."
+          },
+          "bonuses": {
+            "type": "array",
+            "description": "Bonuses active during the event.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "featured_pokemon": {
+            "type": "array",
+            "description": "Pokemon with increased spawn rates during the event.",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "required": ["id", "name", "description", "start_time", "end_time"]
+      }
+    },
+    "research_tasks": {
+      "type": "array",
+      "description": "Field and Special Research Tasks",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the research task."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["field", "special"],
+            "description": "Type of research task."
+          },
+          "objective": {
+            "type": "string",
+            "description": "Description of the research objective."
+          },
+          "reward": {
+            "type": "object",
+            "description": "Reward for completing the research task.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["item", "pokemon_encounter", "stardust", "xp"],
+                "description": "Type of reward."
+              },
+              "item_id": {
+                "type": "string",
+                "description": "ID of the item reward (if applicable)."
+              },
+              "quantity": {
+                "type": "integer",
+                "description": "Quantity of the item or resource reward (if applicable)."
+              },
+              "pokemon_id": {
+                "type": "integer",
+                "description": "ID of the Pokemon reward (if applicable)."
+              }
+            }
+          },
+          "quest_id": {
+            "type": "string",
+            "description": "ID of the quest this task belongs to (if applicable)."
+          }
+        },
+        "required": ["id", "type", "objective", "reward"]
+      }
+    },
+    "weather": {
+      "type": "object",
+      "description": "Current in-game weather information.",
+      "properties": {
+        "condition": {
+          "type": "string",
+          "enum": ["Clear", "Partly Cloudy", "Cloudy", "Rainy", "Windy", "Snowy", "Foggy"],
+          "description": "Current weather condition."
+        },
+        "boosted_types": {
+          "type": "array",
+          "description": "Pokemon types that are boosted by the current weather.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
+              "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
+              "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
+            ]
+          }
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "unix-timestamp",
+          "description": "Timestamp of the last weather update."
+        }
+      },
+      "required": ["condition", "boosted_types", "updated_at"]
+    }
+  },
+  "required": [
+    "player",
+    "map_objects",
+    "pokemon_data",
+    "item_data",
+    "news_feed"
+  ],
+  "definitions": {
+    "pokemon": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for this specific Pokemon instance."
+        },
+        "pokemon_id": {
+          "type": "integer",
+          "description": "Pokedex number of the Pokemon."
+        },
+        "nickname": {
+          "type": "string",
+          "description": "Nickname given to the Pokemon by the player (if any)."
+        },
+        "cp": {
+          "type": "integer",
+          "description": "Combat Power of the Pokemon."
+        },
+        "hp": {
+          "type": "integer",
+          "description": "Current HP of the Pokemon."
+        },
+        "max_hp": {
+          "type": "integer",
+          "description": "Maximum HP of the Pokemon."
+        },
+        "iv_attack": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15,
+          "description": "Attack individual value (IV)."
+        },
+        "iv_defense": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15,
+          "description": "Defense individual value (IV)."
+        },
+        "iv_stamina": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15,
+          "description": "Stamina individual value (IV)."
+        },
+        "move_1": {
+          "type": "string",
+          "description": "ID of the Pokemon's first move (quick move)."
+        },
+        "move_2": {
+          "type": "string",
+          "description": "ID of the Pokemon's second move (charged move)."
+        },
+        "height": {
+          "type": "number",
+          "format": "float",
+          "description": "Height of the Pokemon in meters."
+        },
+        "weight": {
+          "type": "number",
+          "format": "float",
+          "description": "Weight of the Pokemon in kilograms."
+        },
+        "gender": {
+          "type": "string",
+          "enum": ["Male", "Female", "Genderless"],
+          "description": "Gender of the Pokemon."
+        },
+        "is_shiny": {
+          "type": "boolean",
+          "description": "Whether the Pokemon is shiny."
+        },
+        "form": {
+          "type": "string",
+          "description": "Specific form of the Pokemon (e.g., Alolan, Galarian)."
+        },
+        "date_caught": {
+          "type": "integer",
+          "format": "unix-timestamp",
+          "description": "Timestamp of when the Pokemon was caught."
+        }
+      },
+      "required": [
+        "id",
+        "pokemon_id",
+        "cp",
+        "hp",
+        "max_hp",
+        "iv_attack",
+        "iv_defense",
+        "iv_stamina",
+        "move_1",
+        "move_2"
+      ]
+    },
+    "move": {
+      "type": "object",
+      "properties": {
+        "move_id": {
+          "type": "string",
+          "description": "Unique identifier for the move."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the move."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
+            "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
+            "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
+          ],
+          "description": "Type of the move."
+        },
+        "power": {
+          "type": "integer",
+          "description": "Power of the move."
+        },
+        "energy_delta": {
+          "type": "integer",
+          "description": "Energy gained or consumed by the move."
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the move in milliseconds."
+        },
+        "damage_window_start": {
+          "type": "integer",
+          "description": "Start of the damage window in milliseconds."
+        },
+        "damage_window_end": {
+          "type": "integer",
+          "description": "End of the damage window in milliseconds."
+        }
+      },
+      "required": ["move_id", "name", "type", "power", "energy_delta"]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Zillow App Data",
+  "description": "JSON Schema for data used in a Zillow-like real estate application.",
+  "type": "object",
+  "properties": {
+    "listings": {
+      "type": "array",
+      "description": "An array of property listings.",
+      "items": {
+        "$ref": "#/definitions/propertyListing"
+      }
+    },
+    "savedSearches": {
+      "type": "array",
+      "description": "An array of user-saved search criteria.",
+      "items": {
+        "$ref": "#/definitions/savedSearch"
+      }
+    },
+    "userProfile": {
+      "$ref": "#/definitions/userProfile"
+    },
+    "agents": {
+      "type": "array",
+      "description": "List of real estate agents",
+      "items": {
+        "$ref": "#/definitions/agent"
+      }
+    }
+  },
+  "definitions": {
+    "propertyListing": {
+      "type": "object",
+      "description": "Details of a single property listing.",
+      "properties": {
+        "zpid": {
+          "type": "string",
+          "description": "Zillow Property ID (unique identifier).",
+          "example": "12345678"
+        },
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "description": "Listing price.",
+          "example": 350000.00
+        },
+        "bedrooms": {
+          "type": "integer",
+          "description": "Number of bedrooms.",
+          "example": 3
+        },
+        "bathrooms": {
+          "type": "number",
+          "format": "float",
+          "description": "Number of bathrooms.",
+          "example": 2.5
+        },
+        "livingArea": {
+          "type": "integer",
+          "description": "Living area in square feet.",
+          "example": 1800
+        },
+        "lotSize": {
+          "type": "integer",
+          "description": "Lot size in square feet (optional).",
+          "example": 5000
+        },
+        "yearBuilt": {
+          "type": "integer",
+          "description": "Year the property was built.",
+          "example": 1995
+        },
+        "propertyType": {
+          "type": "string",
+          "description": "Type of property (e.g., Single Family, Condo, Townhouse).",
+          "enum": [
+            "Single Family",
+            "Condo",
+            "Townhouse",
+            "Multi-Family",
+            "Land",
+            "Manufactured",
+            "Other"
+          ]
+        },
+        "listingStatus": {
+          "type": "string",
+          "description": "Status of the listing (e.g., For Sale, Pending, Sold).",
+          "enum": ["For Sale", "Pending", "Sold", "For Rent", "Recently Sold"]
+        },
+        "photos": {
+          "type": "array",
+          "description": "Array of URLs to property photos.",
+          "items": {
+            "type": "string",
+            "format": "URL",
+            "example": "https://photos.zillow.com/image1.jpg"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Text description of the property.",
+          "example": "Beautiful home in a quiet neighborhood..."
+        },
+        "homeFacts": {
+          "type": "object",
+          "description": "Additional home facts, can be extended as needed.",
+          "properties": {
+            "cooling": {
+              "type": "string",
+              "example": "Central Air"
+            },
+            "heating": {
+              "type": "string",
+              "example": "Forced Air"
+            },
+            "parking": {
+              "type": "string",
+              "example": "Garage - Attached, 2 spaces"
+            },
+            "hoaFee": {
+              "type": "number",
+              "description": "HOA fee (optional)",
+              "example": 150.00
+            }
+          }
+        },
+        "zestimate": {
+          "type": "number",
+          "format": "float",
+          "description": "Zillow's estimated market value (optional).",
+          "example": 365000.00
+        },
+        "daysOnZillow": {
+          "type": "integer",
+          "description": "Number of days the property has been listed on Zillow.",
+          "example": 15
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the property's page on Zillow.",
+          "example": "https://www.zillow.com/homedetails/123-Main-St-Anytown-CA-91234/12345678_zpid/"
+        },
+        "listingAgent": {
+          "type": "string",
+          "description": "ID of the listing agent.",
+          "example": "agent-123"
+        }
+      },
+      "required": [
+        "zpid",
+        "address",
+        "price",
+        "bedrooms",
+        "bathrooms",
+        "livingArea",
+        "propertyType",
+        "listingStatus"
+      ]
+    },
+    "address": {
+      "type": "object",
+      "description": "Address details.",
+      "properties": {
+        "streetAddress": {
+          "type": "string",
+          "description": "Street address.",
+          "example": "123 Main St"
+        },
+        "unitNumber": {
+          "type": "string",
+          "description": "Apartment or unit number (optional).",
+          "example": "Apt 4B"
+        },
+        "city": {
+          "type": "string",
+          "description": "City.",
+          "example": "Anytown"
+        },
+        "state": {
+          "type": "string",
+          "description": "State (2-letter abbreviation).",
+          "example": "CA"
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "ZIP code.",
+          "example": "91234"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Latitude of the address location.",
+          "example": 34.052235
+        },
+        "longitude": {
+          "type": "number",
+          "format": "float",
+          "description": "Longitude of the address location.",
+          "example": -118.243683
+        }
+      },
+      "required": [
+        "streetAddress",
+        "city",
+        "state",
+        "zipCode",
+        "latitude",
+        "longitude"
+      ]
+    },
+    "savedSearch": {
+      "type": "object",
+      "description": "User's saved search criteria.",
+      "properties": {
+        "searchId": {
+          "type": "string",
+          "description": "Unique identifier for the saved search.",
+          "example": "search-123"
+        },
+        "name": {
+          "type": "string",
+          "description": "User-defined name for the search (optional).",
+          "example": "My Dream Home Search"
+        },
+        "location": {
+          "type": "object",
+          "description": "Geographic area for the search.",
+          "properties": {
+            "city": {
+              "type": "string",
+              "example": "San Francisco"
+            },
+            "state": {
+              "type": "string",
+              "example": "CA"
+            },
+            "zipCode": {
+              "type": "string",
+              "example": "94105"
+            },
+            "bounds": {
+              "type": "object",
+              "description": "Geographic bounds of the search area.",
+              "properties": {
+                "north": {
+                  "type": "number",
+                  "format": "float",
+                  "example": 34.1
+                },
+                "east": {
+                  "type": "number",
+                  "format": "float",
+                  "example": -118.2
+                },
+                "south": {
+                  "type": "number",
+                  "format": "float",
+                  "example": 34.0
+                },
+                "west": {
+                  "type": "number",
+                  "format": "float",
+                  "example": -118.3
+                }
+              }
+            }
+          }
+        },
+        "minPrice": {
+          "type": "integer",
+          "example": 200000
+        },
+        "maxPrice": {
+          "type": "integer",
+          "example": 500000
+        },
+        "minBedrooms": {
+          "type": "integer",
+          "example": 2
+        },
+        "minBathrooms": {
+          "type": "number",
+          "format": "float",
+          "example": 1.5
+        },
+        "propertyTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Single Family",
+              "Condo",
+              "Townhouse",
+              "Multi-Family",
+              "Land",
+              "Manufactured",
+              "Other"
+            ]
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "description": "List of keywords to filter search results (e.g., 'pool', 'garage').",
+          "items": {
+            "type": "string"
+          },
+          "example": ["pool", "garage", "hardwood floors"]
+        }
+      },
+      "required": ["searchId"]
+    },
+    "userProfile": {
+      "type": "object",
+      "description": "User profile information.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique user identifier.",
+          "example": "user-456"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "John"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Doe"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "john.doe@email.com"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number (optional)."
+        },
+        "favorites": {
+          "type": "array",
+          "description": "Array of ZPIDs of the user's favorite properties.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["userId", "email"]
+    },
+    "agent": {
+      "type": "object",
+      "description": "Real estate agent information.",
+      "properties": {
+        "agentId": {
+          "type": "string",
+          "description": "Unique agent identifier.",
+          "example": "agent-123"
+        },
+        "name": {
+          "type": "string",
+          "description": "Agent's full name.",
+          "example": "Jane Smith"
+        },
+        "brokerage": {
+          "type": "string",
+          "description": "Name of the brokerage the agent works for.",
+          "example": "Acme Realty"
+        },
+        "photoUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL to the agent's profile photo.",
+          "example": "https://example.com/agent-photo.jpg"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Agent's phone number.",
+          "example": "555-123-4567"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Agent's email address.",
+          "example": "jane.smith@example.com"
+        },
+        "licenseNumber": {
+          "type": "string",
+          "description": "Agent's real estate license number.",
+          "example": "CA-1234567"
+        },
+        "specialties": {
+          "type": "array",
+          "description": "List of the agent's specialties (e.g., 'Buyer's Agent', 'Listing Agent').",
+          "items": {
+            "type": "string"
+          },
+          "example": ["Buyer's Agent", "Listing Agent", "Relocation"]
+        },
+        "reviews": {
+          "type": "array",
+          "description": "List of agent reviews.",
+          "items": {
+            "$ref": "#/definitions/agentReview"
+          }
+        }
+      }
+    },
+    "agentReview": {
+      "type": "object",
+      "description": "Review information for an agent.",
+      "properties": {
+        "reviewId": {
+          "type": "string",
+          "description": "Unique identifier for the review.",
+          "example": "review-789"
+        },
+        "reviewerName": {
+          "type": "string",
+          "description": "Name of the person who wrote the review.",
+          "example": "John Doe"
+        },
+        "rating": {
+          "type": "integer",
+          "description": "Star rating given to the agent (e.g., 1-5).",
+          "minimum": 1,
+          "maximum": 5,
+          "example": 5
+        },
+        "comment": {
+          "type": "string",
+          "description": "Text content of the review.",
+          "example": "Jane was very helpful throughout the entire process."
+        },
+        "reviewDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the review was submitted.",
+          "example": "2023-10-27T10:00:00Z"
+        }
+      }
+    }
+  }
+}

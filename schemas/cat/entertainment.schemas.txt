@@ -1,0 +1,4487 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Apple Music",
+  "description": "JSON Schema for Apple Music data structures.",
+  "definitions": {
+    "resourceAttributes": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The localized name of the resource."
+        },
+        "artwork": {
+          "$ref": "#/definitions/artwork",
+          "description": "The artwork for the resource."
+        },
+        "artistName": {
+          "type": "string",
+          "description": "The name of the artist associated with the resource (if applicable)."
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL for sharing the resource on Apple Music."
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "artwork": {
+      "type": "object",
+      "description": "Artwork for a resource, such as an album or song.",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "description": "The width of the artwork image."
+        },
+        "height": {
+          "type": "integer",
+          "description": "The height of the artwork image."
+        },
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL template for the artwork image, where {w} and {h} are replaced with width and height values, and {f} with a format like 'jpg'."
+        },
+        "bgColor": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The average background color of the artwork, as a hexadecimal color."
+        },
+        "textColor1": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The primary text color that may be used if the background color is displayed, as a hexadecimal color."
+        },
+        "textColor2": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The secondary text color, as a hexadecimal color."
+        },
+        "textColor3": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The third text color, as a hexadecimal color."
+        },
+        "textColor4": {
+          "type": "string",
+          "pattern": "^#?([0-9a-fA-F]{3}){1,2}$",
+          "description": "The fourth text color, as a hexadecimal color."
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    "editorialNotes": {
+      "type": "object",
+      "description": "Editorial notes for a resource, such as an album or playlist.",
+      "properties": {
+        "standard": {
+          "type": "string",
+          "description": "The notes describing the resource."
+        },
+        "short": {
+          "type": "string",
+          "description": "A shortened version of the notes describing the resource."
+        },
+        "name": {
+          "type": "string",
+          "description": "The title for the editorial notes."
+        },
+        "tagline": {
+          "type": "string",
+          "description": "A tagline for the editorial notes."
+        }
+      },
+      "additionalProperties": false
+    },
+    "playParameters": {
+      "type": "object",
+      "description": "Information for identifying an object for playback.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the object."
+        },
+        "kind": {
+          "type": "string",
+          "description": "The kind of the object to use for playback. Possible values are song, musicVideo, playlist, album, library-song, library-music-video, library-playlist, library-album."
+        },
+        "isLibrary": {
+          "type": "boolean",
+          "description": "Indicates whether the object is in the user's library. Default is false."
+        },
+        "globalId": {
+          "type": "string",
+          "description": "The global id of the object. This is only used for objects that are not from the Apple Music Catalog (eg. User uploaded songs)."
+        },
+        "reporting": {
+          "type": "boolean",
+          "description": "Whether or not playback of this item should be reported to Apple Music as a play."
+        },
+        "catalogId": {
+          "type": "string",
+          "description": "The Apple Music catalog id of the item. This is only used for objects that are from the Apple Music Catalog (eg. Songs on Apple Music)."
+        }
+      },
+      "required": [
+        "id",
+        "kind"
+      ]
+    },
+    "preview": {
+      "type": "object",
+      "description": "A preview of a song or music video.",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL for the preview."
+        },
+        "artwork": {
+          "$ref": "#/definitions/artwork"
+        },
+        "hlsUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL for the preview in HLS format. Only present in Music Videos"
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    "relationship": {
+      "type": "object",
+      "description": "A relationship to a resource.",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "description": "The data for the relationship."
+        },
+        "href": {
+          "type": "string",
+          "format": "URL",
+          "description": "The URL for the relationship."
+        },
+        "meta": {
+          "type": "object,{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Apple Podcasts",
+  "description": "JSON Schema for Apple Podcasts data, encompassing podcasts, episodes, categories, and related entities.",
+  "type": "object",
+  "properties": {
+    "podcasts": {
+      "type": "array",
+      "description": "A list of podcasts.",
+      "items": {
+        "$ref": "#/definitions/podcast"
+      }
+    },
+    "episodes": {
+      "type": "array",
+      "description": "A list of podcast episodes.",
+      "items": {
+        "$ref": "#/definitions/episode"
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "A list of podcast categories.",
+      "items": {
+        "$ref": "#/definitions/category"
+      }
+    },
+    "authors": {
+      "type": "array",
+      "description": "A list of podcast authors/creators.",
+      "items": {
+        "$ref": "#/definitions/author"
+      }
+    },
+    "topCharts": {
+      "type": "object",
+      "description": "Data related to top podcast charts.",
+      "properties": {
+        "podcasts": {
+          "type": "array",
+          "description": "List of top podcasts.",
+          "items": {
+            "$ref": "#/definitions/podcastChartEntry"
+          }
+        },
+        "episodes": {
+          "type": "array",
+          "description": "List of top episodes.",
+          "items": {
+            "$ref": "#/definitions/episodeChartEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "podcast": {
+      "type": "object",
+      "description": "Represents a podcast.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the podcast (e.g., feed ID or Apple Podcasts ID)."
+        },
+        "collectionId": {
+          "type": "integer",
+          "description": "Apple Podcasts collection ID."
+        },
+        "trackId": {
+          "type": "integer",
+          "description": "Apple Podcasts track ID."
+        },
+        "artistId": {
+          "type": "integer",
+          "description": "Apple Podcasts artist ID."
+        },
+        "artistName": {
+          "type": "string",
+          "description": "Name of the podcast artist/creator."
+        },
+        "collectionName": {
+          "type": "string",
+          "description": "Name of the podcast."
+        },
+        "trackName": {
+          "type": "string",
+          "description": "Alias for collectionName"
+        },
+        "feedUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast's RSS feed."
+        },
+        "artworkUrl30": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast artwork (30x30 pixels)."
+        },
+        "artworkUrl60": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast artwork (60x60 pixels)."
+        },
+        "artworkUrl100": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast artwork (100x100 pixels)."
+        },
+        "artworkUrl600": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the podcast artwork (600x600 pixels)."
+        },
+        "primaryGenreName": {
+          "type": "string",
+          "description": "Primary genre of the podcast."
+        },
+        "genres": {
+          "type": "array",
+          "description": "List of genres associated with the podcast.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "genreIds": {
+          "type": "array",
+          "description": "List of genre IDs",
+          "items": {
+            "type": "string"
+          }
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Release date of the podcast."
+        },
+        "trackCount": {
+          "type": "integer",
+          "description": "Number of episodes in the podcast."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country of origin (ISO 3166-1 alpha-3 code)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the podcast."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "Short description of the podcast."
+        },
+        "copyright": {
+          "type": "string",
+          "description": "Copyright information."
+        },
+        "contentAdvisoryRating": {
+          "type": "string",
+          "description": "Content advisory rating (e.g., 'Clean', 'Explicit')."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Kind of content",
+          "enum": ["podcast"]
+        },
+        "wrapperType": {
+          "type": "string",
+          "description": "Type of wrapper",
+          "enum": ["track", "artist"]
+        },
+        "episodes": {
+          "type": "array",
+          "description": "List of episodes associated with this podcast.",
+          "items": {
+            "$ref": "#/definitions/episode"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "collectionName",
+        "feedUrl"
+      ],
+      "additionalProperties": false
+    },
+    "episode": {
+      "type": "object",
+      "description": "Represents a podcast episode.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the episode (e.g., GUID)."
+        },
+        "podcastId": {
+          "type": "integer",
+          "description": "ID of the podcast this episode belongs to."
+        },
+        "trackId": {
+          "type": "integer",
+          "description": "Apple Podcasts track ID."
+        },
+        "artistId": {
+          "type": "integer",
+          "description": "Apple Podcasts artist ID."
+        },
+        "collectionId": {
+          "type": "integer",
+          "description": "Apple Podcasts collection ID."
+        },
+        "trackName": {
+          "type": "string",
+          "description": "Title of the episode."
+        },
+        "collectionName": {
+          "type": "string",
+          "description": "Name of the podcast the episode belongs to."
+        },
+        "artistName": {
+          "type": "string",
+          "description": "Name of the podcast artist/creator."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the episode."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "Short description of the episode."
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Release date of the episode."
+        },
+        "closedCaptioning": {
+          "type": "string",
+          "description": "Closed captioning status",
+          "enum": ["none", "CC"]
+        },
+        "trackTimeMillis": {
+          "type": "integer",
+          "description": "Duration of the episode in milliseconds."
+        },
+        "episodeFileExtension": {
+          "type": "string",
+          "description": "File extension of episode media."
+        },
+        "episodeUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode's media file."
+        },
+        "episodeGuid": {
+          "type": "string",
+          "description": "GUID of the episode"
+        },
+        "artworkUrl30": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode artwork (30x30 pixels)."
+        },
+        "artworkUrl60": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode artwork (60x60 pixels)."
+        },
+        "artworkUrl160": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode artwork (160x160 pixels)."
+        },
+        "artworkUrl600": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode artwork (600x600 pixels)."
+        },
+        "previewUrl": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the episode preview file."
+        },
+        "contentAdvisoryRating": {
+          "type": "string",
+          "description": "Content advisory rating (e.g., 'Clean', 'Explicit')."
+        },
+        "genres": {
+          "type": "array",
+          "description": "List of genres",
+          "items": {
+            "type": "string"
+          }
+        },
+        "genreIds": {
+          "type": "array",
+          "description": "List of genre IDs",
+          "items": {
+            "type": "string"
+          }
+        },
+        "kind": {
+          "type": "string",
+          "description": "Kind of content",
+          "enum": ["podcast-episode"]
+        },
+        "wrapperType": {
+          "type": "string",
+          "description": "Type of wrapper",
+          "enum": ["track", "podcastEpisode"]
+        }
+      },
+      "required": [
+        "id",
+        "podcastId",
+        "trackName",
+        "episodeUrl"
+      ],
+      "additionalProperties": false
+    },
+    "category": {
+      "type": "object",
+      "description": "Represents a podcast category.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the category."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the category."
+        },
+        "subcategories": {
+          "type": "array",
+          "description": "List of subcategories.",
+          "items": {
+            "$ref": "#/definitions/category"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "author": {
+      "type": "object",
+      "description": "Represents a podcast author or creator.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the author (e.g., Apple Podcasts artist ID)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the author."
+        },
+        "podcasts": {
+          "type": "array",
+          "description": "List of podcasts by this author.",
+          "items": {
+            "$ref": "#/definitions/podcast"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "podcastChartEntry": {
+      "type": "object",
+      "description": "Represents a podcast entry in a chart.",
+      "properties": {
+        "podcast": {
+          "$ref": "#/definitions/podcast"
+        },
+        "rank": {
+          "type": "integer",
+          "description": "Ranking of the podcast in the chart."
+        }
+      },
+      "required": [
+        "podcast",
+        "rank"
+      ],
+      "additionalProperties": false
+    },
+    "episodeChartEntry": {
+      "type": "object",
+      "description": "Represents a podcast episode entry in a chart.",
+      "properties": {
+        "episode": {
+          "$ref": "#/definitions/episode"
+        },
+        "rank": {
+          "type": "integer",
+          "description": "Ranking of the episode in the chart."
+        }
+      },
+      "required": [
+        "episode",
+        "rank"
+      ],
+      "additionalProperties": false
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BitChute",
+  "description": "JSON Schema for BitChute data structures",
+  "definitions": {
+    "video": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the video (often a hash or URL part)",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the video",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the video"
+        },
+        "channel": {
+          "type": "string",
+          "description": "Name or ID of the channel that uploaded the video",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "channel_id": {
+          "type": "string",
+          "description": "Unique identifier for the channel that uploaded the video",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration of the video in seconds",
+          "minimum": 0
+        },
+        "upload_date": {
+          "type": "string",
+          "description": "Date and time the video was uploaded",
+          "format": "date-time"
+        },
+        "view_count": {
+          "type": "integer",
+          "description": "Number of times the video has been viewed",
+          "minimum": 0
+        },
+        "like_count": {
+          "type": "integer",
+          "description": "Number of likes the video has received (can be inaccurate)",
+          "minimum": 0
+        },
+        "dislike_count": {
+          "type": "integer",
+          "description": "Number of dislikes the video has received (can be inaccurate)",
+          "minimum": 0
+        },
+        "thumbnail_url": {
+          "type": "string",
+          "description": "URL of the video's thumbnail image",
+          "format": "URL"
+        },
+        "video_url": {
+          "type": "string",
+          "description": "URL of the video file (might be a torrent or direct link)",
+          "format": "URL"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Keywords or tags associated with the video",
+          "items": {
+            "type": "string"
+          }
+        },
+        "magnet_link": {
+          "type": "string",
+          "description": "Magnet URI for the video torrent, if available",
+          "format": "URL"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category the video belongs to (e.g., News, Gaming)"
+        },
+        "comments": {
+          "type": "array",
+          "description": "List of comments on the video",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "channel",
+        "upload_date",
+        "video_url"
+      ]
+    },
+    "channel": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the channel (often a URL part or name)",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the channel",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the channel"
+        },
+        "banner_url": {
+          "type": "string",
+          "description": "URL of the channel's banner image",
+          "format": "URL"
+        },
+        "avatar_url": {
+          "type": "string",
+          "description": "URL of the channel's avatar/profile image",
+          "format": "URL"
+        },
+        "subscriber_count": {
+          "type": "integer",
+          "description": "Approximate number of subscribers (often not publicly available)",
+          "minimum": 0
+        },
+        "videos": {
+          "type": "array",
+          "description": "List of videos uploaded by the channel",
+          "items": {
+            "$ref": "#/definitions/video"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "Name or identifier of the comment author"
+        },
+        "text": {
+          "type": "string",
+          "description": "The content of the comment"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Date and time the comment was posted",
+          "format": "date-time"
+        },
+        "like_count": {
+          "type": "integer",
+          "description": "Number of likes on the comment (if available)",
+          "minimum": 0
+        },
+        "replies": {
+          "type": "array",
+          "description": "List of replies to this comment",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        }
+      },
+      "required": [
+        "author",
+        "text",
+        "timestamp"
+      ]
+    },
+    "search_result": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of search result (e.g., 'video', 'channel')",
+          "enum": [
+            "video",
+            "channel"
+          ]
+        },
+        "data": {
+          "type": "object",
+          "description": "The actual search result data",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/video"
+            },
+            {
+              "$ref": "#/definitions/channel"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "data"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "videos": {
+      "type": "array",
+      "description": "List of videos",
+      "items": {
+        "$ref": "#/definitions/video"
+      }
+    },
+    "channels": {
+      "type": "array",
+      "description": "List of channels",
+      "items": {
+        "$ref": "#/definitions/channel"
+      }
+    },
+    "search_results": {
+      "type": "array",
+      "description": "List of search results",
+      "items": {
+        "$ref": "#/definitions/search_result"
+      }
+    },
+    "trending": {
+      "type": "array",
+      "description": "List of currently trending videos",
+      "items": {
+        "$ref": "#/definitions/video"
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "List of available video categories",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "iTunes Library",
+  "description": "A JSON Schema representing the structure of an iTunes library.",
+  "type": "object",
+  "properties": {
+    "Major Version": {
+      "type": "integer",
+      "description": "The major version of the iTunes library format."
+    },
+    "Minor Version": {
+      "type": "integer",
+      "description": "The minor version of the iTunes library format."
+    },
+    "Application Version": {
+      "type": "string",
+      "description": "The version of iTunes that created the library."
+    },
+    "Date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the library was last modified."
+    },
+    "Features": {
+      "type": "integer",
+      "description": "A bit field representing enabled features in the library (e.g., music sharing, Genius)."
+    },
+    "Show Content Ratings": {
+      "type": "boolean",
+      "description": "Whether content ratings are displayed."
+    },
+    "Music Folder": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "The location of the music folder."
+    },
+    "Library Persistent ID": {
+      "type": "string",
+      "description": "A unique identifier for the library."
+    },
+    "Tracks": {
+      "type": "object",
+      "description": "A dictionary of tracks, keyed by Track ID.",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "type": "object",
+          "description": "An individual track in the iTunes library.",
+          "properties": {
+            "Track ID": {
+              "type": "integer",
+              "description": "A unique identifier for the track."
+            },
+            "Name": {
+              "type": "string",
+              "description": "The name of the track."
+            },
+            "Artist": {
+              "type": "string",
+              "description": "The artist of the track."
+            },
+            "Album Artist": {
+              "type": "string",
+              "description": "The album artist of the track."
+            },
+            "Composer": {
+              "type": "string",
+              "description": "The composer of the track."
+            },
+            "Album": {
+              "type": "string",
+              "description": "The album the track belongs to."
+            },
+            "Genre": {
+              "type": "string",
+              "description": "The genre of the track."
+            },
+            "Kind": {
+              "type": "string",
+              "description": "The file type and codec of the track (e.g., 'AAC audio file')."
+            },
+            "Size": {
+              "type": "integer",
+              "description": "The file size of the track in bytes."
+            },
+            "Total Time": {
+              "type": "integer",
+              "description": "The duration of the track in milliseconds."
+            },
+            "Disc Number": {
+              "type": "integer",
+              "description": "The disc number if part of a multi-disc set."
+            },
+            "Disc Count": {
+              "type": "integer",
+              "description": "The total number of discs in the set."
+            },
+            "Track Number": {
+              "type": "integer",
+              "description": "The track number on the album."
+            },
+            "Track Count": {
+              "type": "integer",
+              "description": "The total number of tracks on the album."
+            },
+            "Year": {
+              "type": "integer",
+              "description": "The year the track was released."
+            },
+            "BPM": {
+              "type": "integer",
+              "description": "The beats per minute of the track."
+            },
+            "Date Modified": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date and time the track was last modified."
+            },
+            "Date Added": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date and time the track was added to the library."
+            },
+            "Bit Rate": {
+              "type": "integer",
+              "description": "The bit rate of the track in kbps."
+            },
+            "Sample Rate": {
+              "type": "integer",
+              "description": "The sample rate of the track in Hz."
+            },
+            "Comments": {
+              "type": "string",
+              "description": "User-defined comments about the track."
+            },
+            "Play Count": {
+              "type": "integer",
+              "description": "The number of times the track has been played."
+            },
+            "Play Date": {
+              "type": "integer",
+              "description": "The last time the track was played (deprecated - use Play Date UTC)."
+            },
+            "Play Date UTC": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The last time the track was played, in UTC."
+            },
+            "Skip Count": {
+              "type": "integer",
+              "description": "The number of times the track has been skipped"
+            },
+            "Skip Date": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date and time the track was last skipped."
+            },
+            "Rating": {
+              "type": "integer",
+              "description": "The user rating of the track (0-100, where 20=1 star, 40=2 stars, etc.)."
+            },
+            "Rating Computed": {
+              "type": "boolean",
+              "description": "Whether the rating is computed automatically."
+            },
+            "Album Rating": {
+              "type": "integer",
+              "description": "The user rating of the album."
+            },
+            "Album Rating Computed": {
+              "type": "boolean",
+              "description": "Whether the album rating is computed automatically."
+            },
+            "Loved": {
+              "type": "boolean",
+              "description": "Whether the track is marked as 'Loved'."
+            },
+            "Disliked": {
+              "type": "boolean",
+              "description": "Whether the track is marked as 'Disliked'."
+            },
+            "Artwork Count": {
+              "type": "integer",
+              "description": "The number of embedded artwork images in the track."
+            },
+            "Persistent ID": {
+              "type": "string",
+              "description": "A unique identifier for the track that persists across libraries."
+            },
+            "Track Type": {
+              "type": "string",
+              "enum": [
+                "File",
+                "Remote",
+                "URL"
+              ],
+              "description": "The type of the track (e.g., 'File', 'Remote', 'URL')."
+            },
+            "File Folder Count": {
+              "type": "integer",
+              "description": "Used for internal organization (related to the file system)."
+            },
+            "Library Folder Count": {
+              "type": "integer",
+              "description": "Used for internal organization (related to the file system)."
+            },
+            "Location": {
+              "type": "string",
+              "format": "uri-reference",
+              "description": "The location of the track file."
+            },
+            "File Type": {
+              "type": "integer",
+              "description": "Numerical file type identifier (deprecated)."
+            },
+            "Normalization": {
+              "type": "integer",
+              "description": "Volume normalization adjustment (deprecated)."
+            },
+            "Compilation": {
+              "type": "boolean",
+              "description": "Whether the track is part of a compilation album."
+            },
+            "Grouping": {
+              "type": "string",
+              "description": "Custom grouping for tracks."
+            },
+            "Series": {
+              "type": "string",
+              "description": "For TV shows, the name of the series."
+            },
+            "Season": {
+              "type": "integer",
+              "description": "For TV shows, the season number."
+            },
+            "Episode": {
+              "type": "string",
+              "description": "For TV shows, the episode ID."
+            },
+            "Episode Order": {
+              "type": "integer",
+              "description": "For TV shows, the episode order."
+            },
+            "Sort Name": {
+              "type": "string",
+              "description": "The name used for sorting the track."
+            },
+            "Sort Album": {
+              "type": "string",
+              "description": "The album name used for sorting."
+            },
+            "Sort Artist": {
+              "type": "string",
+              "description": "The artist name used for sorting."
+            },
+            "Sort Album Artist": {
+              "type": "string",
+              "description": "The album artist name used for sorting."
+            },
+            "Sort Composer": {
+              "type": "string",
+              "description": "The composer name used for sorting."
+            },
+            "Sort Series": {
+              "type": "string",
+              "description": "The series name used for sorting."
+            },
+            "Protected": {
+              "type": "boolean",
+              "description": "Whether the file is protected by DRM."
+            },
+            "Purchased": {
+              "type": "boolean",
+              "description": "Whether the track was purchased from the iTunes Store."
+            },
+            "Has Video": {
+              "type": "boolean",
+              "description": "Whether the track is associated with a video."
+            },
+            "HD": {
+              "type": "boolean",
+              "description": "Whether the associated video is in HD."
+            },
+            "Video Width": {
+              "type": "integer",
+              "description": "The width of the associated video in pixels."
+            },
+            "Video Height": {
+              "type": "integer",
+              "description": "The height of the associated video in pixels."
+            },
+            "Movie": {
+              "type": "boolean",
+              "description": "Whether the track is a movie."
+            },
+            "TV Show": {
+              "type": "boolean",
+              "description": "Whether the track is a TV show episode."
+            },
+            "Podcast": {
+              "type": "boolean",
+              "description": "Whether the track is a podcast."
+            },
+            "Unplayed": {
+              "type": "boolean",
+              "description": "Whether the podcast has not been played."
+            },
+            "Part Of Gapless Album": {
+              "type": "boolean",
+              "description": "Whether the track is part of a gapless album."
+            },
+            "Content Rating": {
+              "type": "string",
+              "description": "The content rating of the track (e.g., 'Clean', 'Explicit')."
+            },
+            "Release Date": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The release date of the content."
+            },
+            "Work": {
+              "type": "string",
+              "description": "For classical music, the name of the work."
+            },
+            "Movement Number": {
+              "type": "integer",
+              "description": "For classical music, the movement number."
+            },
+            "Movement Count": {
+              "type": "integer",
+              "description": "For classical music, the total number of movements."
+            },
+            "Movement Name": {
+              "type": "string",
+              "description": "For classical music, the name of the movement."
+            },
+            "iTunesU": {
+              "type": "boolean",
+              "description": "Whether the track is an iTunes U course item."
+            },
+            "Music Video": {
+              "type": "boolean",
+              "description": "Whether the track is a music video."
+            },
+            "Description": {
+              "type": "string",
+              "description": "Description for podcast or iTunes U."
+            },
+            "Long Description": {
+              "type": "string",
+              "description": "Long Description (Used for TV Shows)."
+            },
+            "Lyrics": {
+              "type": "string",
+              "description": "Lyrics of the song"
+            },
+            "Volume Adjustment": {
+              "type": "integer",
+              "description": "Volume Adjustment for this track in db"
+            },
+            "Podcast URL": {
+              "type": "string",
+              "format": "uri-reference",
+              "description": "Feed url of the podcast"
+            },
+            "Disabled": {
+              "type": "boolean",
+              "description": "Whether track is disabled in iTunes"
+            },
+            "Matched": {
+              "type": "boolean",
+              "description": "Whether track was matched by iTunes Match"
+            },
+            "Purchased": {
+              "type": "boolean",
+              "description": "Whether track was purchased from iTunes Store"
+            },
+            "Master": {
+              "type": "boolean",
+              "description": "Indicates this is a master track when using home sharing"
+            },
+            "Explicit": {
+              "type": "boolean",
+              "description": "Explicit content"
+            }
+
+          },
+          "required": [
+            "Track ID",
+            "Name"
+          ]
+        }
+      }
+    },
+    "Playlists": {
+      "type": "array",
+      "description": "An array of playlists.",
+      "items": {
+        "type": "object",
+        "description": "An individual playlist.",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "description": "The name of the playlist."
+          },
+          "Playlist ID": {
+            "type": "integer",
+            "description": "A unique identifier for the playlist."
+          },
+          "Playlist Persistent ID": {
+            "type": "string",
+            "description": "A unique identifier for the playlist that persists across libraries."
+          },
+          "Distinguished Kind": {
+            "type": "integer",
+            "description": "A numeric value indicating a special kind of playlist (e.g., 'Music', 'Movies')."
+          },
+          "Master": {
+            "type": "boolean",
+            "description": "Whether this is the master Music playlist."
+          },
+          "Parent Persistent ID": {
+            "type": "string",
+            "description": "The persistent ID of the parent playlist (for folders)."
+          },
+          "Folder": {
+            "type": "boolean",
+            "description": "Whether this playlist is a folder."
+          },
+          "Visible": {
+            "type": "boolean",
+            "description": "Whether this playlist is visible in the UI."
+          },
+          "All Items": {
+            "type": "boolean",
+            "description": "Whether this playlist contains all items in its scope (e.g., all music)."
+          },
+          "Smart Info": {
+            "type": "string",
+            "format": "base64",
+            "description": "The criteria for a smart playlist (encoded data)."
+          },
+          "Smart Criteria": {
+            "type": "string",
+            "format": "base64",
+            "description": "The criteria for a smart playlist (encoded data)."
+          },
+          "Playlist Items": {
+            "type": "array",
+            "description": "An array of track IDs contained in the playlist.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Track ID": {
+                  "type": "integer",
+                  "description": "The ID of a track in the playlist."
+                }
+              },
+              "required": [
+                "Track ID"
+              ]
+            }
+          }
+        },
+        "required": [
+          "Name",
+          "Playlist ID",
+          "Playlist Persistent ID",
+          "All Items"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Major Version",
+    "Minor Version",
+    "Application Version",
+    "Date",
+    "Features",
+    "Show Content Ratings",
+    "Library Persistent ID",
+    "Tracks",
+    "Playlists"
+  ]
+}{
+  "type": "object",
+  "title": "Netflix",
+  "description": "JSON Schema for a simplified Netflix data model",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Netflix users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "description": "Unique identifier for the user",
+            "example": 12345
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (should be hashed in a real system)",
+            "example": "hashedpassword"
+          },
+          "subscriptionPlan": {
+            "type": "string",
+            "description": "Type of subscription plan",
+            "enum": [
+              "Basic",
+              "Standard",
+              "Premium"
+            ],
+            "example": "Premium"
+          },
+          "profiles": {
+            "type": "array",
+            "description": "Profiles associated with the user account",
+            "items": {
+              "type": "object",
+              "properties": {
+                "profileId": {
+                  "type": "integer",
+                  "description": "Unique identifier for the profile",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the profile",
+                  "example": "John"
+                },
+                "isKids": {
+                  "type": "boolean",
+                  "description": "Indicates if the profile is a kids profile",
+                  "example": false
+                },
+                "avatarUrl": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL to the profile's avatar image"
+                },
+                "watchHistory": {
+                  "type": "array",
+                  "description": "List of titles watched by the profile",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "titleId": {
+                        "type": "integer",
+                        "description": "ID of the title watched",
+                        "example": 987
+                      },
+                      "watchDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time when the title was watched"
+                      },
+                      "progress": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Watch progress (0.0 - 1.0, where 1.0 is fully watched)",
+                        "example": 0.75
+                      }
+                    },
+                    "required": [
+                      "titleId",
+                      "watchDate"
+                    ]
+                  }
+                },
+                "myList": {
+                  "type": "array",
+                  "description": "List of titles added to 'My List'",
+                  "items": {
+                    "type": "integer",
+                    "description": "ID of the title added to the list"
+                  }
+                }
+              },
+              "required": [
+                "profileId",
+                "name"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 5
+          },
+          "paymentDetails": {
+            "type": "object",
+            "description": "Payment information for the user"
+
+          }
+        },
+        "required": [
+          "userId",
+          "email",
+          "password",
+          "subscriptionPlan",
+          "profiles"
+        ]
+      }
+    },
+    "titles": {
+      "type": "array",
+      "description": "List of movies and TV shows available on Netflix",
+      "items": {
+        "type": "object",
+        "properties": {
+          "titleId": {
+            "type": "integer",
+            "description": "Unique identifier for the title",
+            "example": 987
+          },
+          "title": {
+            "type": "string",
+            "description": "Name of the movie or TV show",
+            "example": "Stranger Things"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of title (movie or series)",
+            "enum": [
+              "movie",
+              "series"
+            ],
+            "example": "series"
+          },
+          "description": {
+            "type": "string",
+            "description": "Synopsis of the title",
+            "example": "A group of kids..."
+          },
+          "releaseYear": {
+            "type": "integer",
+            "description": "Year the title was released",
+            "example": 2016
+          },
+          "genres": {
+            "type": "array",
+            "description": "List of genres",
+            "items": {
+              "type": "string",
+              "example": "Sci-Fi"
+            },
+            "minItems": 1
+          },
+          "cast": {
+            "type": "array",
+            "description": "List of main cast members",
+            "items": {
+              "type": "string",
+              "example": "Winona Ryder"
+            }
+          },
+          "director": {
+            "type": "string",
+            "description": "Director of the movie (null for series)",
+            "example": null
+          },
+          "creators": {
+            "type": "array",
+            "description": "Creators of the series (null for movies)",
+            "items": {
+              "type": "string",
+              "example": "The Duffer Brothers"
+            }
+          },
+          "seasons": {
+            "type": "array",
+            "description": "List of seasons (only for series)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "seasonNumber": {
+                  "type": "integer",
+                  "description": "Season number",
+                  "example": 1
+                },
+                "episodes": {
+                  "type": "array",
+                  "description": "List of episodes in the season",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "episodeNumber": {
+                        "type": "integer",
+                        "description": "Episode number",
+                        "example": 1
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "Title of the episode",
+                        "example": "Chapter One: The Vanishing of Will Byers"
+                      },
+                      "synopsis": {
+                        "type": "string",
+                        "description": "Synopsis of the episode"
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "description": "Duration of the episode in minutes",
+                        "example": 50
+                      }
+                    },
+                    "required": [
+                      "episodeNumber",
+                      "title",
+                      "duration"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "seasonNumber",
+                "episodes"
+              ]
+            }
+          },
+          "maturityRating": {
+            "type": "string",
+            "description": "Maturity rating of the title",
+            "example": "TV-14"
+          },
+          "posterImageUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the title's poster image"
+          },
+          "trailerUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the title's trailer"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float",
+            "description": "Average rating from users (e.g., 4.5)",
+            "minimum": 0,
+            "maximum": 5
+          }
+        },
+        "required": [
+          "titleId",
+          "title",
+          "type",
+          "description",
+          "releaseYear",
+          "genres",
+          "maturityRating"
+        ]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "titles"
+  ]
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PeerTube Instance Metadata",
+  "description": "Schema for a PeerTube instance's metadata, including information about videos, users, channels, and other related entities.",
+  "type": "object",
+  "properties": {
+    "instance": {
+      "type": "object",
+      "description": "General information about the PeerTube instance.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the PeerTube instance."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "A short description of the instance."
+        },
+        "description": {
+          "type": "string",
+          "description": "A longer description of the instance."
+        },
+        "terms": {
+          "type": "string",
+          "description": "A URL to the terms of service of the instance."
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of PeerTube the instance is running."
+        },
+        "software": {
+          "type": "object",
+          "description": "Software information",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of software - should always be peertube",
+              "const": "peertube"
+            },
+            "version": {
+              "type": "string",
+              "description": "Version of peertube"
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ]
+        },
+        "isNSFW": {
+          "type": "boolean",
+          "description": "Whether the instance allows NSFW content."
+        },
+        "configuration": {
+          "type": "object",
+          "description": "Configuration settings of the instance.",
+          "properties": {
+            "videos": {
+              "type": "object",
+              "description": "Video-related configurations.",
+              "properties": {
+                "maxFileSize": {
+                  "type": "integer",
+                  "description": "Maximum file size for uploads (in bytes)."
+                },
+                "maxResolutions": {
+                  "type": "object",
+                  "description": "Maximum allowed video resolutions.",
+                  "properties": {
+                    "p144": {
+                      "type": "boolean"
+                    },
+                    "p240": {
+                      "type": "boolean"
+                    },
+                    "p360": {
+                      "type": "boolean"
+                    },
+                    "p480": {
+                      "type": "boolean"
+                    },
+                    "p720": {
+                      "type": "boolean"
+                    },
+                    "p1080": {
+                      "type": "boolean"
+                    },
+                    "p1440": {
+                      "type": "boolean"
+                    },
+                    "p2160": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            },
+            "signup": {
+              "type": "object",
+              "description": "Signup configuration",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "requiresEmailVerification": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "user": {
+              "type": "object",
+              "description": "User related configuration",
+              "properties": {
+                "videoQuota": {
+                  "type": "integer",
+                  "description": "Quota limit for users",
+                  "format": "int64"
+                },
+                "videoQuotaDaily": {
+                  "type": "integer",
+                  "description": "Daily quota limit for users",
+                  "format": "int64"
+                }
+              }
+            },
+            "search": {
+              "type": "object",
+              "description": "Search related configurations",
+              "properties": {
+                "isIndexesEnabled": {
+                  "type": "boolean"
+                },
+                "remoteUri": {
+                  "type": "string",
+                  "format": "url"
+                }
+              }
+            }
+          }
+        },
+        "stats": {
+          "type": "object",
+          "description": "Statistics about the instance.",
+          "properties": {
+            "totalVideos": {
+              "type": "integer",
+              "description": "The total number of videos on the instance."
+            },
+            "totalVideoViews": {
+              "type": "integer",
+              "description": "The total number of video views on the instance."
+            },
+            "totalUsers": {
+              "type": "integer",
+              "description": "The total number of users on the instance."
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "software"
+      ]
+    },
+    "videos": {
+      "type": "array",
+      "description": "A list of videos on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The unique identifier of the video."
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The UUID of the video."
+          },
+          "shortUUID": {
+            "type": "string",
+            "description": "A shorter version of the UUID",
+            "maxLength": 8
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The URL of the video on the instance."
+          },
+          "name": {
+            "type": "string",
+            "description": "The title of the video."
+          },
+          "category": {
+            "type": "object",
+            "description": "Video category",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "licence": {
+            "type": "object",
+            "description": "Video licence",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "language": {
+            "type": "object",
+            "description": "Video language",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the video."
+          },
+          "duration": {
+            "type": "integer",
+            "description": "The duration of the video in seconds."
+          },
+          "isLive": {
+            "type": "boolean"
+          },
+          "isLocal": {
+            "type": "boolean",
+            "description": "Whether the video is hosted locally on the instance."
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the video was published."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of last update"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation date"
+          },
+          "views": {
+            "type": "integer",
+            "description": "The number of views the video has received."
+          },
+          "likes": {
+            "type": "integer",
+            "description": "The number of likes the video has received"
+          },
+          "dislikes": {
+            "type": "integer",
+            "description": "The number of dislikes the video has received"
+          },
+          "thumbnailPath": {
+            "type": "string",
+            "description": "The path to the video's thumbnail image."
+          },
+          "previewPath": {
+            "type": "string",
+            "description": "Path to video preview"
+          },
+          "embedPath": {
+            "type": "string",
+            "description": "Path to embed the video"
+          },
+          "isNSFW": {
+            "type": "boolean",
+            "description": "Whether the video is marked as NSFW."
+          },
+          "isPrivate": {
+            "type": "boolean",
+            "description": "Whether the video is private"
+          },
+          "tags": {
+            "type": "array",
+            "description": "Video tags",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "tag": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "tag"
+              ]
+            }
+          },
+          "channel": {
+            "type": "object",
+            "description": "The channel that the video belongs to.",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "The unique identifier of the channel."
+              },
+              "url": {
+                "type": "string",
+                "format": "url",
+                "description": "The URL of the channel."
+              },
+              "name": {
+                "type": "string",
+                "description": "The name of the channel."
+              },
+              "description": {
+                "type": "string",
+                "description": "Channel description"
+              },
+              "support": {
+                "type": "string",
+                "description": "Channel support text"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              },
+              "ownerAccount": {
+                "type": "object",
+                "description": "Channel owner information",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "url"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "host": {
+                    "type": "string"
+                  },
+                  "avatars": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/avatar"
+                    }
+                  },
+                  "avatar": {
+                    "$ref": "#/definitions/avatar"
+                  },
+                  "banner": {
+                    "$ref": "#/definitions/avatar"
+                  }
+                },
+                "required": [
+                  "id",
+                  "url",
+                  "name",
+                  "host"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "name",
+              "ownerAccount"
+            ]
+          },
+          "files": {
+            "type": "array",
+            "description": "Files associated with the video.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "File id"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "The filename of the video file."
+                },
+                "fileUrl": {
+                  "type": "string",
+                  "format": "url",
+                  "description": "URL of the file"
+                },
+                "magnetUri": {
+                  "type": "string",
+                  "description": "Magnet URI for the file"
+                },
+                "metadata": {
+                  "type": "object",
+                  "description": "Metadata information",
+                  "properties": {
+                    "fps": {
+                      "type": "integer"
+                    },
+                    "resolution": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "label": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "size": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "torrentUrl": {
+                  "type": "string",
+                  "format": "url"
+                }
+              },
+              "required": [
+                "id",
+                "filename",
+                "fileUrl"
+              ]
+            }
+          },
+          "streamingPlaylists": {
+            "type": "array",
+            "description": "Streaming playlists (HLS for example)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "integer"
+                },
+                "playlistUrl": {
+                  "type": "string",
+                  "format": "url"
+                },
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "fileUrl": {
+                        "type": "string",
+                        "format": "url"
+                      },
+                      "resolution": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "size": {
+                        "type": "integer",
+                        "format": "int64"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "fileUrl",
+                      "resolution"
+                    ]
+                  }
+                },
+                "segmentsSha256Url": {
+                  "type": "string",
+                  "format": "url"
+                }
+              },
+              "required": [
+                "id",
+                "type",
+                "playlistUrl"
+              ]
+            }
+          },
+          "account": {
+            "type": "object",
+            "description": "Video uploader information",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "followingCount": {
+                "type": "integer"
+              },
+              "followersCount": {
+                "type": "integer"
+              },
+              "avatars": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/avatar"
+                }
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "name",
+              "host"
+            ]
+          },
+          "blacklisted": {
+            "type": "boolean",
+            "description": "Whether the video is blacklisted"
+          },
+          "blacklistedReason": {
+            "type": "string",
+            "description": "Reason for blacklisting"
+          },
+          "waitTranscoding": {
+            "type": "boolean"
+          },
+          "state": {
+            "type": "object",
+            "description": "Video state",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "trackerUrls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "url"
+            }
+          },
+          "commentsEnabled": {
+            "type": "boolean"
+          },
+          "downloadEnabled": {
+            "type": "boolean"
+          },
+          "support": {
+            "type": "string"
+          },
+          "originallyPublishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "privacy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "enum": [
+                  1,
+                  2,
+                  3,
+                  4
+                ]
+              },
+              "label": {
+                "type": "string",
+                "enum": [
+                  "Public",
+                  "Unlisted",
+                  "Private",
+                  "Internal"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "uuid",
+          "url",
+          "name",
+          "isLocal",
+          "channel",
+          "account"
+        ]
+      }
+    },
+    "users": {
+      "type": "array",
+      "description": "A list of users on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The unique identifier of the user."
+          },
+          "name": {
+            "type": "string",
+            "description": "The username of the user."
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The display name of the user"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          },
+          "host": {
+            "type": "string"
+          },
+          "avatar": {
+            "$ref": "#/definitions/avatar"
+          },
+          "banner": {
+            "$ref": "#/definitions/avatar"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "followersCount": {
+            "type": "integer"
+          },
+          "followingCount": {
+            "type": "integer"
+          },
+          "videoQuota": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "videoQuotaDaily": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "role": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "host"
+        ]
+      }
+    },
+    "channels": {
+      "type": "array",
+      "description": "A list of channels on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The unique identifier of the channel."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the channel."
+          },
+          "url": {
+            "type": "string",
+            "format": "url",
+            "description": "The URL of the channel."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the channel."
+          },
+          "support": {
+            "type": "string"
+          },
+          "isLocal": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerAccount": {
+            "type": "object",
+            "description": "Channel owner information",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "avatars": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/avatar"
+                }
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "name",
+              "host"
+            ]
+          },
+          "avatar": {
+            "$ref": "#/definitions/avatar"
+          },
+          "banner": {
+            "$ref": "#/definitions/avatar"
+          },
+          "followersCount": {
+            "type": "integer"
+          },
+          "followingCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "isLocal",
+          "ownerAccount"
+        ]
+      }
+    },
+    "videoPlaylists": {
+      "type": "array",
+      "description": "Video playlists",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "thumbnailPath": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "privacy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "enum": [
+                  1,
+                  2,
+                  3,
+                  4
+                ]
+              },
+              "label": {
+                "type": "string",
+                "enum": [
+                  "Public",
+                  "Unlisted",
+                  "Private",
+                  "Internal"
+                ]
+              }
+            }
+          },
+          "ownerAccount": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "host",
+              "url"
+            ]
+          },
+          "videoChannel": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "url"
+            ]
+          },
+          "isLocal": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "uuid",
+          "name",
+          "isLocal"
+        ]
+      }
+    },
+    "videoComments": {
+      "type": "array",
+      "description": "Video comments",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "host",
+              "url"
+            ]
+          },
+          "video": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "shortUUID": {
+                "type": "string",
+                "maxLength": 8
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              }
+            },
+            "required": [
+              "id",
+              "uuid",
+              "url"
+            ]
+          },
+          "totalReplies": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "likes": {
+            "type": "integer"
+          },
+          "dislikes": {
+            "type": "integer"
+          },
+          "isApproved": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "account",
+          "video"
+        ]
+      }
+    },
+    "plugins": {
+      "type": "array",
+      "description": "A list of plugins installed on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the plugin."
+          },
+          "version": {
+            "type": "string",
+            "description": "The version of the plugin."
+          },
+          "homepage": {
+            "type": "string",
+            "format": "url",
+            "description": "URL to plugin homepage"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "version",
+          "enabled"
+        ]
+      }
+    },
+    "themes": {
+      "type": "array",
+      "description": "A list of themes installed on the instance.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the theme."
+          },
+          "version": {
+            "type": "string",
+            "description": "The version of the theme."
+          },
+          "homepage": {
+            "type": "string",
+            "format": "url"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "version",
+          "enabled"
+        ]
+      }
+    },
+    "videoImports": {
+      "type": "array",
+      "description": "Video imports",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          },
+          "video": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "shortUUID": {
+                "type": "string",
+                "maxLength": 8
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "targetUrl": {
+            "type": "string",
+            "format": "url"
+          },
+          "error": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "progress": {
+            "type": "integer"
+          },
+          "failures": {
+            "type": "integer"
+          },
+          "videoChannel": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "host": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "avatar": {
+                "$ref": "#/definitions/avatar"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "url"
+            ]
+          },
+          "magnetUri": {
+            "type": "string"
+          },
+          "torrentName": {
+            "type": "string"
+          },
+          "videoId": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "state"
+        ]
+      }
+    },
+    "videoRedundancies": {
+      "type": "array",
+      "description": "Video redundancies",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "video": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "shortUUID": {
+                "type": "string",
+                "maxLength": 8
+              },
+              "url": {
+                "type": "string",
+                "format": "url"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "type": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          },
+          "videoId": {
+            "type": "integer"
+          },
+          "fileUrl": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "required": [
+          "id",
+          "video",
+          "type",
+          "createdAt"
+        ]
+      }
+    }
+  },
+  "required": [
+    "instance"
+  ],
+  "definitions": {
+    "avatar": {
+      "type": "object",
+      "description": "Avatar information",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "path": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "url"
+        }
+      },
+      "required": [
+        "id",
+        "filename",
+        "path",
+        "url"
+      ]
+    }
+  }
+}{
+  "event": {
+    "name": "Royal Rumble 2023",
+    "date": "2023-01-28",
+    "location": "Alamodome, San Antonio, Texas",
+    "matches": [
+      {
+        "type": "Singles",
+        "participants": [
+          {
+            "name": "Roman Reigns",
+            "brand": "SmackDown"
+          },
+          {
+            "name": "Kevin Owens",
+            "brand": "RAW"
+          }
+        ],
+        "winner": [
+          {
+            "name": "Roman Reigns"
+          }
+        ],
+        "championship": "Undisputed WWE Universal Championship"
+      }
+    ]
+  },
+  "rumbleMatch": {
+    "type": "Men's",
+    "participants": [
+      {
+        "entryNumber": 1,
+        "wrestler": {
+          "name": "Gunther",
+          "brand": "SmackDown"
+        },
+        "eliminatedBy": [
+          {
+            "name": "Cody Rhodes"
+          }
+        ],
+        "eliminationTime": "01:11:40",
+        "eliminations": 5
+      },
+      {
+        "entryNumber": 30,
+        "wrestler": {
+          "name": "Cody Rhodes",
+          "brand": "RAW"
+        },
+        "eliminations": 4
+      },
+      {
+        "entryNumber": 3,
+        "wrestler": {
+          "name": "Edge",
+          "brand": "RAW"
+        },
+        "eliminatedBy": [
+          {
+            "name": "Finn Bálor"
+          },
+          {
+            "name": "Damian Priest"
+          }
+        ],
+        "eliminationTime": "00:29:26",
+        "eliminations": 3
+      }
+    ],
+    "winner": 30
+  }
+}{
+  "type": "object",
+  "title": "Rumble Studio",
+  "description": "Schema for a podcast creation and hosting platform like Rumble Studio",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the user"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "Hashed password (not stored in plain text)",
+            "writeOnly": true
+          },
+          "subscription": {
+            "type": "object",
+            "description": "Subscription details if the user has one",
+            "properties": {
+              "plan": {
+                "type": "string",
+                "enum": ["free", "starter", "pro", "enterprise"],
+                "description": "Subscription plan name"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "canceled", "past_due"],
+                "description": "Current status of the subscription"
+              },
+              "renewalDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Date of the next subscription renewal"
+              }
+            },
+            "required": ["plan", "status"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of user registration"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of last user update"
+          }
+        },
+        "required": [
+          "userId",
+          "username",
+          "email",
+          "password",
+          "createdAt",
+          "updatedAt"
+        ]
+      }
+    },
+    "podcasts": {
+      "type": "array",
+      "description": "List of podcasts",
+      "items": {
+        "type": "object",
+        "properties": {
+          "podcastId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the podcast"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the user who owns the podcast"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the podcast"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the podcast"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the podcast (e.g., Technology, Comedy)"
+          },
+          "artworkUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the podcast's artwork image"
+          },
+          "rssFeedUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the podcast's RSS feed (generated by the platform)"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of podcast creation"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of last podcast update"
+          }
+        },
+        "required": [
+          "podcastId",
+          "userId",
+          "title",
+          "description",
+          "category",
+          "rssFeedUrl",
+          "createdAt",
+          "updatedAt"
+        ]
+      }
+    },
+    "episodes": {
+      "type": "array",
+      "description": "List of podcast episodes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "episodeId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the episode"
+          },
+          "podcastId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the podcast the episode belongs to"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the episode"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the episode"
+          },
+          "audioUrl": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the episode's audio file"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Duration of the episode in seconds"
+          },
+          "publicationDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the episode was published"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "published", "scheduled"],
+            "description": "Status of the episode"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of episode creation"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of last episode update"
+          },
+          "interviewees": {
+            "type": "array",
+            "description": "List of interviewees for this episode if it's an interview style podcast",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the interviewee"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "Email address of the interviewee"
+                },
+                "bio": {
+                  "type": "string",
+                  "description": "A short bio of the interviewee",
+                  "maxLength": 500
+                },
+                "audioUrl": {
+                  "type": "string",
+                  "format": "URL",
+                  "description": "URL of the audio file that was submitted by this guest"
+                }
+              },
+              "required": ["name"]
+            }
+          }
+        },
+        "required": [
+          "episodeId",
+          "podcastId",
+          "title",
+          "description",
+          "audioUrl",
+          "duration",
+          "publicationDate",
+          "createdAt",
+          "updatedAt"
+        ]
+      }
+    },
+    "audioFiles": {
+      "type": "array",
+      "description": "Storage metadata for audio files",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fileId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the audio file"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the user who uploaded this file"
+          },
+          "filename": {
+            "type": "string",
+            "description": "Original filename"
+          },
+          "filepath": {
+            "type": "string",
+            "description": "Path to the file in cloud storage (e.g., S3 bucket)"
+          },
+          "filetype": {
+            "type": "string",
+            "description": "File MIME type (e.g., audio/mpeg)"
+          },
+          "filesize": {
+            "type": "integer",
+            "description": "File size in bytes"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of file upload"
+          }
+        },
+        "required": [
+          "fileId",
+          "userId",
+          "filename",
+          "filepath",
+          "filetype",
+          "filesize",
+          "createdAt"
+        ]
+      }
+    },
+    "plans": {
+      "type": "array",
+      "description": "Available subscription plans",
+      "items": {
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string",
+            "enum": ["free", "starter", "pro", "enterprise"],
+            "description": "Unique identifier for the plan"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the plan (e.g. Free, Starter, Pro, Enterprise)"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "description": "Monthly price of the plan in USD"
+          },
+          "maxPodcasts": {
+            "type": "integer",
+            "description": "Maximum number of podcasts allowed on this plan"
+          },
+          "maxEpisodesPerMonth": {
+            "type": "integer",
+            "description": "Maximum number of episodes allowed per month"
+          },
+          "maxStorage": {
+            "type": "string",
+            "description": "Maximum storage space allowed (e.g., '5GB', 'Unlimited')"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of features included in the plan"
+          }
+        },
+        "required": ["planId", "name", "price", "maxPodcasts", "maxEpisodesPerMonth", "maxStorage", "features"]
+      }
+    }
+  },
+  "required": [
+    "users",
+    "podcasts",
+    "episodes",
+    "audioFiles"
+  ]
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spotify",
+  "description": "JSON Schema for Spotify's core objects and relationships.",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "artists": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Artist"
+      }
+    },
+    "albums": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Album"
+      }
+    },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Track"
+      }
+    },
+    "playlists": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Playlist"
+      }
+    },
+    "genres": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "A music genre (e.g., 'Pop', 'Rock', 'Classical')."
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the user."
+        },
+        "display_name": {
+          "type": "string",
+          "description": "The name displayed on the user's profile."
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "country": {
+          "type": "string",
+          "description": "The country of the user, as set in the user's account profile.",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "playlists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Playlist"
+          },
+          "description": "Playlists created by or followed by the user."
+        },
+        "following": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "IDs of artists or users this user follows"
+          },
+          "description": "Artists or users this user follows"
+        },
+        "followers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "description": "IDs of users following this user"
+          },
+          "description": "Users following this user."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "Artist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the artist."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the artist."
+        },
+        "genres": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of the genres the artist is associated with."
+        },
+        "popularity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular."
+        },
+        "followers": {
+          "type": "integer",
+          "description": "The total number of followers."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        },
+        "albums": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Album"
+          },
+          "description": "List of albums by the artist"
+        },
+        "related_artists": {
+          "type": "array",
+          "items":{
+            "$ref": "#/definitions/Artist"
+          },
+          "description": "List of artists related to this artist."
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "Album": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the album."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the album."
+        },
+        "artists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Artist"
+          },
+          "description": "The artists of the album."
+        },
+        "album_type": {
+          "type": "string",
+          "enum": [
+            "album",
+            "single",
+            "compilation"
+          ],
+          "description": "The type of the album: album, single, or compilation."
+        },
+        "release_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the album was first released."
+        },
+        "total_tracks": {
+          "type": "integer",
+          "description": "The number of tracks in the album."
+        },
+        "tracks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Track"
+          },
+          "description": "The tracks of the album."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        },
+        "genres": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of the genres the album is associated with."
+        },
+        "popularity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "The popularity of the album."
+        },
+        "label": {
+          "type": "string",
+          "description": "Label of the album"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "artists"
+      ]
+    },
+    "Track": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the track."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the track."
+        },
+        "artists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Artist"
+          },
+          "description": "The artists who performed the track."
+        },
+        "album": {
+          "$ref": "#/definitions/Album",
+          "description": "The album on which the track appears."
+        },
+        "duration_ms": {
+          "type": "integer",
+          "description": "The track length in milliseconds."
+        },
+        "explicit": {
+          "type": "boolean",
+          "description": "Whether or not the track has explicit lyrics (true = yes it does; false = no it does not OR unknown)."
+        },
+        "popularity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "The popularity of the track."
+        },
+        "preview_url": {
+          "type": "string",
+          "format": "URL",
+          "description": "A link to a 30 second preview (MP3 format) of the track."
+        },
+        "track_number": {
+          "type": "integer",
+          "description": "Track number of this track in its album."
+        },
+        "is_playable": {
+          "type": "boolean",
+          "description": "Whether or not this track is playable in the market it was requested from."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "artists"
+      ]
+    },
+    "Playlist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the playlist."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the playlist."
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "description": "The playlist's description. Only returned for modified, verified playlists, otherwise null."
+        },
+        "owner": {
+          "$ref": "#/definitions/User",
+          "description": "The user who owns the playlist."
+        },
+        "public": {
+          "type": "boolean",
+          "nullable": true,
+          "description": "The playlist's public/private status: true the playlist is public, false the playlist is private, null the playlist status is not relevant."
+        },
+        "tracks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Track"
+          },
+          "description": "The tracks of the playlist."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Image"
+          }
+        },
+        "followers": {
+          "type": "integer",
+          "description": "The total number of followers."
+        },
+        "collaborative":{
+          "type": "boolean",
+          "description": "Whether this playlist can be modified by other users."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "owner"
+      ]
+    },
+    "Image": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "The source URL of the image."
+        },
+        "height": {
+          "type": "integer",
+          "nullable": true,
+          "description": "The image height in pixels."
+        },
+        "width": {
+          "type": "integer",
+          "nullable": true,
+          "description": "The image width in pixels."
+        }
+      },
+      "required": [
+        "url"
+      ]
+    }
+  }
+}{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Twitch App",
+  "description": "JSON Schema for a simplified representation of the Twitch App data model",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "List of Twitch users",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique user ID"
+          },
+          "login": {
+            "type": "string",
+            "description": "User's login name (username)"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "profile_image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the user's profile image"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address (requires appropriate OAuth scope)"
+          },
+          "broadcaster_type": {
+            "type": "string",
+            "enum": ["", "affiliate", "partner"],
+            "description": "User's broadcaster type (empty string for non-broadcasters)"
+          },
+          "description": {
+            "type": "string",
+            "description": "User's channel description"
+          },
+          "view_count": {
+            "type": "integer",
+            "description": "Total number of views on the user's channel"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the user account was created"
+          }
+        },
+        "required": [
+          "id",
+          "login",
+          "display_name"
+        ]
+      }
+    },
+    "streams": {
+      "type": "array",
+      "description": "List of live streams",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique stream ID"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID of the broadcaster"
+          },
+          "user_login": {
+            "type": "string",
+            "description": "User's login name (username)"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "game_id": {
+            "type": "string",
+            "description": "Game ID being streamed"
+          },
+          "game_name": {
+            "type": "string",
+            "description": "Name of the game being streamed"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["live", ""],
+            "description": "Stream type (live or empty string for vodcasts)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Stream title"
+          },
+          "viewer_count": {
+            "type": "integer",
+            "description": "Number of viewers currently watching the stream"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the stream started"
+          },
+          "language": {
+            "type": "string",
+            "description": "Stream language (e.g., 'en', 'es')"
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "Template URL for the stream thumbnail"
+          },
+          "tag_ids": {
+            "type": "array",
+            "description": "List of tag IDs associated with the stream",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_mature": {
+            "type": "boolean",
+            "description": "Indicates if the stream is marked as mature"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "user_login",
+          "user_name",
+          "viewer_count",
+          "started_at"
+        ]
+      }
+    },
+    "games": {
+      "type": "array",
+      "description": "List of games",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique game ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the game"
+          },
+          "box_art_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "Template URL for the game's box art"
+          },
+          "igdb_id": {
+            "type": "string",
+            "description": "ID of the game on IGDB"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "box_art_url"
+        ]
+      }
+    },
+    "videos": {
+      "type": "array",
+      "description": "List of videos (VODs, highlights, uploads)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique video ID"
+          },
+          "stream_id": {
+            "type": "string",
+            "description": "ID of the stream that the video originated from (null if not associated with a stream)"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID of the video owner"
+          },
+          "user_login": {
+            "type": "string",
+            "description": "User login name of the video owner"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "Display name of the video owner"
+          },
+          "title": {
+            "type": "string",
+            "description": "Video title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Video description"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the video was created"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the video was published"
+          },
+          "url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL of the video"
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "Template URL for the video thumbnail"
+          },
+          "viewable": {
+            "type": "string",
+            "enum": ["public", "private"],
+            "description": "Whether the video is public or private"
+          },
+          "view_count": {
+            "type": "integer",
+            "description": "Number of times the video has been viewed"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the video (e.g., 'en', 'es')"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["upload", "archive", "highlight"],
+            "description": "Type of video (upload, archive, or highlight)"
+          },
+          "duration": {
+            "type": "string",
+            "description": "Video duration in format: '0h0m0s'"
+          },
+          "muted_segments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "duration": {
+                  "type": "integer",
+                  "description": "Duration of the muted segment in seconds"
+                },
+                "offset": {
+                  "type": "integer",
+                  "description": "Offset in the video in seconds"
+                }
+              },
+              "required": [
+                "duration",
+                "offset"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "user_login",
+          "user_name",
+          "title",
+          "url",
+          "view_count"
+        ]
+      }
+    },
+    "clips": {
+      "type": "array",
+      "description": "List of clips.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique ID of the clip."
+          },
+          "url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to view the clip."
+          },
+          "embed_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to embed the clip."
+          },
+          "broadcaster_id": {
+            "type": "integer",
+            "description": "User ID of the stream from which the clip was created."
+          },
+          "broadcaster_name": {
+            "type": "string",
+            "description": "Display name of the broadcaster."
+          },
+          "creator_id": {
+            "type": "integer",
+            "description": "User ID of the user who created the clip."
+          },
+          "creator_name": {
+            "type": "string",
+            "description": "Display name of the user who created the clip."
+          },
+          "video_id": {
+            "type": "string",
+            "description": "ID of the video from which the clip was created."
+          },
+          "game_id": {
+            "type": "string",
+            "description": "ID of the game being played when the clip was created."
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the clip (e.g., 'en', 'es')."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the clip."
+          },
+          "view_count": {
+            "type": "integer",
+            "description": "Number of times the clip has been viewed."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the clip was created."
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the thumbnail image of the clip."
+          },
+          "duration": {
+            "type": "number",
+            "format": "float",
+            "description": "Duration of the clip in seconds."
+          },
+          "vod_offset": {
+            "type": "integer",
+            "description": "The zero-based offset, in seconds, to where the clip starts in the video (VOD). Is null if the video is not available or hasn't been created yet from the live stream."
+          },
+          "is_featured": {
+            "type": "boolean",
+            "description": "Indicates if the clip is featured."
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "embed_url",
+          "broadcaster_id",
+          "broadcaster_name",
+          "creator_id",
+          "creator_name",
+          "game_id",
+          "language",
+          "title",
+          "view_count",
+          "created_at",
+          "thumbnail_url",
+          "duration"
+        ]
+      }
+    },
+    "teams": {
+      "type": "array",
+      "description": "List of channel teams.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "background_image_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL for the team's background image."
+          },
+          "banner": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL for the team's banner."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the team was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the team was last updated."
+          },
+          "info": {
+            "type": "string",
+            "description": "Team description."
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "format": "URL",
+            "description": "URL to the team's thumbnail image."
+          },
+          "team_name": {
+            "type": "string",
+            "description": "Team name."
+          },
+          "team_display_name": {
+            "type": "string",
+            "description": "Team display name."
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique ID of the team."
+          },
+          "users": {
+            "type": "array",
+            "description": "List of users that are part of the team.",
+            "items": {
+              "$ref": "#/properties/users/items"
+            }
+          }
+        },
+        "required": [
+          "created_at",
+          "updated_at",
+          "info",
+          "thumbnail_url",
+          "team_name",
+          "team_display_name",
+          "id",
+          "users"
+        ]
+      }
+    }
+  },
+  "required": []
+{
+  "title": "YouTube Schema",
+  "description": "A JSON Schema representing core YouTube entities and their relationships.",
+  "type": "object",
+  "properties": {
+    "videos": {
+      "type": "array",
+      "description": "A list of YouTube videos.",
+      "items": {
+        "$ref": "#/definitions/video"
+      }
+    },
+    "channels": {
+      "type": "array",
+      "description": "A list of YouTube channels.",
+      "items": {
+        "$ref": "#/definitions/channel"
+      }
+    },
+    "playlists": {
+      "type": "array",
+      "description": "A list of YouTube playlists.",
+      "items": {
+        "$ref": "#/definitions/playlist"
+      }
+    },
+    "users": {
+      "type": "array",
+      "description": "A list of YouTube users (viewers, not necessarily creators).",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "comments": {
+      "type": "array",
+      "description": "A list of YouTube comments.",
+      "items": {
+        "$ref": "#/definitions/comment"
+      }
+    }
+  },
+  "definitions": {
+    "video": {
+      "type": "object",
+      "description": "Represents a YouTube video.",
+      "properties": {
+        "videoId": {
+          "type": "string",
+          "description": "Unique identifier for the video.",
+          "example": "dQw4w9WgXcQ"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the video.",
+          "example": "Rick Astley - Never Gonna Give You Up (Official Music Video)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the video.",
+          "example": "The official video for “Never Gonna Give You Up” by Rick Astley"
+        },
+        "channelId": {
+          "type": "string",
+          "description": "ID of the channel that uploaded the video.",
+          "example": "UCuAXFkgsw1L7xaCfnd5JJOw"
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the video was published.",
+          "example": "2009-10-25T06:57:33Z"
+        },
+        "thumbnails": {
+          "type": "object",
+          "description": "Different sizes of thumbnails for the video.",
+          "properties": {
+            "default": { "$ref": "#/definitions/thumbnail" },
+            "medium": { "$ref": "#/definitions/thumbnail" },
+            "high": { "$ref": "#/definitions/thumbnail" },
+            "standard": { "$ref": "#/definitions/thumbnail" },
+            "maxres": { "$ref": "#/definitions/thumbnail" }
+          },
+          "additionalProperties": false
+        },
+        "duration": {
+          "type": "string",
+          "description": "Duration of the video in ISO 8601 format.",
+          "example": "PT3M33S"
+        },
+        "viewCount": {
+          "type": "integer",
+          "description": "Number of views the video has received.",
+          "example": 1400000000
+        },
+        "likeCount": {
+          "type": "integer",
+          "description": "Number of likes the video has received.",
+          "example": 15000000
+        },
+        "dislikeCount": {
+          "type": "integer",
+          "description": "Number of dislikes the video has received. (Note: No longer publicly available via the API)",
+          "example": 200000
+        },
+        "commentCount": {
+          "type": "integer",
+          "description": "Number of comments on the video.",
+          "example": 600000
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags associated with the video.",
+          "items": {
+            "type": "string",
+            "example": "music"
+          }
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the video.",
+          "example": "Music"
+        },
+        "liveStreamingDetails": {
+          "type": "object",
+          "description": "Details about a live stream, if applicable.",
+          "properties": {
+            "actualStartTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Actual start time of the live stream."
+            },
+            "actualEndTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Actual end time of the live stream."
+            },
+            "scheduledStartTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Scheduled start time of the live stream."
+            },
+            "scheduledEndTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Scheduled end time of the live stream."
+            },
+            "concurrentViewers": {
+              "type": "integer",
+              "description": "Number of concurrent viewers during the live stream."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "videoId",
+        "title",
+        "channelId",
+        "publishedAt",
+        "thumbnails",
+        "duration"
+      ],
+      "additionalProperties": false
+    },
+    "channel": {
+      "type": "object",
+      "description": "Represents a YouTube channel.",
+      "properties": {
+        "channelId": {
+          "type": "string",
+          "description": "Unique identifier for the channel.",
+          "example": "UCuAXFkgsw1L7xaCfnd5JJOw"
+        },
+        "channelName": {
+          "type": "string",
+          "description": "Name of the channel.",
+          "example": "Rick Astley"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the channel."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the channel was created."
+        },
+        "thumbnails": {
+          "type": "object",
+          "description": "Different sizes of thumbnails for the channel.",
+          "properties": {
+            "default": { "$ref": "#/definitions/thumbnail" },
+            "medium": { "$ref": "#/definitions/thumbnail" },
+            "high": { "$ref": "#/definitions/thumbnail" }
+          },
+          "additionalProperties": false
+        },
+        "subscriberCount": {
+          "type": "integer",
+          "description": "Number of subscribers to the channel. (Note: May be hidden or rounded by the channel owner)",
+          "example": 9000000
+        },
+        "videoCount": {
+          "type": "integer",
+          "description": "Number of public videos uploaded by the channel.",
+          "example": 200
+        },
+        "viewCount": {
+          "type": "integer",
+          "description": "Total number of views across all public videos on the channel.",
+          "example": 2500000000
+        },
+        "customUrl": {
+          "type": "string",
+          "description": "Custom URL for the channel, if set.",
+          "example": "@RickAstley"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country associated with the channel.",
+          "example": "GB"
+        }
+      },
+      "required": [
+        "channelId",
+        "channelName"
+      ],
+      "additionalProperties": false
+    },
+    "playlist": {
+      "type": "object",
+      "description": "Represents a YouTube playlist.",
+      "properties": {
+        "playlistId": {
+          "type": "string",
+          "description": "Unique identifier for the playlist.",
+          "example": "PL1234567890abcdef"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the playlist.",
+          "example": "My Favorite Songs"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the playlist."
+        },
+        "channelId": {
+          "type": "string",
+          "description": "ID of the channel that created the playlist."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the playlist was created."
+        },
+        "thumbnails": {
+          "type": "object",
+          "description": "Different sizes of thumbnails for the playlist.",
+          "properties": {
+            "default": { "$ref": "#/definitions/thumbnail" },
+            "medium": { "$ref": "#/definitions/thumbnail" },
+            "high": { "$ref": "#/definitions/thumbnail" },
+            "standard": { "$ref": "#/definitions/thumbnail" },
+            "maxres": { "$ref": "#/definitions/thumbnail" }
+          },
+          "additionalProperties": false
+        },
+        "videoIds": {
+          "type": "array",
+          "description": "List of video IDs contained in the playlist.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "videoCount": {
+          "type": "integer",
+          "description": "Number of videos in the playlist."
+        }
+      },
+      "required": [
+        "playlistId",
+        "title",
+        "channelId"
+      ],
+      "additionalProperties": false
+    },
+    "user": {
+      "type": "object",
+      "description": "Represents a YouTube user (viewer).",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique identifier for the user (often same as channel ID, but not necessarily)."
+        },
+        "userName": {
+          "type": "string",
+          "description": "Public name of the user."
+        }
+        // Add more properties for user interaction if needed, such as:
+        // - subscribedChannels
+        // - likedVideos
+        // - watchHistory
+        // - etc. (These properties often require authentication)
+      },
+      "required": [
+        "userId"
+      ],
+      "additionalProperties": false
+    },
+    "comment": {
+      "type": "object",
+      "description": "Represents a comment on a YouTube video or channel.",
+      "properties": {
+        "commentId": {
+          "type": "string",
+          "description": "Unique identifier for the comment."
+        },
+        "videoId": {
+          "type": "string",
+          "description": "ID of the video the comment is on (if applicable)."
+        },
+        "channelId": {
+          "type": "string",
+          "description": "ID of the channel the comment is on (if applicable)."
+        },
+        "parentId": {
+          "type": "string",
+          "description": "ID of the parent comment, if this is a reply."
+        },
+        "authorChannelId": {
+          "type": "string",
+          "description": "ID of the channel that posted the comment."
+        },
+        "authorDisplayName": {
+          "type": "string",
+          "description": "Display name of the author of the comment."
+        },
+        "textOriginal": {
+          "type": "string",
+          "description": "The comment text (original, unformatted)."
+        },
+        "textDisplay": {
+          "type": "string",
+          "description": "The comment text (may contain formatting like bold, italics, etc.)."
+        },
+        "likeCount": {
+          "type": "integer",
+          "description": "Number of likes the comment has received."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the comment was published."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time the comment was last updated (if edited)."
+        }
+      },
+      "required": [
+        "commentId",
+        "authorChannelId",
+        "textOriginal",
+        "publishedAt"
+      ],
+      "additionalProperties": false
+    },
+    "thumbnail": {
+      "type": "object",
+      "description": "Represents a thumbnail image.",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "URL",
+          "description": "URL of the thumbnail image.",
+          "example": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg"
+        },
+        "width": {
+          "type": "integer",
+          "description": "Width of the thumbnail image in pixels."
+        },
+        "height": {
+          "type": "integer",
+          "description": "Height of the thumbnail image in pixels."
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
