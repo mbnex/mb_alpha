@@ -143,4 +143,3 @@ categorization of the provided list (app schemas), based on inferred user action
     *   Zillow
     *   Airbnb
 
-Let me know if you'd like me to refine or adjust these categories further!
