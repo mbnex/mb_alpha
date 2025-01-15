@@ -86,3 +86,16 @@ JSON Schemas have be created for the following apps:
 "binance",
 "bitfinex","shopify","twitch","bigcommerce"
 ],
+
+### Gemini Prompt
+
+create a unified json schema from the following schemas below. they are in no particular order or priority. do not simply repeat the content; discover missing
+superclasses that more flexibly express the data for general adaptivity.  eliminate redundancy. prefer the common and concise identifiers. ignore any implementation-specific details in the schemas that would not apply to something else: such as: error codes,.response or api  codes  for any object Id properties, use uuid (string), not numbers. write the schema, do not bother explaining anything.  The goal is to create a unified schema. Focus on what these these schemas enable and express, rather than any particular details about the apps/sites themselves
+
+
+#### Final unified schema 
+
+original unified schema is called "unified_schema.json" in this directory
+final unified schema (after targeted modelling) is "unified_schema2.json""
+
+
